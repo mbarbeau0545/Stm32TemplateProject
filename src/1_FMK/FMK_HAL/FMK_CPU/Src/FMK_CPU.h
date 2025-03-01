@@ -25,6 +25,9 @@
     // ********************************************************************
     #define FMKCPU_PWM_MAX_DUTY_CYLCE ((t_uint16)1000) /**< Max duty cycle allowed */
     #define FMKCPU_PWM_MIN_DUTY_CYLCE ((t_uint16)0)    /**< Min dutyCycle allowed */
+
+    /**< Macro to know in Hz the System Frequency */
+    #define FMKCPU_FREQ_SYSTEM_HZ ((t_uint32))
     // ********************************************************************
     // *                      Types
     // ********************************************************************

@@ -40,6 +40,7 @@
     #define FMKCPU_USART_TX_DMA_MODE        (DMA_NORMAL)      /**< DMA Mode Uart for Tx */
     #define FMKCPU_TIM_CHNL_ECDR_CC1_MODE   (DMA_CIRCULAR)
     #define FMKCPU_TIM_CHNL_ECDR_CC2_MODE   (DMA_CIRCULAR)
+
     // ********************************************************************
     // *                      Types
     // ********************************************************************

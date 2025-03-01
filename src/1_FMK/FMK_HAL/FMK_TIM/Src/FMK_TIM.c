@@ -24,6 +24,19 @@
 // ********************************************************************
 // *                      Types
 // ********************************************************************
+typedef enum 
+{
+    FKHRT_HW_MODE_SIMPLE_PWM = 0x00,
+    FFMKHRT_HW_MODE_EVNT_ADC,               /**< Synchronization with ADC for current/voltage regulation */
+    FMKHRT_HW_MODE_DEFAULT_PROTECTION,      /**< Mode with fault input handling for hardware protection */
+    FMKHRT_HW_MODE_POWER_CONVERSION,        /**< Power conversion control (buck, boost, etc.) */
+    FMKHRT_HW_MODE_MOTOR_CONTROL,           /**< Motor control (BLDC, PMSM, AC motor) with advanced modulation */
+    FMKHRT_HW_MODE_PHASE_SHIFTED_PWM,       /**< Phase-shifted PWM for resonant converters */
+    FMKHRT_HW_MODE_SYNCHRONIZED_TIMERS,     /**< Synchronization with other timers for complex applications */
+    FMKHRT_HW_MODE_CUSTOM,                   /**< Custom mode for user-defined applications */
+    FMKHRT_HW_MODE_NB,
+
+} t_eFMKHRT_HwMode;
 // ********************************************************************
 // *                      Types
 // ********************************************************************

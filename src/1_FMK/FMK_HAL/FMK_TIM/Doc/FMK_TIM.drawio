@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-11-05T17:56:39.673Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.1 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="psKUFakTBhRmkFhNTgKW" version="24.6.1" type="device" pages="14">
+<mxfile host="Electron" modified="2025-02-23T15:55:14.960Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.1 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="Rsd9m7oxr7OtYZf2I1TA" version="24.6.1" type="device" pages="14">
   <diagram name="Type" id="5uAFvneCDcM_lzJUFH2F">
-    <mxGraphModel dx="5560" dy="3909" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1624" dy="1636" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -282,11 +282,6 @@
         </mxCell>
         <mxCell id="FR87msesRCA2tj-V-Hkx-8" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="260" y="-560" width="286" height="125.57" as="geometry" />
-        </mxCell>
-        <mxCell id="g61GgAUmoKsB6qLWypFW-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="FR87msesRCA2tj-V-Hkx-8" source="FR87msesRCA2tj-V-Hkx-9" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-100" y="-100" as="targetPoint" />
-          </mxGeometry>
         </mxCell>
         <mxCell id="FR87msesRCA2tj-V-Hkx-9" value="&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;Enum:&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;color: rgb(0, 0, 0); text-align: center;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;t_eFMKCPU_EvntChannel&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;Location : FMKCPU_cfg&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;fontSize=16;align=left;" parent="FR87msesRCA2tj-V-Hkx-8" vertex="1">
           <mxGeometry width="286" height="125.57" as="geometry" />
@@ -586,6 +581,12 @@
         </mxCell>
         <mxCell id="y2kNslp5JoB6M5WBh-jt-1" value="&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;typedef: t_eFMKCPU_IRQNType IRQNType&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#ffcd28;gradientColor=#ffa500;strokeColor=#d79b00;fontSize=16;align=left;" parent="1" vertex="1">
           <mxGeometry x="-530" y="38.47" width="330" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g61GgAUmoKsB6qLWypFW-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="171" y="-670" as="targetPoint" />
+            <mxPoint x="414.0000000000002" y="-570" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

@@ -84,7 +84,8 @@
     "appact_spec_mtr_y.h": "c",
     "appact_spec_mtr_x_l.h": "c",
     "stdio.h": "c",
-    "stm32g484xx.h": "c"
+    "stm32g484xx.h": "c",
+    "fmkhrt_configspecific.h": "c"
   },
   "stm32-for-vscode.armToolchainPath": false,
   "C_Cpp_Runner.cCompilerPath": "gcc",

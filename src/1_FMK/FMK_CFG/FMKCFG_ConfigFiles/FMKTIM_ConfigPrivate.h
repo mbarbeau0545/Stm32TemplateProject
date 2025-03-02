@@ -248,19 +248,6 @@
 
     typedef struct 
     {
-        t_uint32 PLLM_Divider_u32;
-        t_uint32 PPLN_Multplier_u32;
-        t_uint32 PLLR_Divider_u32;
-        t_uint32 PPLQ_Divider_u32;
-        t_uint32 PLLP_Divider_u32;
-        t_uint32 AHB_Divider;
-        t_uint32 APB1_Divider_u32;
-        t_uint32 APB2_Divider_u32;
-    } t_sFMKTIM_SysOscCfg;
-
-
-    typedef struct 
-    {
         t_eFMKTIM_InterruptLineType type_e;
         t_uint8 ITLine_u8;
     } t_sFMKTIM_ChnlITLineMapping;

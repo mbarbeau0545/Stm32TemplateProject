@@ -189,6 +189,7 @@ t_sFMKTIM_TimerInfo g_TimerInfo_as[FMKTIM_TIMER_NB] = {
 };
 
 /* CAUTION : Automatic generated code section for Timer Configuration: End */
+
 /**< In Pulses Mode when the timer is Launch hardware make an Interruption */
 static t_bool g_timerPeriodPwm_ab[FMKTIM_TIMER_NB];
 /** Only One Channel Has the Right to be in Pulses Mode */
@@ -240,18 +241,18 @@ static t_eReturnCode s_FMKTIM_Set_PwmChannelCfg(t_sFMKTIM_TimerInfo * f_timerInf
                                                 t_eFMKTIM_InterruptChnl f_channel_e, 
                                                 t_uint32 f_pwmFreq_u32);
 /**
-    *
-    *	@brief      Configure a timer channel in Encoder configuration.\n
-    *   @note       
-    *
-    *	@param[in]  f_InterruptLine_e      : enum value for timer, value from @ref t_eFMKTIM_Timer
-    *	@param[in]  f_EcdrCdg_ps           : Pointor to Encoder Configuration
-    *
-    *  @retval RC_OK                             @ref RC_OK
-    *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
-    *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
-    *  @retval RC_ERROR_WRONG_RESULT             @ref RC_ERROR_WRONG_RESULT
-    */
+*
+*	@brief      Configure a timer channel in Encoder configuration.\n
+*   @note       
+*
+*	@param[in]  f_InterruptLine_e      : enum value for timer, value from @ref t_eFMKTIM_Timer
+*	@param[in]  f_EcdrCdg_ps           : Pointor to Encoder Configuration
+*
+*  @retval RC_OK                             @ref RC_OK
+*  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+*  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+*  @retval RC_ERROR_WRONG_RESULT             @ref RC_ERROR_WRONG_RESULT
+*/
 static t_eReturnCode s_FMKTIM_Set_EcdrChannelCfg(   t_sFMKTIM_TimerInfo * f_timerInfo_ps,
                                                     t_sFMKTIM_EcdrCfg * f_EcdrCfg_ps,
                                                     t_uint32 f_ARRValue_u32);
@@ -641,6 +642,7 @@ t_eReturnCode FMKTIM_Init(void)
 
     return Ret_e;
 }
+
 /*********************************
  * FMKTIM_Cyclic
  *********************************/

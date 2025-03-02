@@ -22,7 +22,8 @@
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-    
+    #define FMKHRT_PWM_MAX_DUTY_CYLCE ((t_uint16)1000) /**< Max duty cycle allowed */
+    #define FMKHRT_PWM_MIN_DUTY_CYLCE ((t_uint16)0)    /**< Min dutyCycle allowed */
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -52,14 +53,39 @@
     } t_eFMKHRT_ChnlPolarity;
 
     //----------------------------- STRUCT TYPES---------------------------//
+    /**
+     * @brief Structure Configure PWM WaveForm
+     */
     typedef struct 
     {
         t_uint32 frequency_u32;                 /**< Frequency of the desire PWM */
-        t_eFMKHRT_ChnlPolarity polarity_u32;    /**< Polarity of the PWM */
+        t_eFMKHRT_ChnlPolarity polarity_e;      /**< Polarity of the PWM */
         t_uint32 deadTime_u32;                  /**< Dead Time between transition from Low State to High State */
     } t_sFMKHRT_PwmCfg;
 
+    /**
+     * @brief Structure to update PWM WaveForm
+     */
+    typedef struct 
+    {
+        t_uint32 frequency_u32;     /**< Update Frequency of the PWM */
+        t_uint16 dutyCycle_u16;     /**< Update Dutycycle of the PWM */
+        t_uint16 nbPulses_u16       /**< Update Numbers of pulses of the PWM */
+    } t_sFMKHRT_PwmOpeVal;
+
+    /**
+     * @brief Enum to set bit for changing PWM Signal
+     */
+    enum 
+    {
+        FMKHRT_BIT_PWM_FREQUENCY = 0x00,
+        FMKHRT_BIT_PWM_DUTYCYCLE,
+        FMKHRT_BIT_PWM_NB_PULSES,
+    };
     //----------------------------- UNION TYPES---------------------------//
+    /**
+     * @brief Enum to set bit for changing PWM Signal
+     */
     typedef union 
     {
         t_eFMKHRT_FreqRangeCpu128MHz freqRg128MHz;
@@ -121,6 +147,17 @@
     t_eReturnCode FMKHRT_ConfigurePwmLine(  t_eFMKHRT_HighResLine f_HRLine_e, 
                                             t_uFMKHRT_FrequencyRange f_freqRange_u,
                                             t_sFMKHRT_PwmCfg f_PwmCfg_s);
+   /**
+   *
+   *	@brief Function to configure a Channel from a Slave Timer in PWM Mode.\n
+   *
+   *	@param[in]  f_State_e : the new value, value from @ref t_eCyclicModState
+   *
+   *   @retval RC_OK                             @ref RC_OK
+   */
+    t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
+                                            t_sFMKHRT_PwmOpeVal f_PwmOpe_s,
+                                            t_uint8 f_maskUpdate_u8);
 #endif // FMK_HRT_H_INCLUDED           
 //************************************************************************************
 // End of File

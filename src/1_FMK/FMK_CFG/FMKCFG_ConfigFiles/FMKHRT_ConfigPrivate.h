@@ -19,14 +19,11 @@
     // *                      Includes
     // ********************************************************************
     #include "../FMKCFG_ConfigSpecific/FMKHRT_ConfigSpecific.h"
+    
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-
-
-
-
-    
+    #define FMKHRT_BASIC_CALIBRATION HRTIM_SINGLE_CALIBRATION /**< calibration of the timer done in 0.771 sec */
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -168,7 +165,7 @@
             },
             [FMKHRT_HW_OPE_TIM_PWM] = {
                 .HwOpePoll_pcb = HAL_HRTIM_SimplePWMStart,
-                .HwOpeIT_pcb   = HAL_HRTIM_SimplePWMStart_IT,
+                .HwOpeIT_pcb   = HAL_HRTIM_SimplePWMStart,
                 .HwOpeDMA_pcb  = HAL_HRTIM_SimplePWMStart_DMA,
             },
             [FMKHRT_HW_OPE_TIM_OC] = {
@@ -187,9 +184,9 @@
                 .HwOpeDMA_pcb  = (t_cbFMKHRT_HwOpeDMA *)NULL_FONCTION,
             },
             [FMKHRT_HW_OPE_TIM_WFC] = {
-                .HwOpePoll_pcb = FMKHRT_HAL_HRTIM_WaveformCounStart,
-                .HwOpeIT_pcb   = FMKHRT_HAL_HRTIM_WaveformCounStart_IT,
-                .HwOpeDMA_pcb  = FMKHRT_HAL_HRTIM_WaveformCounStart_DMA,
+                .HwOpePoll_pcb = FMKHRT_HAL_HRTIM_WaveformStart,
+                .HwOpeIT_pcb   = FMKHRT_HAL_HRTIM_WaveformStart_IT,
+                .HwOpeDMA_pcb  = FMKHRT_HAL_HRTIM_WaveformStart_DMA,
             },
         },
 
@@ -201,7 +198,7 @@
             },
             [FMKHRT_HW_OPE_TIM_PWM] = {
                 .HwOpePoll_pcb = HAL_HRTIM_SimplePWMStop,
-                .HwOpeIT_pcb   = HAL_HRTIM_SimplePWMStop_IT,
+                .HwOpeIT_pcb   = HAL_HRTIM_SimplePWMStop,
                 .HwOpeDMA_pcb  = FMKHRT_HAL_HRTIM_SimplePWMStop_DMA,
             },
             [FMKHRT_HW_OPE_TIM_OC] = {
@@ -220,9 +217,9 @@
                 .HwOpeDMA_pcb  = (t_cbFMKHRT_HwOpeDMA *)NULL_FONCTION,
             },
             [FMKHRT_HW_OPE_TIM_WFC] = {
-                .HwOpePoll_pcb = FMKHRT_HAL_HRTIM_WaveformCounStop,
-                .HwOpeIT_pcb   = FMKHRT_HAL_HRTIM_WaveformCounStop_IT,
-                .HwOpeDMA_pcb  = FMKHRT_HAL_HRTIM_WaveformCounStop_DMA,
+                .HwOpePoll_pcb = FMKHRT_HAL_HRTIM_WaveformStop,
+                .HwOpeIT_pcb   = FMKHRT_HAL_HRTIM_WaveformStop_IT,
+                .HwOpeDMA_pcb  = FMKHRT_HAL_HRTIM_WaveformStop_DMA,
             },
         },
     };

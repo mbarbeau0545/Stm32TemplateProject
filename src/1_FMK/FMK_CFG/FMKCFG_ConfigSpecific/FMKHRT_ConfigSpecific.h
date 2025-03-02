@@ -77,30 +77,30 @@
                                                           t_uint32 f_destAddress_u32,
                                                           t_uint32 f_size_u32);
 
-    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformCounStart(HRTIM_HandleTypeDef *f_bspIstc_ps,
+    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart(HRTIM_HandleTypeDef *f_bspIstc_ps,
                                                          t_uint32 f_timerIdx_u32,
                                                          t_uint32 f_timerChnl_u32);
 
-    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformCounStop(HRTIM_HandleTypeDef *f_bspIstc_ps,
+    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop(HRTIM_HandleTypeDef *f_bspIstc_ps,
                                                         t_uint32 f_timerIdx_u32,
                                                         t_uint32 f_timerChnl_u32);
 
-    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformCounStart_IT(HRTIM_HandleTypeDef *f_bspIstc_ps,
+    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart_IT(HRTIM_HandleTypeDef *f_bspIstc_ps,
                                                             t_uint32 f_timerIdx_u32,
                                                             t_uint32 f_timerChnl_u32);
 
-    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformCounStop_IT(HRTIM_HandleTypeDef *f_bspIstc_ps,
+    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop_IT(HRTIM_HandleTypeDef *f_bspIstc_ps,
                                                            t_uint32 f_timerIdx_u32,
                                                            t_uint32 f_timerChnl_u32);
 
-    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformCounStart_DMA(HRTIM_HandleTypeDef *f_bspIstc_ps,
+    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart_DMA(HRTIM_HandleTypeDef *f_bspIstc_ps,
                                                             t_uint32 f_timerIdx_u32,
                                                             t_uint32 f_timerChnl_u32,
                                                             t_uint32 f_srcAddress_u32,
                                                             t_uint32 f_destAddress_u32,
                                                             t_uint32 f_size_u32);
 
-    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformCounStop_DMA(HRTIM_HandleTypeDef *f_bspIstc_ps,
+    HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop_DMA(HRTIM_HandleTypeDef *f_bspIstc_ps,
                                                             t_uint32 f_timerIdx_u32,
                                                             t_uint32 f_timerChnl_u32,
                                                             t_uint32 f_srcAddress_u32,

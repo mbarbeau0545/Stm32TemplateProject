@@ -21,7 +21,7 @@
 
 #include "./APP_LGC.h"
 #include "APP_CFG/ConfigFiles/APPLGC_ConfigPrivate.h"
-
+#include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
 
 #include "Library/SafeMem/SafeMem.h"
 // ********************************************************************
@@ -159,6 +159,27 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
+void GPIO_HRTIM_outputs_Config(void);
+// ********************************************************************
+// *                      Variables
+// ********************************************************************
+void GPIO_HRTIM_outputs_Config(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+
+  /* Enable GPIOB clock for timer D outputs */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /* Configure HRTIM output: TD1 (PB14) and TD2 (PB15)*/
+  GPIO_InitStruct.Pin = GPIO_PIN_14 | GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;;
+  GPIO_InitStruct.Alternate = GPIO_AF13_HRTIM1;
+
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
 /*********************************
  * APPLGC_Init
  *********************************/
@@ -328,6 +349,33 @@ t_eReturnCode APPLGC_GetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_S
 static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
+    t_uFMKHRT_FrequencyRange freqRange_u; 
+    t_sFMKHRT_PwmCfg pwmCfg_s;
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    t_uint8 mskOpe_u8 = 0;
+
+    pwmCfg_s.deadTime_u32 = 0;
+    pwmCfg_s.frequency_u32 = 1000;
+    pwmCfg_s.polarity_e = FMKHRT_CHNL_POLARITY_HIGH;
+    freqRange_u.freqRg128MHz = FMKHRT_CPU_128MHZ_FREQRANGE_500_30000_HZ;
+
+    Ret_e = FMKHRT_ConfigurePwmLine(FMKHRT_HR_LINE_1,
+                                    freqRange_u,
+                                    pwmCfg_s);
+    
+    GPIO_HRTIM_outputs_Config();
+
+    if(Ret_e == RC_OK)
+    {
+        pwmOpe_s.dutyCycle_u16 = 500;
+        pwmOpe_s.frequency_u32 = 0;
+        pwmOpe_s.nbPulses_u16 = 0;
+
+        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
+        Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
+                                            pwmOpe_s,
+                                            mskOpe_u8);
+    }
 
     return Ret_e;
 }
@@ -339,7 +387,6 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     
-    Ret_e = APPSDM_ResetDiagEvnt();
 
     return Ret_e;
 }
@@ -350,7 +397,36 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uint8 idxAgent_u8;
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    static t_uint32 frequency_u32  = 1000;
+    static t_uint32 saveTime_u32 = 0;
+    t_uint32 currentTime_u32; 
+    t_uint8 mskOpe_u8 = 0;
+
+    if( frequency_u32 >= 30000)
+    {
+        frequency_u32 = 1000;
+    }
+    FMKCPU_Get_Tick(&currentTime_u32);
+
+    if((currentTime_u32 - saveTime_u32) > 1000)
+    {
+        saveTime_u32 = currentTime_u32;
+        frequency_u32 += 500;
+        pwmOpe_s.dutyCycle_u16 = 500;
+        pwmOpe_s.frequency_u32 = frequency_u32;
+        pwmOpe_s.nbPulses_u16 = 0;
+    
+        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_FREQUENCY);
+        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
+        Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
+                                            pwmOpe_s,
+                                            mskOpe_u8);
+    }
+
+
+   
+    /*t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)
     {
@@ -379,7 +455,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
     if(Ret_e >= RC_OK)
     {
         Ret_e = s_APPLGC_SetActValues();
-    }
+    }*/
     return Ret_e;
 }
 

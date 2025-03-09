@@ -60,7 +60,7 @@ For the doxygen documentation search the file "index.html"
     - LED Allumé -> L'application est dans un état d'erreur
     - LED clignote plus        -> L'application est lancé 
 
-- Faire un module Diagnostic Event Management
+- Faire des ASSERTION pour savoir l'erreur
 - Faire un module Supply Voltage Control
 - Faire l'intégration MatLab du projet
 - Mettre les IRQN Handlers dans les fichiers        spécifics car propre à chaque CPU ??

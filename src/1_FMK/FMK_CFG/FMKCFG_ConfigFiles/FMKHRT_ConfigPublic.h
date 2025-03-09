@@ -33,7 +33,7 @@
     */
     typedef enum 
     {
-        FMKHRT_HR_LINE_1 = 0x00,
+        FMKHRT_HR_LINE_1 = 0x00,            /**< HRTIM 1, SLAVE D, Channel 1 */
         FMKHRT_HR_LINE_6,
         FMKHRT_HR_LINE_2,
         FMKHRT_HR_LINE_3,
@@ -49,7 +49,7 @@
     */
     typedef enum 
     {
-        FMKHRT_CPU_128MHZ_FREQRANGE_500_30000_HZ =0x00,
+        FMKHRT_CPU_128MHZ_FREQRANGE_500_30000_HZ = 0x00,
         FMKHRT_CPU_128MHZ_FREQRANGE_1000_60000_HZ,
         FMKHRT_CPU_128MHZ_FREQRANGE_2000_120000_HZ,
         FMKHRT_CPU_128MHZ_FREQRANGE_4000_250000_HZ,

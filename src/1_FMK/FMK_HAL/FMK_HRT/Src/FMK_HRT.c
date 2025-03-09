@@ -81,10 +81,10 @@ typedef enum
 */
 typedef struct 
 {
-    const t_eFMKCPU_IRQNType c_IRQNType_e;    /**< Storage for IRQN (Interruption) */
-    t_bool isNVICEnable_b;                  /**< Flag to know the NVIC state */
-    t_bool isConfigured_b;                  /**< Flag to know if timer is successfully configured */
-    t_uint16 timFreqMHz_u16                 /**< Storage for Timer Frequency */
+    const t_eFMKCPU_IRQNType c_IRQNType_e;      /**< Storage for IRQN (Interruption) */
+    t_bool isNVICEnable_b;                      /**< Flag to know the NVIC state */
+    t_bool isConfigured_b;                      /**< Flag to know if timer is successfully configured */
+    t_uint16 timFreqMHz_u16;                    /**< Storage for Timer Frequency */
 } t_sFMKHRT_TimMasterInfo;
 
 /**
@@ -101,12 +101,12 @@ typedef struct
 typedef struct
 {
     const t_eFMKCPU_IRQNType c_IRQNType_e;                      /**< Storage for IRQN (Interruption) */
-    t_eFMKHRT_TimRunMode  runMode_e;                             /**< Storage for timer run mode */
-    t_eFMKHRT_HwOpeTimer  hwMode_e;                              /**< Storage for hardware mode  */
+    t_eFMKHRT_TimRunMode  runMode_e;                            /**< Storage for timer run mode */
+    t_eFMKHRT_HwOpeTimer  HwOpeMode_e;                             /**< Storage for hardware mode  */
     t_sFMKHRT_ChnlInfo chnlInfo_as[FMKHRT_TIM_CHANNEL_NB];      /**< Storage for channel Information */
     t_bool isNVICEnable_b;                                      /**< Flag to know the NVIC state */
     t_bool isConfigured_b;                                      /**< Flag to know if timer is successfully configured */
-    t_uint16 timFreqMHz_u16                                     /**< Storage for Timer Frequency */
+    t_uint16 timFreqMHz_u16;                                    /**< Storage for Timer Frequency */
 } t_sFMKHRT_TimSlaveInfo;
 
 
@@ -144,11 +144,36 @@ typedef union
 static t_eCyclicModState g_FmkHrtModState_e = STATE_CYCLIC_CFG;
 
 /**< Storage for High Resolution Instance Info */
-static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB];
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .slvInfo_as[FKMHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FKMHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FKMHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FKMHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FKMHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FKMHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+    }
+};
 
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
+/**
+*
+*	@brief     Get the HRTIM & Slave Timer & Chhannel from a High Resolution Line.\n
+*
+*	@param[in]  f_InterruptLine_e      : enum value for timer, value from @ref t_eFMKTIM_Timer
+*	@param[in]  f_EcdrCdg_ps           : Pointor to Encoder Configuration
+*
+*  @retval RC_OK                             @ref RC_OK
+*  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+*  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+*  
+*/
+static t_eReturnCode s_FMKHRT_Operational(void);
 /**
 *
 *	@brief     Get the HRTIM & Slave Timer & Chhannel from a High Resolution Line.\n
@@ -178,21 +203,7 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
 *  @retval RC_ERROR_WRONG_RESULT             @ref RC_ERROR_WRONG_RESULT
 */
 static t_eReturnCode s_FMKHRT_SetBspHrTimInit(t_eFMKHRT_HighResIstc f_HrTimIstc_e);
-/**
-*
-*	@brief     Get the HRTIM & Slave Timer & Chhannel from a High Resolution Line.\n
-*
-*	@param[in]  f_InterruptLine_e      : enum value for timer, value from @ref t_eFMKTIM_Timer
-*	@param[in]  f_EcdrCdg_ps           : Pointor to Encoder Configuration
-*
-*  @retval RC_OK                             @ref RC_OK
-*  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
-*  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
-*  @retval RC_ERROR_WRONG_RESULT             @ref RC_ERROR_WRONG_RESULT
-*/
-static t_eReturnCode s_FMKHRT_SetSlavePwmCfg(   t_eFMKHRT_HighResLine f_HrTimLine_e,
-                                                t_uFMKHRT_FrequencyRange f_freqRange_u,
-                                                t_sFMKHRT_PwmCfg * f_PwmCfg_s);
+
 /**
 *
 *	@brief     Get the HRTIM & Slave Timer & Chhannel from a High Resolution Line.\n
@@ -209,7 +220,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
                                                     t_eFMKHRT_HighResSlvTim f_slvTim_e,
                                                     t_uFMKHRT_FrequencyRange f_freqRange_u,
                                                     t_uint32 f_rqstOutputFrequency_u32,
-                                                    t_eFMKHRT_TimHwMode f_HwMode_e);
+                                                    t_eFMKHRT_TimHwMode f_HwOpeMode_e);
 /**
 *
 *	@brief     Get the HRTIM & Slave Timer & Chhannel from a High Resolution Line.\n
@@ -225,7 +236,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
 static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTimInfo_ps,
                                                     t_eFMKHRT_HighResSlvTim f_hrSlvTim_e,
                                                     t_eFMKHRT_HrTimChannel f_chnl_e,
-                                                    t_eFMKHRT_TimHwMode f_HwMode_e,
+                                                    t_eFMKHRT_TimHwMode f_HwOpeMode_e,
                                                     t_uFMHRT_HwModeCfg * f_HwModeCfg_pu);
 /**
 *
@@ -338,6 +349,32 @@ static t_eReturnCode s_FMKHRT_GetBspPeriod( t_uint16 f_TimFreqMHz_16,
  *********************************/
 t_eReturnCode FMKHRT_Init(void)
 {
+    t_uint8 idxHighResTim_u8;
+    t_uint8 idxHighSlvTim_u8;
+    t_uint8 idxHighChnl_u8;
+    t_sFMKHRT_TimSlaveInfo * slvInfo_ps;
+
+    for(idxHighResTim_u8 = (t_uint8)0; idxHighResTim_u8 < FMKHRT_HIGH_RES_TIMER_NB ; idxHighResTim_u8++)
+    {
+        g_HrTimInfo_as[idxHighResTim_u8].isConfigured_b = (t_bool)False;
+
+        for(idxHighSlvTim_u8 = (t_uint8)0; idxHighSlvTim_u8 < FKMHRT_HRTIM_SLAVE_NB ; idxHighSlvTim_u8++)
+        {
+            slvInfo_ps = (t_sFMKHRT_TimSlaveInfo *)(&g_HrTimInfo_as[idxHighResTim_u8].slvInfo_as[idxHighSlvTim_u8]);
+
+            slvInfo_ps->isConfigured_b = False;
+            slvInfo_ps->isNVICEnable_b = False;
+            slvInfo_ps->timFreqMHz_u16 = 0;
+            slvInfo_ps->runMode_e = FMKHRT_RUN_MODE_POLL;
+            
+            slvInfo_ps->HwOpeMode_e = FMKHRT_HW_OPE_TIM_BASIC;
+            for(idxHighChnl_u8 = (t_uint8)0; idxHighChnl_u8 < FKMHRT_HRTIM_SLAVE_NB ; idxHighChnl_u8++)
+            {
+                slvInfo_ps->chnlInfo_as[idxHighChnl_u8].isConfigured_b = False;
+                slvInfo_ps->chnlInfo_as[idxHighChnl_u8].state_e = FMKHRT_CHNLST_DISACTIVATED;
+            }
+        }
+    }
     return RC_OK;
 }
 
@@ -484,7 +521,7 @@ t_eReturnCode FMKHRT_ConfigurePwmLine(  t_eFMKHRT_HighResLine f_HRLine_e,
         if(Ret_e == RC_OK)    
         {
             slvInfo_ps->chnlInfo_as[hrChnl_e].isConfigured_b = (t_bool)True;
-            slvInfo_ps->hwMode_e = FMKHRT_HW_OPE_TIM_PWM;
+            slvInfo_ps->HwOpeMode_e = FMKHRT_HW_OPE_TIM_WFC;
             slvInfo_ps->runMode_e = FMKHRT_RUN_MODE_POLL;
         }
     }
@@ -553,6 +590,8 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
                 __HAL_HRTIM_SETPERIOD((&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
                                         bspTimerIdx_u32,
                                         bspPeriod_u32);
+                //----- Leave Channel State as Unchange ----//
+                setChnlState_e =  slvTimInfo_ps->chnlInfo_as[hrChnl_e].state_e;
             }
         }
         if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
@@ -600,7 +639,7 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
                     Ret_e = s_FMKHRT_SetHwOutputState(  (&g_HrTimInfo_as[hrTimIstc_e]),
                                                         hrSlvTim_e,
                                                         hrChnl_e,
-                                                        slvTimInfo_ps->hwMode_e,
+                                                        slvTimInfo_ps->HwOpeMode_e,
                                                         FMKHRT_CHNLST_DISACTIVATED);
                 }
                 if(Ret_e == RC_OK)
@@ -634,7 +673,7 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
                 Ret_e = s_FMKHRT_SetHwOutputState(  (&g_HrTimInfo_as[hrTimIstc_e]),
                                                     hrSlvTim_e,
                                                     hrChnl_e,
-                                                    slvTimInfo_ps->hwMode_e,
+                                                    slvTimInfo_ps->HwOpeMode_e,
                                                     setChnlState_e);
             }
         }
@@ -645,6 +684,14 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
 //********************************************************************************
 //                      Local functions - Implementation
 //********************************************************************************
+/*********************************
+ * s_FMKHRT_Operational
+ *********************************/
+static t_eReturnCode  s_FMKHRT_Operational(void)
+{
+    return RC_OK;
+}
+
 /*********************************
  * s_FMKHRT_GetTimerInfoFromLine
  *********************************/
@@ -685,7 +732,10 @@ static t_eReturnCode s_FMKHRT_SetBspHrTimInit( t_eFMKHRT_HighResIstc f_HrTimIstc
         if((bspRet_e == HAL_OK) && (Ret_e == RC_OK))
         {
             //---- We do it in interrupt mode, and we finish configuration in Callback ----//
-            bspRet_e = HAL_HRTIM_DLLCalibrationStart_IT(bspHrTimIsct_ps, FMKHRT_BASIC_CALIBRATION);
+            //#warning('found out why calibration IT not working')
+            //bspRet_e = HAL_HRTIM_DLLCalibrationStart_IT(bspHrTimIsct_ps, FMKHRT_BASIC_CALIBRATION);
+            bspRet_e = HAL_HRTIM_DLLCalibrationStart(bspHrTimIsct_ps, FMKHRT_BASIC_CALIBRATION);
+            bspRet_e = HAL_HRTIM_PollForDLLCalibration(bspHrTimIsct_ps, 500);
         }
         if(bspRet_e != HAL_OK)
         {
@@ -708,16 +758,16 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
                                                     t_eFMKHRT_HighResSlvTim f_slvTim_e,
                                                     t_uFMKHRT_FrequencyRange f_freqRange_u,
                                                     t_uint32 f_rqstOutputFrequency_u32,
-                                                    t_eFMKHRT_TimHwMode f_HwMode_e)
+                                                    t_eFMKHRT_TimHwMode f_HwOpeMode_e)
 {
     t_eReturnCode Ret_e = RC_OK;
     HAL_StatusTypeDef bspRet_e = HAL_OK;
     HRTIM_TimerCfgTypeDef bspTimCfgSpec_s;
     HRTIM_TimeBaseCfgTypeDef bspTimBaseCfg_s;
     t_sFMKHRT_TimSlaveInfo * slvInfo_ps = (t_sFMKHRT_TimSlaveInfo *)(&f_HrTimInfo_ps->slvInfo_as[f_slvTim_e]);
-    t_uint32 bspPscRatio_u32;
+    t_uint32 bspPscRatio_u32 = (t_uint32)0;
+    t_uint32 bspPeriod_u32 = (t_uint32)0;
     t_uint16 timFreqMHz_u16;
-    t_uint32 bspPeriod_u32;
     t_uint32 bspTimIdx_u32;
     
     //----- Arg Already Verify ----//
@@ -770,7 +820,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
     //---- Specific Slave Timer Configuration ----//
     if((Ret_e == RC_OK) && (bspRet_e == HAL_OK))
     {
-        switch (f_HwMode_e)
+        switch (f_HwOpeMode_e)
         {
             case FMKHRT_HW_MODE_PWM:
             case FMKHRT_HW_MODE_ADC_PWM:
@@ -830,7 +880,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
 static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTimInfo_ps,
                                                     t_eFMKHRT_HighResSlvTim f_hrSlvTim_e,
                                                     t_eFMKHRT_HrTimChannel f_chnl_e,
-                                                    t_eFMKHRT_TimHwMode f_HwMode_e,
+                                                    t_eFMKHRT_TimHwMode f_HwOpeMode_e,
                                                     t_uFMHRT_HwModeCfg * f_HwModeCfg_pu)
 {
     t_eReturnCode Ret_e = RC_OK;
@@ -844,7 +894,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTi
 
     slvInfo_ps = (t_sFMKHRT_TimSlaveInfo *)(&f_HrTimInfo_ps->slvInfo_as[f_hrSlvTim_e]);
 
-    if(slvInfo_ps->isConfigured_b == (t_bool)True)
+    if(slvInfo_ps->chnlInfo_as[f_chnl_e].isConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
     }
@@ -864,7 +914,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTi
             (bspOutCfg_s.ResetSource = HRTIM_OUTPUTRESET_TIMCMP2));
 
         //---- Specific Config ----// 
-        switch (f_HwMode_e)
+        switch (f_HwOpeMode_e)
         {
             case FMKHRT_HW_MODE_PWM:
             {
@@ -938,6 +988,9 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTi
     return Ret_e;
 }
 
+/*********************************
+ * s_FMKHRT_SetHwOutputState
+ *********************************/
 static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInfo_ps,
                                                 t_eFMKHRT_HighResSlvTim f_slvTimer_e,
                                                 t_eFMKHRT_HrTimChannel f_chnl_e,
@@ -1042,12 +1095,13 @@ static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInf
         {
             Ret_e = RC_ERROR_WRONG_RESULT;
         }
+        //----- Update Only when it's the HwMode of the timer -----//
+        if((f_HwOpeTimer_e == slvTimInfo_ps->HwOpeMode_e) && (Ret_e == RC_OK))
+        {
+            slvTimInfo_ps->chnlInfo_as[f_chnl_e].state_e = f_state_e;
+        }
     }
-    //----- Update Only when it's the HwMode of the timer -----//
-    if((f_HwOpeTimer_e == slvTimInfo_ps->hwMode_e) && (Ret_e == RC_OK))
-    {
-        slvTimInfo_ps->chnlInfo_as[f_chnl_e].state_e = f_state_e;
-    }
+    
 
     return Ret_e;    
 }
@@ -1111,7 +1165,7 @@ static t_eReturnCode s_FMKHRT_GetPrescalerRatio(t_uFMKHRT_FrequencyRange f_freqR
     {
         Ret_e = RC_ERROR_PTR_NULL;
     }
-    if(Ret_e = RC_OK)
+    if(Ret_e == RC_OK)
     {
         #warning("This Function is only working when CPU run at 128MHz")
         // flag automatic generated code
@@ -1190,7 +1244,7 @@ static t_eReturnCode s_FMKHRT_ComputeTimerFrequency(t_uint32 f_PscRatio_u32,
 
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uint16 systemFreqMHz_u16;
+    t_uint16 systemFreqMHz_u16 = (t_uint16)0;
 
     if(f_timFreqMHz_pu16 == (t_uint16 *)NULL)
     {
@@ -1198,7 +1252,9 @@ static t_eReturnCode s_FMKHRT_ComputeTimerFrequency(t_uint32 f_PscRatio_u32,
     }
     if(Ret_e == RC_OK)
     {
-        Ret_e = FMKCPU_GetSysClkValue(FMKCPU_SYS_CLOCK_SYSTEM, (&systemFreqMHz_u16));   
+        #warning('after debug decomment next line')
+        systemFreqMHz_u16 = 128;
+        //Ret_e = FMKCPU_GetSysClkValue(FMKCPU_SYS_CLOCK_SYSTEM, (&systemFreqMHz_u16));   
     }
     if(Ret_e == RC_OK)
     {
@@ -1300,11 +1356,11 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
             {
                 if(f_chnl_e == FMKHRT_TIM_CHANNEL_1)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA1;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TA1;
                 }
                 else if(f_chnl_e == FMKHRT_TIM_CHANNEL_2)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA2;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TA2;
                 }
                 else 
                 {
@@ -1318,11 +1374,11 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
             {
                 if(f_chnl_e == FMKHRT_TIM_CHANNEL_1)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA1;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TB1;
                 }
                 else if(f_chnl_e == FMKHRT_TIM_CHANNEL_2)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA2;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TB2;
                 }
                 else 
                 {
@@ -1336,11 +1392,11 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
             {
                 if(f_chnl_e == FMKHRT_TIM_CHANNEL_1)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA1;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TC1;
                 }
                 else if(f_chnl_e == FMKHRT_TIM_CHANNEL_2)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA2;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TC2;
                 }
                 else 
                 {
@@ -1354,11 +1410,11 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
             {
                 if(f_chnl_e == FMKHRT_TIM_CHANNEL_1)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA1;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TD1;
                 }
                 else if(f_chnl_e == FMKHRT_TIM_CHANNEL_2)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA2;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TD2;
                 }
                 else 
                 {
@@ -1372,11 +1428,11 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
             {
                 if(f_chnl_e == FMKHRT_TIM_CHANNEL_1)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA1;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TE1;
                 }
                 else if(f_chnl_e == FMKHRT_TIM_CHANNEL_2)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA2;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TE2;
                 }
                 else 
                 {
@@ -1390,11 +1446,11 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
             {
                 if(f_chnl_e == FMKHRT_TIM_CHANNEL_1)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA1;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TF1;
                 }
                 else if(f_chnl_e == FMKHRT_TIM_CHANNEL_2)
                 {
-                    *f_bspOutputChnl_pu32 == HRTIM_OUTPUT_TA2;
+                    *f_bspOutputChnl_pu32 = HRTIM_OUTPUT_TF2;
                 }
                 else 
                 {
@@ -1441,7 +1497,7 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
                 }
                 if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
                 {
-                    *f_HrSlvTim_pe = FKMHRT_HRTIM_SLAVE_1;
+                    *f_HrSlvTim_pe = FKMHRT_HRTIM_SLAVE_4;
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
@@ -1566,6 +1622,10 @@ void HAL_HRTIM_DLLCalibrationReadyCallback(HRTIM_HandleTypeDef *hhrtim)
     }
 
     return;
+}
+void HRTIM1_TIMD_IRQHandler(void)
+{
+    HAL_HRTIM_IRQHandler(&g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,HRTIM_TIMERINDEX_TIMER_D);
 }
 //************************************************************************************
 // End of File

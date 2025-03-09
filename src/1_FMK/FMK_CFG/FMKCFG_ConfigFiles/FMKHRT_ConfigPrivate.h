@@ -44,12 +44,12 @@
     */
     typedef enum 
     {
-        FKMHRT_HRTIM_SLAVE_1 = 0x00,
-        FKMHRT_HRTIM_SLAVE_2,
-        FKMHRT_HRTIM_SLAVE_3,
-        FKMHRT_HRTIM_SLAVE_4,
-        FKMHRT_HRTIM_SLAVE_5,
-        FKMHRT_HRTIM_SLAVE_6,
+        FKMHRT_HRTIM_SLAVE_1 = 0x00,    /**< Timer Slave A */
+        FKMHRT_HRTIM_SLAVE_2,           /**< Timer Slave B */
+        FKMHRT_HRTIM_SLAVE_3,           /**< Timer Slave C */
+        FKMHRT_HRTIM_SLAVE_4,           /**< Timer Slave D */
+        FKMHRT_HRTIM_SLAVE_5,           /**< Timer Slave E */
+        FKMHRT_HRTIM_SLAVE_6,           /**< Timer Slave F */
 
         FKMHRT_HRTIM_SLAVE_NB
     } t_eFMKHRT_HighResSlvTim;

@@ -93,9 +93,14 @@ void APPSYS_Init(void)
     }
     if(Ret_e == RC_OK)
     {
-        for(modIndex_u8 = (t_uint8)0 ; (modIndex_u8 < APPSYS_MODULE_NB) && (Ret_e == RC_OK) ; modIndex_u8++)
+        for(modIndex_u8 = (t_uint8)0 ; (modIndex_u8 < APPSYS_MODULE_NB) ; modIndex_u8++)
         {
             Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].Init_pcb();
+
+            if(Ret_e != RC_OK)
+            {
+                ASSERT((t_uint32)modIndex_u8);
+            }
         }
     }
 
@@ -161,6 +166,10 @@ static void s_APPSYS_Set_ModulesCyclic(void)
         if(c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb != NULL_FONCTION)
         {
             Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb();  
+        }
+        if(Ret_e < RC_OK)
+        {
+            ASSERT((t_uint32)modIndex_u8);
         }
     }
     return;
@@ -246,6 +255,13 @@ static t_eReturnCode s_APPSYS_Operational(void)
     }
     
     return Ret_e;
+}
+
+void APPSYS_AssertionTrap(  t_uint32 f_Info_u32, 
+                            const char *f_file_str, 
+                            t_uint32 f_line_u32r)
+{
+    return;
 }
 //************************************************************************************
 // End of File

@@ -1,0 +1,18 @@
+{
+    "name_param_1" : { "id" : 1,
+                        "min" : 0,
+                        "max" : 65535,
+                        "default" : 30,
+                        "machine" : 679,
+                        
+
+    },
+    "name_param_2" : { "id" : 1,
+                        "min" : 0,
+                        "max" : 65535,
+                        "default" : 30,
+                        "machine" : 679,
+                        
+
+    }
+}

@@ -31,7 +31,6 @@
     */
     typedef enum
     {
-        APPACT_ACTUATOR_NONE = 0x0,               /**< None */
     
         APPACT_ACTUATOR_NB,
     } t_eAPPACT_Actuators;

@@ -33,7 +33,6 @@
     */
     typedef enum
     {
-        APPSNS_SENSOR_NONE = 0x0,               /**< None */
     
         APPSNS_SENSOR_NB,
     } t_eAPPSNS_Sensors;

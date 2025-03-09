@@ -45,6 +45,19 @@
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
+/**
+*
+*	@brief     Get the HRTIM & Slave Timer & Chhannel from a High Resolution Line.\n
+*
+*	@param[in]  f_InterruptLine_e      : enum value for timer, value from @ref t_eFMKTIM_Timer
+*	@param[in]  f_EcdrCdg_ps           : Pointor to Encoder Configuration
+*
+*  @retval RC_OK                             @ref RC_OK
+*  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+*  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+*  
+*/
+static t_eReturnCode s_FMKHRTSPEC_GetSlvTimerId(t_uint32 f_slvTimIdx_u32, t_uint32 * f_slvTimId_pu32);
 
 //********************************************************************************
 //                      Public functions - Prototypes
@@ -140,12 +153,25 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart(   HRTIM_HandleTypeDef * f_bspI
                                                         t_uint32 f_timerChnl_u32)
 {
     HAL_StatusTypeDef bspRet_e = HAL_OK;
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint32 bspslvTimId_u32;
 
-    bspRet_e = HAL_HRTIM_WaveformCounterStart(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(bspRet_e = HAL_OK)
+    if(Ret_e == RC_OK)
     {
-        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, f_timerChnl_u32);
+        
+
+        if(bspRet_e == HAL_OK)
+        {
+            bspRet_e = HAL_HRTIM_WaveformCounterStart(f_bspIstc_ps, bspslvTimId_u32);
+        }
+    }
+    else 
+    {
+        //---- not the best way to track the error -----//
+        bspRet_e = HAL_ERROR;
     }
 
     return bspRet_e;
@@ -154,17 +180,30 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart(   HRTIM_HandleTypeDef * f_bspI
 /****************************************
  * FMKHRT_HAL_HRTIM_WaveformStop
  ***************************************/
-HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop(   HRTIM_HandleTypeDef * f_bspIstc_ps,
-    t_uint32 f_timerIdx_u32,
-    t_uint32 f_timerChnl_u32)
+HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop(HRTIM_HandleTypeDef * f_bspIstc_ps,
+                                                t_uint32 f_timerIdx_u32,
+                                                t_uint32 f_timerChnl_u32)
 {
     HAL_StatusTypeDef bspRet_e = HAL_OK;
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint32 bspslvTimId_u32;
 
-    bspRet_e = HAL_HRTIM_WaveformCounterStop(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(bspRet_e = HAL_OK)
+    if(Ret_e == RC_OK)
     {
-        bspRet_e =  HAL_HRTIM_WaveformOutputStop(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+        bspRet_e =  HAL_HRTIM_WaveformOutputStop(f_bspIstc_ps, f_timerChnl_u32);
+        
+
+        if(bspRet_e == HAL_OK)
+        {
+            bspRet_e = HAL_HRTIM_WaveformCounterStop(f_bspIstc_ps, bspslvTimId_u32);
+        }
+    }
+    else 
+    {
+        //---- not the best way to track the error -----//
+        bspRet_e = HAL_ERROR;
     }
 
     return bspRet_e;
@@ -178,12 +217,25 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart_IT(   HRTIM_HandleTypeDef * f_b
                                                         t_uint32 f_timerChnl_u32)
 {
     HAL_StatusTypeDef bspRet_e = HAL_OK;
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint32 bspslvTimId_u32;
 
-    bspRet_e = HAL_HRTIM_WaveformCounterStart_IT(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(bspRet_e = HAL_OK)
+    if(Ret_e == RC_OK)
     {
-        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, f_timerChnl_u32);
+        
+
+        if(bspRet_e == HAL_OK)
+        {
+            bspRet_e = HAL_HRTIM_WaveformCounterStart_IT(f_bspIstc_ps, bspslvTimId_u32);
+        }
+    }
+    else 
+    {
+        //---- not the best way to track the error -----//
+        bspRet_e = HAL_ERROR;
     }
 
     return bspRet_e;
@@ -192,17 +244,30 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart_IT(   HRTIM_HandleTypeDef * f_b
 /****************************************
  * FMKHRT_HAL_HRTIM_WaveformStop_IT
  ***************************************/
-HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop_IT(   HRTIM_HandleTypeDef * f_bspIstc_ps,
-    t_uint32 f_timerIdx_u32,
-    t_uint32 f_timerChnl_u32)
+HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop_IT( HRTIM_HandleTypeDef * f_bspIstc_ps,
+                                                    t_uint32 f_timerIdx_u32,
+                                                    t_uint32 f_timerChnl_u32)
 {
     HAL_StatusTypeDef bspRet_e = HAL_OK;
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint32 bspslvTimId_u32;
 
-    bspRet_e = HAL_HRTIM_WaveformCounterStop_IT(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(bspRet_e = HAL_OK)
+    if(Ret_e == RC_OK)
     {
-        bspRet_e =  HAL_HRTIM_WaveformOutputStop(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, f_timerChnl_u32);
+        
+
+        if(bspRet_e == HAL_OK)
+        {
+            bspRet_e = HAL_HRTIM_WaveformCounterStop_IT(f_bspIstc_ps, bspslvTimId_u32);
+        }
+    }
+    else 
+    {
+        //---- not the best way to track the error -----//
+        bspRet_e = HAL_ERROR;
     }
 
     return bspRet_e;
@@ -219,16 +284,29 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStart_DMA(   HRTIM_HandleTypeDef * f_
                                                             t_uint32 f_size_u32)
 {
     HAL_StatusTypeDef bspRet_e = HAL_OK;
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint32 bspslvTimId_u32;
 
     UNUSED(f_srcAddress_u32);
     UNUSED(f_destAddress_u32);
     UNUSED(f_size_u32);
 
-    bspRet_e = HAL_HRTIM_WaveformCounterStart_DMA(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(bspRet_e = HAL_OK)
+    if(Ret_e == RC_OK)
     {
-        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, f_timerChnl_u32);
+        
+
+        if(bspRet_e == HAL_OK)
+        {
+            bspRet_e = HAL_HRTIM_WaveformCounterStart_DMA(f_bspIstc_ps, bspslvTimId_u32);
+        }
+    }
+    else 
+    {
+        //---- not the best way to track the error -----//
+        bspRet_e = HAL_ERROR;
     }
 
     return bspRet_e;
@@ -245,16 +323,29 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop_DMA(HRTIM_HandleTypeDef *f_bspIs
                                                         t_uint32 f_size_u32)
 {
     HAL_StatusTypeDef bspRet_e = HAL_OK;
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint32 bspslvTimId_u32;
 
     UNUSED(f_srcAddress_u32);
     UNUSED(f_destAddress_u32);
     UNUSED(f_size_u32);
 
-    bspRet_e = HAL_HRTIM_WaveformCounterStop_DMA(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(bspRet_e = HAL_OK)
+    if(Ret_e == RC_OK)
     {
-        bspRet_e =  HAL_HRTIM_WaveformOutputStop(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+        bspRet_e =  HAL_HRTIM_WaveformOutputStart(f_bspIstc_ps, f_timerChnl_u32);
+        
+
+        if(bspRet_e == HAL_OK)
+        {
+            bspRet_e = HAL_HRTIM_WaveformCounterStop_DMA(f_bspIstc_ps, bspslvTimId_u32);
+        }
+    }
+    else 
+    {
+        //---- not the best way to track the error -----//
+        bspRet_e = HAL_ERROR;
     }
 
     return bspRet_e;
@@ -314,7 +405,50 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleCaptureStop_DMA(HRTIM_HandleTypeDef *f_
 //********************************************************************************
 //                      Local functions - Implementation
 //********************************************************************************
-           
+
+/****************************************
+* s_FMKHRTSPEC_GetSlvTimerId
+***************************************/
+static t_eReturnCode s_FMKHRTSPEC_GetSlvTimerId(t_uint32 f_slvTimIdx_u32, t_uint32 * f_slvTimId_pu32)
+{
+    t_eReturnCode Ret_e = RC_OK;
+
+    if(f_slvTimId_pu32 == (t_uint32 *)NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;
+    }
+    if(Ret_e == RC_OK)
+    {
+        // flag automatic generated code 
+        switch(f_slvTimIdx_u32)
+        {
+            case HRTIM_TIMERINDEX_TIMER_A:
+                *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_A;
+                break;
+            case HRTIM_TIMERINDEX_TIMER_B:
+                *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_B;
+                break;
+            case HRTIM_TIMERINDEX_TIMER_C:
+                *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_C;
+                break;
+            case HRTIM_TIMERINDEX_TIMER_D:
+                *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_D;
+                break;
+            case HRTIM_TIMERINDEX_TIMER_E:
+                *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_E;
+                break;
+            case HRTIM_TIMERINDEX_TIMER_F:
+                *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_F;
+                break;
+            default:
+                Ret_e = RC_ERROR_NOT_SUPPORTED;
+        }
+    }
+
+    return Ret_e;
+}
+
+
 //************************************************************************************
 // End of File
 //************************************************************************************

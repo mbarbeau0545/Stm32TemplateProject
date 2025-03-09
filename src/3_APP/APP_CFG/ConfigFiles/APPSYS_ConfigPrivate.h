@@ -20,6 +20,7 @@
     // ********************************************************************
     #include "./APPSYS_ConfigPublic.h"
     #include "1_FMK/FMK_HAL/FMK_IO/Src/FMK_IO.h"
+    #include "1_FMK/FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
     #include "1_FMK/FMK_HAL/FMK_CDA/Src/FMK_CDA.h"
     #include "1_FMK/FMK_HAL/FMK_CPU/Src/FMK_CPU.h"
     #include "1_FMK/FMK_HAL/FMK_TIM/Src/FMK_TIM.h"
@@ -106,6 +107,7 @@
         //----- FrameWork module -----//
         {FMKCPU_Init,    FMKCPU_Cyclic,     FMKCPU_GetState,   FMKCPU_SetState},
         {FMKTIM_Init,    FMKTIM_Cyclic,     FMKTIM_GetState,   FMKTIM_SetState},
+        {FMKHRT_Init,    FMKHRT_Cyclic,     FMKHRT_GetState,   FMKHRT_SetState},
         {FMKCDA_Init,    FMKCDA_Cyclic,     FMKCDA_GetState,   FMKCDA_SetState},
         {FMKIO_Init,     FMKIO_Cyclic,      FMKIO_GetState,    FMKIO_SetState},
 #ifdef APPSYS_MODULE_FMKCAN_ENABLE

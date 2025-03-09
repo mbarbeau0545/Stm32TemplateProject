@@ -73,9 +73,15 @@ class AppSns_CodeGen():
         #-----------------------------------------------------------------
         #-----------------------------make all enum-----------------------
         #-----------------------------------------------------------------
-        enum_sns = cls.code_gen.make_enum_from_variable(ENUM_APPSNS_SENSORS_RT, [str(sns_cfg[0]).upper() for sns_cfg in sensors_cfg_a],
-                                                        "t_eAPPSNS_Sensors", 0, "Enum for Sensors list",
-                                                        [str(sns_cfg[-1])  for sns_cfg in sensors_cfg_a])
+        if str(sensors_cfg_a[0][0]) != EMPTY_CELL:
+            enum_sns = cls.code_gen.make_enum_from_variable(ENUM_APPSNS_SENSORS_RT, [str(sns_cfg[0]).upper() for sns_cfg in sensors_cfg_a],
+                                                            "t_eAPPSNS_Sensors", 0, "Enum for Sensors list",
+                                                            [str(sns_cfg[-1])  for sns_cfg in sensors_cfg_a])
+        else:
+            num_sns = cls.code_gen.make_enum_from_variable(ENUM_APPSNS_SENSORS_RT, [],
+                                                            "t_eAPPSNS_Sensors", 0, "Enum for Sensors list",
+                                                            [])
+
         
         if str(drivers_cfg_a[0][0]) != EMPTY_CELL:
             enum_drv = cls.code_gen.make_enum_from_variable(ENUM_APPSNS_DRV_RT, [str(drv_cfg[0]).upper() for drv_cfg in drivers_cfg_a],

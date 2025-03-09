@@ -74,9 +74,15 @@ class AppAct_CodeGen():
         #-----------------------------------------------------------------
         #-----------------------------make all enum-----------------------
         #-----------------------------------------------------------------
-        enum_act = cls.code_gen.make_enum_from_variable(ENUM_APPACT_ACTUATOR_RT, [str(act_cfg[0]).upper() for act_cfg in actuators_cfg_a],
-                                                        "t_eAPPACT_Actuators", 0, "Enum for Actuators list",
-                                                        [str(act_cfg[-1])  for act_cfg in actuators_cfg_a])
+        if str(actuators_cfg_a[0][0]) != EMPTY_CELL:
+            enum_act = cls.code_gen.make_enum_from_variable(ENUM_APPACT_ACTUATOR_RT, [str(act_cfg[0]).upper() for act_cfg in actuators_cfg_a],
+                                                            "t_eAPPACT_Actuators", 0, "Enum for Actuators list",
+                                                            [str(act_cfg[-1])  for act_cfg in actuators_cfg_a])
+        else:
+            enum_act = cls.code_gen.make_enum_from_variable(ENUM_APPACT_ACTUATOR_RT, [],
+                                                            "t_eAPPACT_Actuators", 0, "Enum for Actuators list",
+                                                            [])
+            
         if str(drivers_cfg_a[0][0]) != EMPTY_CELL:
             enum_drv = cls.code_gen.make_enum_from_variable(ENUM_APPACT_DRV_RT, [str(drv_cfg[0]).upper() for drv_cfg in drivers_cfg_a],
                                                         "t_eAPPACT_Drivers", 0, "Enum for Actuators drivers list",

@@ -24,8 +24,6 @@
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-    #define FMKIO_ANALOG_OL_VALUE ((t_uint16)200)
-    #define FMKIO_ANALOG_SC_VALUE ((t_uint16)4800)
     #define FMKIO_ANALOG_MIN_VALUE ((t_uint16)0)
     #define FMKIO_ANALOG_MAX_VALUE ((t_uint16)5000)
     // ********************************************************************

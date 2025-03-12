@@ -77,7 +77,7 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStart( HRTIM_HandleTypeDef *f_bspIs
                                                     t_uint32 f_timerChnl_u32)
 {
     UNUSED(f_timerChnl_u32);
-    return HAL_HRTIM_SimpleBaseStart(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    return HAL_HRTIM_SimpleBaseStart(f_bspIstc_ps, f_timerIdx_u32);
 }
 
 /****************************************
@@ -88,7 +88,7 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStop(HRTIM_HandleTypeDef *f_bspIstc
                                                    t_uint32 f_timerChnl_u32)
 {
     UNUSED(f_timerChnl_u32);
-    return HAL_HRTIM_SimpleBaseStop(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    return HAL_HRTIM_SimpleBaseStop(f_bspIstc_ps, f_timerIdx_u32);
 }
 
 /****************************************
@@ -98,7 +98,7 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStart_IT(HRTIM_HandleTypeDef *f_bsp
                                                   t_uint32 f_timerIdx_u32,
                                                   t_uint32 f_timerChnl_u32)
 {
-    return HAL_HRTIM_SimpleBaseStart_IT(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    return HAL_HRTIM_SimpleBaseStart_IT(f_bspIstc_ps, f_timerIdx_u32);
 }
 
 /****************************************
@@ -108,7 +108,7 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStop_IT(HRTIM_HandleTypeDef *f_bspI
                                                       t_uint32 f_timerIdx_u32,
                                                       t_uint32 f_timerChnl_u32)
 {
-    return HAL_HRTIM_SimpleBaseStop_IT(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    return HAL_HRTIM_SimpleBaseStop_IT(f_bspIstc_ps, f_timerIdx_u32);
 }
 
 /****************************************
@@ -123,7 +123,7 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStart_DMA(HRTIM_HandleTypeDef *f_bs
 {
 
     return HAL_HRTIM_SimpleBaseStart_DMA(   f_bspIstc_ps, 
-                                            HRTIM_TIMERID_TIMER_A,
+                                            f_timerIdx_u32,
                                             f_srcAddress_u32,
                                             f_destAddress_u32,
                                             f_size_u32);
@@ -142,7 +142,8 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStop_DMA(  HRTIM_HandleTypeDef *f_b
     UNUSED(f_srcAddress_u32);
     UNUSED(f_destAddress_u32);
     UNUSED(f_size_u32);
-    return HAL_HRTIM_SimpleBaseStop_DMA(f_bspIstc_ps, HRTIM_TIMERID_TIMER_A);
+    
+    return HAL_HRTIM_SimpleBaseStop_DMA(f_bspIstc_ps, f_timerIdx_u32);
 }
 
 /****************************************
@@ -187,10 +188,13 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_WaveformStop(HRTIM_HandleTypeDef * f_bspIstc_
     HAL_StatusTypeDef bspRet_e = HAL_OK;
     t_eReturnCode Ret_e = RC_OK;
     t_uint32 bspslvTimId_u32;
+    t_uint32 currenTIm_u32;
 
+    currenTIm_u32 =  HAL_GetTick();
     Ret_e = s_FMKHRTSPEC_GetSlvTimerId(f_timerIdx_u32, &bspslvTimId_u32);
 
-    if(Ret_e == RC_OK)
+    if(Ret_e == RC_OK
+    && currenTIm_u32 > 0)
     {
         bspRet_e =  HAL_HRTIM_WaveformOutputStop(f_bspIstc_ps, f_timerChnl_u32);
         

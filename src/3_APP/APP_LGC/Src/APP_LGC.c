@@ -355,7 +355,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     t_uint8 mskOpe_u8 = 0;
 
     pwmCfg_s.deadTime_u32 = 0;
-    pwmCfg_s.frequency_u32 = 1000;
+    pwmCfg_s.frequency_u32 = 500;
     pwmCfg_s.polarity_e = FMKHRT_CHNL_POLARITY_HIGH;
     freqRange_u.freqRg128MHz = FMKHRT_CPU_128MHZ_FREQRANGE_500_30000_HZ;
 
@@ -369,9 +369,10 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     {
         pwmOpe_s.dutyCycle_u16 = 500;
         pwmOpe_s.frequency_u32 = 0;
-        pwmOpe_s.nbPulses_u16 = 0;
+        pwmOpe_s.nbPulses_u16 = 2000;
 
         SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
+        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_NB_PULSES);
         Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
                                             pwmOpe_s,
                                             mskOpe_u8);
@@ -403,7 +404,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
     t_uint32 currentTime_u32; 
     t_uint8 mskOpe_u8 = 0;
 
-    if( frequency_u32 >= 30000)
+    /*if( frequency_u32 >= 30000)
     {
         frequency_u32 = 1000;
     }
@@ -415,14 +416,14 @@ static t_eReturnCode s_APPLGC_Operational(void)
         frequency_u32 += 500;
         pwmOpe_s.dutyCycle_u16 = 500;
         pwmOpe_s.frequency_u32 = frequency_u32;
-        pwmOpe_s.nbPulses_u16 = 0;
+        pwmOpe_s.nbPulses_u16 = 200;
     
         SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_FREQUENCY);
         SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
         Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
                                             pwmOpe_s,
                                             mskOpe_u8);
-    }
+    }*/
 
 
    

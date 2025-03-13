@@ -945,7 +945,7 @@
         <mxCell id="YgEyNIumLtTFbuKGxjhk-13" value="End" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="374.38000000000005" y="-140" width="80" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ieuKKqPvoWG-YbMH2fxj-1" value="Ret_e = s_FMKHRT_ComputeTimerFrequency(bspPrescalerRatio_u32, &amp;amp;f_timInfo.slvInfo_as[f_slvTimer_e].frequency_u16);" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+        <mxCell id="ieuKKqPvoWG-YbMH2fxj-1" value="Ret_e = s_FMKHRT_ComputeTimerFreqRange(bspPrescalerRatio_u32, &amp;amp;f_timInfo.slvInfo_as[f_slvTimer_e].frequency_u16);" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="175.13" y="-830" width="478.5" height="40" as="geometry" />
         </mxCell>
       </root>

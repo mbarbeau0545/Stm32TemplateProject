@@ -87,7 +87,8 @@
     "stm32g484xx.h": "c",
     "fmkhrt_configspecific.h": "c",
     "app_sys.h": "c",
-    "fmk_hrt.h": "c"
+    "fmk_hrt.h": "c",
+    "fmkhrt_configprivate.h": "c"
   },
   "stm32-for-vscode.armToolchainPath": false,
   "C_Cpp_Runner.cCompilerPath": "gcc",

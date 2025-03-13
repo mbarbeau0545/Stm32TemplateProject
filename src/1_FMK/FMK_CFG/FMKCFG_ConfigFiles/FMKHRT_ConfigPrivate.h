@@ -24,6 +24,14 @@
     // *                      Defines
     // ********************************************************************
     #define FMKHRT_BASIC_CALIBRATION HRTIM_SINGLE_CALIBRATION /**< calibration of the timer done in 0.771 sec */
+    /**
+    * @brief Min ARR Value for PWM 
+    */
+    #define FMKHRT_PWM_MIN_ARR_VALUE ((t_uint32)1024)
+    /**
+    * @brief Min ARR Value for PWM 
+    */
+    #define FMKHRT_PWM_MAX_ARR_VALUE ((t_uint32)64000)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -226,6 +234,36 @@
     /* CAUTION : Automatic generated code section for Variable: Start */
 
     /* CAUTION : Automatic generated code section for Variable: End */
+    // flag automatic generated code start 
+    const t_eFMKHRT_HighResLine c_FMkHrt_ChnlLineMapp_ae[FMKHRT_HIGH_RES_TIMER_NB]
+                                                            [FMKHRT_HRTIM_SLAVE_NB][FMKHRT_HRTIM_CHANNEL_NB] = {
+        [FMKHRT_HIGH_RES_TIMER_1] = {
+            [FMKHRT_HRTIM_SLAVE_1] = {
+                FMKHRT_HR_LINE_1,
+                FMKHRT_HR_LINE_2
+            },
+            [FMKHRT_HRTIM_SLAVE_2] = {
+                FMKHRT_HR_LINE_3,
+                FMKHRT_HR_LINE_4
+            },
+            [FMKHRT_HRTIM_SLAVE_3] = {
+                FMKHRT_HR_LINE_5,
+                FMKHRT_HR_LINE_6
+            },
+            [FMKHRT_HRTIM_SLAVE_4] = {
+                FMKHRT_HR_LINE_5,
+                FMKHRT_HR_LINE_6
+            },
+            [FMKHRT_HRTIM_SLAVE_5] = {
+                FMKHRT_HR_LINE_5,
+                FMKHRT_HR_LINE_6
+            },
+            [FMKHRT_HRTIM_SLAVE_6] = {
+                FMKHRT_HR_LINE_5,
+                FMKHRT_HR_LINE_6
+            },
+        },
+    };
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************

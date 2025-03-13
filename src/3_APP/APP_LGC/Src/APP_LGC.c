@@ -156,6 +156,7 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
                                         t_uint16 f_debugInfo1_u16,
                                         t_uint16 f_debugInfo2_u16);
 
+static void s_APPLGC_Callback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e);
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
@@ -349,19 +350,19 @@ t_eReturnCode APPLGC_GetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_S
 static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uFMKHRT_FrequencyRange freqRange_u; 
     t_sFMKHRT_PwmCfg pwmCfg_s;
     t_sFMKHRT_PwmOpeVal pwmOpe_s;
     t_uint8 mskOpe_u8 = 0;
 
     pwmCfg_s.deadTime_u32 = 0;
-    pwmCfg_s.frequency_u32 = 500;
+    pwmCfg_s.frequency_u32 = 20000;
     pwmCfg_s.polarity_e = FMKHRT_CHNL_POLARITY_HIGH;
-    freqRange_u.freqRg128MHz = FMKHRT_CPU_128MHZ_FREQRANGE_500_30000_HZ;
+
 
     Ret_e = FMKHRT_ConfigurePwmLine(FMKHRT_HR_LINE_1,
-                                    freqRange_u,
-                                    pwmCfg_s);
+                                    FMKHRT_FREQRANGE_DIV_4,
+                                    pwmCfg_s,
+                                    s_APPLGC_Callback);
     
     GPIO_HRTIM_outputs_Config();
 
@@ -369,10 +370,11 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     {
         pwmOpe_s.dutyCycle_u16 = 500;
         pwmOpe_s.frequency_u32 = 0;
-        pwmOpe_s.nbPulses_u16 = 2000;
+        pwmOpe_s.nbPulses_u16 = 65000;
 
         SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
         SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_NB_PULSES);
+        
         Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
                                             pwmOpe_s,
                                             mskOpe_u8);
@@ -552,6 +554,14 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
 
     // choose a way to communicate error
 
+    return;
+}
+
+/*********************************
+ * s_APPLGC_Callback
+ *********************************/
+static void s_APPLGC_Callback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e)
+{
     return;
 }
 //************************************************************************************

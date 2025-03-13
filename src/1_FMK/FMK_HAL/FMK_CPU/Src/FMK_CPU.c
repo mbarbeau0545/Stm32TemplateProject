@@ -860,8 +860,8 @@ t_eReturnCode FMKCPU_GetOscRccSrc(  t_eFMKCPU_ClockPort f_clockPort_e,
 /***********************************
  * FMKCPU_SysClkValue
  ***********************************/
-t_eReturnCode FMKCPU_GetSysClkValue(   t_eFMKCPU_SysClkOsc f_ClkOsc_e,
-                                    t_uint16 * f_OscValueMHz_pu16)
+t_eReturnCode FMKCPU_GetSysClkValue(    t_eFMKCPU_SysClkOsc f_ClkOsc_e,
+                                        t_uint16 * f_OscValueMHz_pu16)
 {
     t_eReturnCode Ret_e = RC_OK;
 

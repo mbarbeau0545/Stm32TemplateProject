@@ -52,6 +52,15 @@
         FMKHRT_CHNL_POLARITY_NB
     } t_eFMKHRT_ChnlPolarity;
 
+    /**
+    * @brief Enum for callback user evnt
+    */
+    typedef enum 
+    {
+        FMKHRT_HR_LINE_EVNT_CB_PULSE_FINISH = 0x00,
+
+        FMKHRT_HR_LINE_EVNT_CB_NB,
+    } t_eFMKHRT_HrLineEvntCb;
     //----------------------------- STRUCT TYPES---------------------------//
     /**
      * @brief Structure Configure PWM WaveForm
@@ -84,12 +93,30 @@
     };
     //----------------------------- UNION TYPES---------------------------//
     /**
-     * @brief Enum to set bit for changing PWM Signal
+     * @brief Divided Main Freq for the Frequency Timer
+     *      To help user, in Excel Hardware there is a help to know 
+     *      which is more adapte to your need (sheet HRTIM_FreqHelp), 
+     *      basically, Main Cpu is divided/Multiplier by the number
+     *      then to obtain min/max frequency do this 
+     *      
+     *      min = FreqTim / 65535 
+     *      max = FreqTim / 1024
      */
-    typedef union 
+    typedef enum 
     {
-        t_eFMKHRT_FreqRangeCpu128MHz freqRg128MHz;
-    } t_uFMKHRT_FrequencyRange;
+        FMKHRT_FREQRANGE_DIV_4 = 0x00,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_DIV_2,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_DIV_1,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_MUL_2,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_MUL_4,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_MUL_8,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_MUL_16,      /**< Main Cpu Frequency will be divided by 4,  */
+        FMKHRT_FREQRANGE_MUL_32,      /**< Main Cpu Frequency will be divided by 4,  */
+        
+        FMKHRT_FREQRANGE_DIVMUL_NB,
+    } t_eFMKHRT_FreqMulDiv;
+
+    typedef void (t_cbFMKHRT_HrLineEvnt)(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e);
     // ********************************************************************
     // *                      Prototypes
     // ********************************************************************
@@ -145,8 +172,9 @@
    *   @retval RC_OK                             @ref RC_OK
    */
     t_eReturnCode FMKHRT_ConfigurePwmLine(  t_eFMKHRT_HighResLine f_HRLine_e, 
-                                            t_uFMKHRT_FrequencyRange f_freqRange_u,
-                                            t_sFMKHRT_PwmCfg f_PwmCfg_s);
+                                            t_eFMKHRT_FreqMulDiv f_CpuFreqMulDiv_e,
+                                            t_sFMKHRT_PwmCfg f_PwmCfg_s,
+                                            t_cbFMKHRT_HrLineEvnt * f_pulseEvntCb_pcb);
    /**
    *
    *	@brief Function to configure a Channel from a Slave Timer in PWM Mode.\n

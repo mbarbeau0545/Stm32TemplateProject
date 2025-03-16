@@ -18,6 +18,7 @@ from PyCodeGene import LoadConfig_FromExcel as LCFE, TARGET_T_END_LINE,TARGET_T_
 from typing import List, Dict
 from .FMK_PATH import * 
 from .FMKTIM_CodeGen import TimerCfg_alreadyUsed, FMKTIM_CodeGen
+from .FMKHRT_CodeGen import FMKHRT_CodeGen, LETTER_LIST, ENUM_ROOT_HR_LINE
 #------------------------------------------------------------------------------
 #                                       CONSTANT
 #------------------------------------------------------------------------------
@@ -28,6 +29,14 @@ TARGET_SWITCH_GPIO_RCC_END   = "        /* CAUTION : Automatic generated code se
 # CAUTION : Automatic generated code section: Start #
 
 # CAUTION : Automatic generated code section: End #
+ENUM_ROOT_TIM_ORGN = "FMKIO_ITLINE_TYPE"
+
+
+DESCRIP_PWM = {
+    "BscTim" : "Pwm with Adaptable Frequency and DutyCycle",
+    "AdvTim" : "Pwm with Adaptable Frequency, DutyCycle and Pulses",
+    "HrTim" : "Pwm with Adaptable Frequency, DutyCycle, Pulses and current Feedback",
+}
 #------------------------------------------------------------------------------
 #                                       CLASS
 #------------------------------------------------------------------------------
@@ -67,8 +76,9 @@ class FMKIO_CodeGen():
         SigCan_astr      = cls.code_gen.get_array_from_excel('FMKIO_CanCfg')
         SigSerial_astr   = cls.code_gen.get_array_from_excel('FMKSRL_INFO')[1:]
         list_irqn_hdler  = cls.code_gen.get_array_from_excel('FMKIO_IRQNHandler')
-        Descitpion_pwm_freq = ['GPIO_name','Pin_name','alternate function', 'Interrupt Line' ]
+        Descitpion_pwm_freq = ['GPIO_name','Pin_name','alternate function', 'Interrupt Line', "ItLineType"]
 
+        desc_pwm = []
         sig_in_ana =  []
         sig_in_dig =  []
         sig_out_dig = []
@@ -258,7 +268,9 @@ class FMKIO_CodeGen():
                     + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PIN_ROOT}_{pin_freq_cfg[1][4:]}")) \
                     + f"{pin_freq_cfg[2]}," \
                     + " " * (SPACE_VARIABLE - len(f"{pin_freq_cfg[2]}")) \
-                    + str(itline) \
+                    + f'{str(itline)},'\
+                    + " " * (2 * SPACE_VARIABLE - len(f"{str(itline)}")) \
+                    + f'{ENUM_ROOT_TIM_ORGN}_BSCTIM'\
                     + "}," +  " " * (5 - len(f"{pin_freq_cfg[4][8:]}")) \
                     + f"// {ENUM_INSIGFREQ_ROOT}_{idx + 1},\n" 
         var_InFreq += "    };\n\n" 
@@ -308,7 +320,19 @@ class FMKIO_CodeGen():
             if str(pin_pwm_cfg[3]+pin_pwm_cfg[4]) in stm_tim_chnl:
                 raise TimerCfg_alreadyUsed(f" the timer {pin_pwm_cfg[3]} and his channel {pin_pwm_cfg[4]} has already been configured")
 
-            itline = FMKTIM_CodeGen.get_itline_from_timcnl(f'{ENUM_FMKTIM_TIMER_ROOT}_{pin_pwm_cfg[3][6:]}', f'{ENUM_FMKTIM_CHANNEL_ROOT}_{pin_pwm_cfg[4][8:]}')
+            if(str(pin_pwm_cfg[5]).upper() == 'HRTIM'):
+                try:
+                    letter_idx_tim = int(LETTER_LIST.index(str(pin_pwm_cfg[3])[-1]) + 1)
+                    chnl = int(str(pin_pwm_cfg[4])[-1])
+                    itline_idx = letter_idx_tim * chnl
+                    itline = f'{ENUM_ROOT_HR_LINE}_{itline_idx}'
+                except(TypeError):
+                    raise TypeError(f'Cfg error -> {pin_pwm_cfg[4]} or {pin_pwm_cfg[3]}')
+                
+
+            else: 
+                itline = FMKTIM_CodeGen.get_itline_from_timcnl(f'{ENUM_FMKTIM_TIMER_ROOT}_{pin_pwm_cfg[3][6:]}', f'{ENUM_FMKTIM_CHANNEL_ROOT}_{pin_pwm_cfg[4][8:]}')
+                
 
             sig_out_pwm.append(sig_name)
             stm_tim_chnl.append(str(pin_pwm_cfg[3]+pin_pwm_cfg[4]))
@@ -321,7 +345,9 @@ class FMKIO_CodeGen():
                     + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PIN_ROOT}_{pin_pwm_cfg[1][4:]}")) \
                     + f"{pin_pwm_cfg[2]}," \
                     + " " * (SPACE_VARIABLE - len(f"{pin_pwm_cfg[2]}")) \
-                    + str(itline) \
+                    + f'(t_uint8){str(itline)},' \
+                    + " " * ( 2 * SPACE_VARIABLE - len(f"(t_uint8){str(itline)}")) \
+                    + f'{ENUM_ROOT_TIM_ORGN}_{str(pin_pwm_cfg[5]).upper()}'\
                     + "}," +  " " * (5 - len(f"{pin_pwm_cfg[4][8:]}")) \
                     + f"// {ENUM_OUTSIGPWM_ROOT}_{idx + 1},\n"
         var_OutPWM += "    };\n\n" 
@@ -438,10 +464,12 @@ class FMKIO_CodeGen():
         enum_OutDig = cls.code_gen.make_enum_from_variable(ENUM_OUTSIGDIG_ROOT, [str(idx + 1) for idx in range((len(OutDig_astr[1:])))],
                                                             "t_eFMKIO_OutDigSig", 0, "List of output digital pin available on this board",
                                                             [f'Reference to {sig_name}' for sig_name in sig_out_dig])
+        for info_pwm in OutPWM_astr[1:]:
+            desc_pwm.append(DESCRIP_PWM[str(info_pwm[5])]) 
         
         enum_OutPWM = cls.code_gen.make_enum_from_variable(ENUM_OUTSIGPWM_ROOT, [str(idx + 1) for idx in range((len(OutPWM_astr[1:])))],
                                                             "t_eFMKIO_OutPwmSig", 0, "List of output PWM pin available on this board",
-                                                            [f'Reference to {sig_name}' for sig_name in sig_out_pwm])
+                                                            [f'Reference to {sig_name}, {desc_pwm[idx]}' for idx,sig_name in enumerate(sig_out_pwm)])
        
         #-----------------------------------------------------------
         #------------code genration for FMKIO module----------------

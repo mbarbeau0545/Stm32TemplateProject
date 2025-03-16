@@ -734,14 +734,14 @@ t_eReturnCode FMKIO_Set_OutPwmSigCfg(t_eFMKIO_OutPwmSig       f_signal_e,
         ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;    
         timerOrigin_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;    
 
-        if((timerOrigin_e == FMKIO_BASIC_TIMER)
-        || (timerOrigin_e == FMKIO_ADVANCED_TIMER))
+        if((timerOrigin_e == FMKIO_ITLINE_TYPE_BSCTIM)
+        || (timerOrigin_e == FMKIO_ITLINE_TYPE_ADVTIM))
         {
             Ret_e = FMKTIM_Set_PWMLineCfg(  (t_eFMKTIM_InterruptLineIO)ITLineIO_u8, 
                                             f_frequency_u32,
                                             s_FMKIO_basicAdvTimerCallback);
         }
-        else if(timerOrigin_e == FMKIO_HIGHRES_TIMER)
+        else if(timerOrigin_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             
             pwmCfg_s.deadTime_u32 = 0;
@@ -988,8 +988,8 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
         timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        if((timOrgn_e == FMKIO_BASIC_TIMER)
-        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        if((timOrgn_e == FMKIO_ITLINE_TYPE_BSCTIM)
+        || (timOrgn_e == FMKIO_ITLINE_TYPE_ADVTIM))
         {
 
             SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
@@ -1002,7 +1002,7 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
                                                 pwmOpe_u,
                                                 maskUpdate_u8);
         }
-        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        else if(timOrgn_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             pwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
             SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
@@ -1053,8 +1053,8 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
         timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        if((timOrgn_e == FMKIO_BASIC_TIMER)
-        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        if((timOrgn_e == FMKIO_ITLINE_TYPE_BSCTIM)
+        || (timOrgn_e == FMKIO_ITLINE_TYPE_ADVTIM))
         {
             if (Ret_e == RC_OK)
             {
@@ -1071,7 +1071,7 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
                                                     maskUpdate_u8);
             }
         }
-        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        else if(timOrgn_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             pwmOpe_s.frequency_u32 = f_frequency_u32;
             SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY);
@@ -1127,8 +1127,8 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
         ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
         timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        if((timOrgn_e == FMKIO_BASIC_TIMER)
-        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        if((timOrgn_e == FMKIO_ITLINE_TYPE_BSCTIM)
+        || (timOrgn_e == FMKIO_ITLINE_TYPE_ADVTIM))
         {
             if (Ret_e == RC_OK)
             {
@@ -1148,7 +1148,7 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
                                                     maskUpdate_u8);
             }
         }
-        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        else if(timOrgn_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             pwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
             pwmOpe_s.nbPulses_u16  = f_pulses_u16;
@@ -1197,8 +1197,8 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
         timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        if((timOrgn_e == FMKIO_BASIC_TIMER)
-        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        if((timOrgn_e == FMKIO_ITLINE_TYPE_BSCTIM)
+        || (timOrgn_e == FMKIO_ITLINE_TYPE_ADVTIM))
         {
             if (Ret_e == RC_OK)
             {
@@ -1218,7 +1218,7 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
                 *f_frequency_pu32 = pwmOpe_u.PwmValue_s.frequency_u32;
             }
         }
-        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        else if(timOrgn_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY);
 
@@ -1268,8 +1268,8 @@ t_eReturnCode FMKIO_Get_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
         timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        if((timOrgn_e == FMKIO_BASIC_TIMER)
-        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        if((timOrgn_e == FMKIO_ITLINE_TYPE_BSCTIM)
+        || (timOrgn_e == FMKIO_ITLINE_TYPE_ADVTIM))
         {
             if (Ret_e == RC_OK)
             {
@@ -1289,7 +1289,7 @@ t_eReturnCode FMKIO_Get_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
                 *f_dutyCycle_pu16 = pwmOpe_u.PwmValue_s.dutyCycle_u16;
             }
         }
-        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        else if(timOrgn_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
 
@@ -2048,8 +2048,8 @@ static void s_FMKIO_basicAdvTimerCallback(t_eFMKTIM_InterruptLineType f_Interrup
         {
             if(f_InterruptLine_u8 == (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_u8)
             {
-                if((c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_ADVANCED_TIMER)
-                || (c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_BASIC_TIMER))
+                if((c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_ITLINE_TYPE_ADVTIM)
+                || (c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_ITLINE_TYPE_BSCTIM))
                 {
                     PwmSig_e = (t_eFMKIO_OutPwmSig)LLI_u8;
                     break;
@@ -2088,7 +2088,7 @@ static void s_FMKIO_HighResTimerCallback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFM
         {
             if((t_uint8)f_HrLine_e == (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_u8)
             {
-                if(c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_HIGHRES_TIMER)
+                if(c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_ITLINE_TYPE_HRTIM)
                 {
                     PwmSig_e = (t_eFMKIO_OutPwmSig)LLI_u8;
                     break;

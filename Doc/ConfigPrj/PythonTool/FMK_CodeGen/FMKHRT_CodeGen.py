@@ -33,6 +33,7 @@ ENUM_ROOT_HR_CHNL = "FMKHRT_HRTIM_CHANNEL"
 
 # CAUTION : Automatic generated code section: End #
 LETTER_LIST = ["A", "B", "C", "D", "E", "F", "I", "J", "K"]
+
 #------------------------------------------------------------------------------
 #                                       CLASS
 #------------------------------------------------------------------------------
@@ -119,7 +120,7 @@ class FMKHRT_CodeGen():
                     nb_hr_line += 1 
                     const_mapp_chnl_line += f'                {ENUM_ROOT_HR_LINE}_{nb_hr_line},\n'
 
-                    desc_hr_line.append(f"Reference to {timer_cfg[1]}, Timer Slave {LETTER_LIST[idx_slave]}, Channel {(idx_chnl + 1)}")
+                    desc_hr_line.append(f"Reference to {timer_cfg[0]}, Timer Slave {LETTER_LIST[idx_slave]}, Channel {(idx_chnl + 1)}")
 
                     switch_mapp_line += f'            case {ENUM_ROOT_HR_LINE}_{nb_hr_line}:\n'\
                                     + '            {\n'\
@@ -244,13 +245,10 @@ class FMKHRT_CodeGen():
     # get_tim_chnl_used
     #-------------------------
     @classmethod
-    def get_itline_from_timcnl(cls, enum_timer:str, enum_channel:str)->str:
-        timer_chnl = enum_timer + enum_channel
+    def get_itline_from_timcnl(cls, enum_idx_timer:str, enum_channel:str)->str:
+        pass
 
-        try: 
-            retval_itline = cls.itline_timchnl_mapping[timer_chnl]
-        except(KeyError):
-            raise KeyError(f'Cannot found Interrupt line for {enum_timer} and {enum_channel}')
+        
         
         return retval_itline
 #------------------------------------------------------------------------------

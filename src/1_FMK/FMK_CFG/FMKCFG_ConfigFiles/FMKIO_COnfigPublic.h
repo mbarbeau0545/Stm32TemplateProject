@@ -161,18 +161,18 @@
     */
     typedef enum
     {
-        FMKIO_OUTPUT_SIGPWM_1 = 0x0,                  /**< Reference to PA9 */
-        FMKIO_OUTPUT_SIGPWM_2,                        /**< Reference to PA10 */
-        FMKIO_OUTPUT_SIGPWM_3,                        /**< Reference to PC2 */
-        FMKIO_OUTPUT_SIGPWM_4,                        /**< Reference to PC3 */
-        FMKIO_OUTPUT_SIGPWM_5,                        /**< Reference to PC6 */
-        FMKIO_OUTPUT_SIGPWM_6,                        /**< Reference to PC7 */
-        FMKIO_OUTPUT_SIGPWM_7,                        /**< Reference to PC8 */
-        FMKIO_OUTPUT_SIGPWM_8,                        /**< Reference to PC9 */
-        FMKIO_OUTPUT_SIGPWM_9,                        /**< Reference to PB6 */
-        FMKIO_OUTPUT_SIGPWM_10,                       /**< Reference to PB7 */
-        FMKIO_OUTPUT_SIGPWM_11,                       /**< Reference to PB8 */
-        FMKIO_OUTPUT_SIGPWM_12,                       /**< Reference to PB9 */
+        FMKIO_OUTPUT_SIGPWM_1 = 0x0,                  /**< Reference to PA9, Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_2,                        /**< Reference to PA10, Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_3,                        /**< Reference to PC2, Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_4,                        /**< Reference to PC3, Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_5,                        /**< Reference to PC6, Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_6,                        /**< Reference to PC7, Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_7,                        /**< Reference to PC8, Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_8,                        /**< Reference to PC9, Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_9,                        /**< Reference to PB6, Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_10,                       /**< Reference to PB7, Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_11,                       /**< Reference to PB8, Pwm with Adaptable Frequency, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_12,                       /**< Reference to PB9, Pwm with Adaptable Frequency and DutyCycle */
     
         FMKIO_OUTPUT_SIGPWM_NB,
     } t_eFMKIO_OutPwmSig;

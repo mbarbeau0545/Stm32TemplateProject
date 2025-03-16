@@ -212,6 +212,202 @@ static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
         .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
     },
 };
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
 
 /* CAUTION : Automatic generated code section for Variable: Stop */
 /**

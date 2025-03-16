@@ -13,6 +13,8 @@
 // ********************************************************************
 #include "./FMK_IO.h"
 #include "FMK_CFG/FMKCFG_ConfigFiles/FMKIO_ConfigPrivate.h"
+#include "FMK_HAL/FMK_TIM/Src/FMK_TIM.h"
+#include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
 #include "FMK_HAL/FMK_CDA/Src/FMK_CDA.h"
 #include "FMK_HAL/FMK_CPU/Src/FMK_CPU.h"
 #include "Library/SafeMem/SafeMem.h"
@@ -226,7 +228,8 @@ static t_eReturnCode s_FMKIO_MngSigFrequency(t_eFMKTIM_InterruptLineType f_Inter
  * @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
  *
  */
-static void s_FMKIO_MngSigPwm(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
+static void s_FMKIO_basicAdvTimerCallback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
+static void s_FMKIO_HighResTimerCallback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e);
 /**
  *
  *	@brief      Function to set HAL_RCC clock state : Enable/Disable
@@ -562,7 +565,7 @@ t_eReturnCode FMKIO_Set_InFreqSigCfg(   t_eFMKIO_InFreqSig f_signal_e,
         }
         if(Ret_e == RC_OK)
         {
-            ITLineIO_e = c_InFreqSigBspMap_as[f_signal_e].ITLine_e;
+            ITLineIO_e = (t_eFMKTIM_InterruptLineIO)c_InFreqSigBspMap_as[f_signal_e].ITLine_u8;
             // get the FMKTIM channel meas corresponding to f_trigger_e
             Ret_e = FMKTIM_Set_ICLineCfg(ITLineIO_e,
                                         cpu_trigger_e,
@@ -708,13 +711,14 @@ t_eReturnCode FMKIO_Set_InEvntSigCfg(t_eFMKIO_InEvntSig f_signal_e,
 t_eReturnCode FMKIO_Set_OutPwmSigCfg(t_eFMKIO_OutPwmSig       f_signal_e, 
                                      t_eFMKIO_PullMode        f_pull_e,
                                      t_uint32                 f_frequency_u32,
-                                     t_eFMKTIM_PwmMode        f_PwmMode_e,
                                      t_cbFMKIO_PulseEvent     * f_pulseEvnt_pcb,
                                      t_cbFMKIO_SigErrorMngmt  * f_sigErr_cb)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_eFMKIO_GpioPort gpioPort_e = FMKIO_GPIO_PORT_NB;
-    t_eFMKTIM_InterruptLineIO ITLineIO_e;
+    t_uint8 ITLineIO_u8;
+    t_eFMKIO_OutTimerCfg timerOrigin_e;
+    t_sFMKHRT_PwmCfg pwmCfg_s;
 
     if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB 
     || f_pull_e >= FMKIO_PULL_MODE_NB)
@@ -727,12 +731,33 @@ t_eReturnCode FMKIO_Set_OutPwmSigCfg(t_eFMKIO_OutPwmSig       f_signal_e,
     }
     if (Ret_e == RC_OK)
     {
-        ITLineIO_e = c_OutPwmSigBspMap_as[f_signal_e].ITLine_e;    
+        ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;    
+        timerOrigin_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;    
 
-        Ret_e = FMKTIM_Set_PWMLineCfg(  ITLineIO_e, 
-                                        f_frequency_u32,
-                                        f_PwmMode_e,
-                                        s_FMKIO_MngSigPwm);
+        if((timerOrigin_e == FMKIO_BASIC_TIMER)
+        || (timerOrigin_e == FMKIO_ADVANCED_TIMER))
+        {
+            Ret_e = FMKTIM_Set_PWMLineCfg(  (t_eFMKTIM_InterruptLineIO)ITLineIO_u8, 
+                                            f_frequency_u32,
+                                            s_FMKIO_basicAdvTimerCallback);
+        }
+        else if(timerOrigin_e == FMKIO_HIGHRES_TIMER)
+        {
+            
+            pwmCfg_s.deadTime_u32 = 0;
+            pwmCfg_s.frequency_u32 = f_frequency_u32;
+            pwmCfg_s.polarity_e = FMKHRT_CHNL_POLARITY_HIGH;
+
+            Ret_e = FMKHRT_ConfigurePwmLine((t_eFMKHRT_HighResLine)ITLineIO_u8,
+                                            FMKHRT_FREQRANGE_DIV_4,
+                                            pwmCfg_s,
+                                            s_FMKIO_HighResTimerCallback);
+        }
+        else 
+        {
+            Ret_e = RC_ERROR_MISSING_CONFIG;
+        }
+        
         
         if (Ret_e == RC_OK)
         {
@@ -941,7 +966,9 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uFMKTIM_ITLineOpe pwmOpe_u;
-    t_eFMKTIM_InterruptLineIO ITLineIO_e;
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    t_uint8 ITLineIO_u8;
+    t_eFMKIO_OutTimerCfg timOrgn_e;
     t_uint8 maskUpdate_u8 = (t_uint8)0;
 
     if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
@@ -956,20 +983,39 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     {
         Ret_e = RC_WARNING_BUSY;
     }
-    if (Ret_e == RC_OK)
-    {
-        Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
-    }
     if(Ret_e == RC_OK)
     {
-        ITLineIO_e = c_OutPwmSigBspMap_as[f_signal_e].ITLine_e;
-        pwmOpe_u.PwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
-        SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
+        ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
+        timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
-                                            (t_uint8)ITLineIO_e,
-                                            pwmOpe_u,
-                                            maskUpdate_u8);
+        if((timOrgn_e == FMKIO_BASIC_TIMER)
+        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        {
+
+            SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
+            
+            pwmOpe_u.PwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
+            SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
+
+            Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
+                                                (t_uint8)ITLineIO_u8,
+                                                pwmOpe_u,
+                                                maskUpdate_u8);
+        }
+        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        {
+            pwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
+
+            Ret_e = FMKHRT_SetPwmLineWaveform(  (t_eFMKHRT_HighResLine)ITLineIO_u8,
+                                                pwmOpe_s,
+                                                maskUpdate_u8);
+        }
+        else 
+        {
+            Ret_e = RC_ERROR_MISSING_CONFIG;
+        }
+        
     }
     return Ret_e;
 }
@@ -981,7 +1027,9 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uFMKTIM_ITLineOpe pwmOpe_u;
-    t_eFMKTIM_InterruptLineIO ITLineIO_e;
+    t_uint8 ITLineIO_u8;
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    t_eFMKIO_OutTimerCfg timOrgn_e;
     t_uint8 maskUpdate_u8 = (t_uint8)0;
 
     if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
@@ -1000,22 +1048,44 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     {
         Ret_e = RC_WARNING_NO_OPERATION;
     }
-
-    if (Ret_e == RC_OK)
-    {
-        Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
-    }
     if(Ret_e == RC_OK)
     {
-        ITLineIO_e = c_OutPwmSigBspMap_as[f_signal_e].ITLine_e;
-        pwmOpe_u.PwmOpe_s.frequency_u32 = f_frequency_u32;
-        SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_FREQUENCY);
+        ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
+        timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
-                                            (t_uint8)ITLineIO_e,
-                                            pwmOpe_u,
-                                            maskUpdate_u8);
+        if((timOrgn_e == FMKIO_BASIC_TIMER)
+        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        {
+            if (Ret_e == RC_OK)
+            {
+                Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
+            }
+            if(Ret_e == RC_OK)
+            {
+                pwmOpe_u.PwmOpe_s.frequency_u32 = f_frequency_u32;
+                SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_FREQUENCY);
+
+                Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
+                                                    (t_uint8)ITLineIO_u8,
+                                                    pwmOpe_u,
+                                                    maskUpdate_u8);
+            }
+        }
+        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        {
+            pwmOpe_s.frequency_u32 = f_frequency_u32;
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY);
+
+            Ret_e = FMKHRT_SetPwmLineWaveform(  (t_eFMKHRT_HighResLine)ITLineIO_u8,
+                                                pwmOpe_s,
+                                                maskUpdate_u8);
+        }
+        else 
+        {
+            Ret_e = RC_ERROR_MISSING_CONFIG;
+        }
     }
+    
     if(Ret_e == RC_WARNING_NO_OPERATION)
     {
         Ret_e = RC_OK;
@@ -1033,8 +1103,10 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uFMKTIM_ITLineOpe pwmOpe_u;
-    t_eFMKTIM_InterruptLineIO ITLineIO_e;
+    t_eFMKTIM_InterruptLineIO ITLineIO_u8;
     t_uint8 maskUpdate_u8 = (t_uint8)0; 
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    t_eFMKIO_OutTimerCfg timOrgn_e;
 
     if ((f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
     ||  (f_dutyCycle_u16 > FMKTIM_PWM_MAX_DUTY_CYLCE)
@@ -1050,25 +1122,48 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
     {
         Ret_e = RC_WARNING_BUSY;
     }
-    if (Ret_e == RC_OK)
-    {
-        Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
-    }
     if(Ret_e == RC_OK)
     {
-        ITLineIO_e = c_OutPwmSigBspMap_as[f_signal_e].ITLine_e;
-        pwmOpe_u.PwmOpe_s.nbPulses_u16 = f_pulses_u16;
-        pwmOpe_u.PwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
+        ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
+        timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_NB_PULSES);
-        SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
+        if((timOrgn_e == FMKIO_BASIC_TIMER)
+        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
+        {
+            if (Ret_e == RC_OK)
+            {
+                Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
+            }
+            if(Ret_e == RC_OK)
+            {
+                pwmOpe_u.PwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
+                pwmOpe_u.PwmOpe_s.nbPulses_u16 = f_pulses_u16;
 
-        Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
-                                            (t_uint8)ITLineIO_e,
-                                            pwmOpe_u,
-                                            maskUpdate_u8);
+                SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_NB_PULSES);
+                SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
+
+                Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
+                                                    (t_uint8)ITLineIO_u8,
+                                                    pwmOpe_u,
+                                                    maskUpdate_u8);
+            }
+        }
+        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
+        {
+            pwmOpe_s.dutyCycle_u16 = f_dutyCycle_u16;
+            pwmOpe_s.nbPulses_u16  = f_pulses_u16;
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_NB_PULSES);
+
+            Ret_e = FMKHRT_SetPwmLineWaveform(  (t_eFMKHRT_HighResLine)ITLineIO_u8,
+                                                pwmOpe_s,
+                                                maskUpdate_u8);
+        }
+        else 
+        {
+            Ret_e = RC_ERROR_MISSING_CONFIG;
+        }
     }
-
     return Ret_e;
 }
 
@@ -1078,11 +1173,14 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
 t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint32 * f_frequency_pu32)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uFMKTIM_ITLineValue pwmValue_u;
-    t_eFMKTIM_InterruptLineIO ITLineIO_e;
-    t_uint8 maskValue_u8 = (t_uint8)0; 
+    t_uFMKTIM_ITLineValue pwmOpe_u;
+    t_eFMKTIM_InterruptLineIO ITLineIO_u8;
+    t_uint8 maskUpdate_u8 = (t_uint8)0; 
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    t_eFMKIO_OutTimerCfg timOrgn_e;
 
-    if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
+    if ((f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
+    ||  (f_frequency_pu32 == (t_uint32)NULL))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
@@ -1094,28 +1192,49 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     {
         Ret_e = RC_WARNING_BUSY;
     }
-    if (Ret_e == RC_OK)
+    if(Ret_e == RC_OK)
     {
-        ITLineIO_e = c_OutPwmSigBspMap_as[f_signal_e].ITLine_e;
-        SETBIT_8B(maskValue_u8, FMKTIM_BIT_PWM_FREQUENCY);
+        ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
+        timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        Ret_e = FMKTIM_Get_InterruptLineValue(  FMKTIM_INTERRUPT_LINE_TYPE_IO,
-                                                ITLineIO_e,
-                                                &pwmValue_u,
-                                                maskValue_u8);
-
-        if(Ret_e == RC_OK)
+        if((timOrgn_e == FMKIO_BASIC_TIMER)
+        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
         {
-            *f_frequency_pu32 = (t_uint32)pwmValue_u.PwmValue_s.frequency_u32;
+            if (Ret_e == RC_OK)
+            {
+                Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
+            }
+            if(Ret_e == RC_OK)
+            {
+                SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_FREQUENCY);
+
+                Ret_e = FMKTIM_Get_InterruptLineValue(  FMKTIM_INTERRUPT_LINE_TYPE_IO,
+                                                        (t_uint8)ITLineIO_u8,
+                                                        &pwmOpe_u,
+                                                        maskUpdate_u8);
+            }
+            if(Ret_e == RC_OK)
+            {
+                *f_frequency_pu32 = pwmOpe_u.PwmValue_s.frequency_u32;
+            }
         }
-        else if (Ret_e == RC_WARNING_BUSY)
+        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
         {
-            *f_frequency_pu32 = (t_uint32)0;
-            //----- don't block the application, busy 'cause it line son't start yet -----//
-            Ret_e = RC_OK;
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY);
+
+            Ret_e = FMKHRT_GetPwmLineWaveform(  (t_eFMKHRT_HighResLine)ITLineIO_u8,
+                                                &pwmOpe_s,
+                                                maskUpdate_u8);
+            if(Ret_e == RC_OK)
+            {
+                *f_frequency_pu32 = pwmOpe_s.frequency_u32;
+            }
+        }
+        else 
+        {
+            Ret_e = RC_ERROR_MISSING_CONFIG;
         }
     }
-
     return Ret_e;
 }
 
@@ -1125,11 +1244,14 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
 t_eReturnCode FMKIO_Get_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint16 * f_dutyCycle_pu16)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uFMKTIM_ITLineValue pwmValue_u;
-    t_eFMKTIM_InterruptLineIO ITLineIO_e;
-    t_uint8 maskValue_u8 = (t_uint8)0; 
+    t_uFMKTIM_ITLineValue pwmOpe_u;
+    t_eFMKTIM_InterruptLineIO ITLineIO_u8;
+    t_uint8 maskUpdate_u8 = (t_uint8)0; 
+    t_sFMKHRT_PwmOpeVal pwmOpe_s;
+    t_eFMKIO_OutTimerCfg timOrgn_e;
 
-    if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
+    if ((f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
+    ||  (f_dutyCycle_pu16 == (t_uint16 *)NULL))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
@@ -1141,30 +1263,52 @@ t_eReturnCode FMKIO_Get_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     {
         Ret_e = RC_WARNING_BUSY;
     }
-    if (Ret_e == RC_OK)
+    if(Ret_e == RC_OK)
     {
-        ITLineIO_e = c_OutPwmSigBspMap_as[f_signal_e].ITLine_e;
-        SETBIT_8B(maskValue_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
+        ITLineIO_u8 = c_OutPwmSigBspMap_as[f_signal_e].ITLine_u8;
+        timOrgn_e = c_OutPwmSigBspMap_as[f_signal_e].TimOrigin_e;
 
-        Ret_e = FMKTIM_Get_InterruptLineValue(  FMKTIM_INTERRUPT_LINE_TYPE_IO,
-                                                ITLineIO_e,
-                                                &pwmValue_u,
-                                                maskValue_u8);
-
-        if(Ret_e == RC_OK)
+        if((timOrgn_e == FMKIO_BASIC_TIMER)
+        || (timOrgn_e == FMKIO_ADVANCED_TIMER))
         {
-            *f_dutyCycle_pu16 = (t_uint16)pwmValue_u.PwmValue_s.dutyCycle_u16;
+            if (Ret_e == RC_OK)
+            {
+                Ret_e = SafeMem_memclear((void *)(&pwmOpe_u), sizeof(t_uFMKTIM_ITLineOpe));
+            }
+            if(Ret_e == RC_OK)
+            {
+                SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
+
+                Ret_e = FMKTIM_Get_InterruptLineValue(  FMKTIM_INTERRUPT_LINE_TYPE_IO,
+                                                        (t_uint8)ITLineIO_u8,
+                                                        &pwmOpe_u,
+                                                        maskUpdate_u8);
+            }
+            if(Ret_e == RC_OK)
+            {
+                *f_dutyCycle_pu16 = pwmOpe_u.PwmValue_s.dutyCycle_u16;
+            }
         }
-        else if (Ret_e == RC_WARNING_BUSY)
+        else if(timOrgn_e == FMKIO_HIGHRES_TIMER)
         {
-            *f_dutyCycle_pu16 = (t_uint32)0;
-            //----- don't block the application, busy 'cause it line son't start yet -----//
-            Ret_e = RC_OK;
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
+
+            Ret_e = FMKHRT_GetPwmLineWaveform(  (t_eFMKHRT_HighResLine)ITLineIO_u8,
+                                                &pwmOpe_s,
+                                                maskUpdate_u8);
+            if(Ret_e == RC_OK)
+            {
+                *f_dutyCycle_pu16 = pwmOpe_s.dutyCycle_u16;
+            }
+        }
+        else 
+        {
+            Ret_e = RC_ERROR_MISSING_CONFIG;
         }
     }
-
     return Ret_e;
 }
+
 
 /*********************************
  * FMKIO_Get_InDigSigValue
@@ -1525,7 +1669,7 @@ static t_eReturnCode s_FMKIO_PreOperational(void)
     {
         SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_IC_STATE);
         LineOpe_u.ICOpe_s.IcState_e = FMKTIM_IC_STATE_ENABLE;
-        IOLine_e = c_InFreqSigBspMap_as[idxSigFreq_u8].ITLine_e;
+        IOLine_e = (t_eFMKTIM_InterruptLineIO)c_InFreqSigBspMap_as[idxSigFreq_u8].ITLine_u8;
         Ret_e = FMKTIM_Set_InterruptLineOpe(    FMKTIM_INTERRUPT_LINE_TYPE_IO,
                                                 (t_uint8)IOLine_e,
                                                 LineOpe_u,
@@ -1617,7 +1761,7 @@ static t_eReturnCode s_FMKIO_Operational(void)
                                 multiplierFreq_u32 = (t_uint32)2;
                             }
                             //----- Set Information for frequency -----//
-                            freqLine_e = c_InFreqSigBspMap_as[idxFreq_u8].ITLine_e;
+                            freqLine_e = (t_eFMKTIM_InterruptLineIO)c_InFreqSigBspMap_as[idxFreq_u8].ITLine_u8;
                             SETBIT_8B(maskOpe_u8, FMKTIM_BIT_IC_FREQUENCY);
 
                             freqOpe_u.ICOpe_s.frequency_u32 = (t_uint32)(g_InFreqSigInfo_as[idxFreq_u8].TimFreqValue_u32 *
@@ -1679,7 +1823,7 @@ static t_eReturnCode s_FMKIO_PerformDiagnostic(void)
         {
 
             //------update Information------//
-           ITLineVal_u8 = (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_e;
+            ITLineVal_u8 = (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_u8;
             ITLineType_e = FMKTIM_INTERRUPT_LINE_TYPE_IO;
             //------Get Error Status------//
             Ret_e = FMKTIM_Get_LineErrorStatus(ITLineType_e, 
@@ -1702,7 +1846,7 @@ static t_eReturnCode s_FMKIO_PerformDiagnostic(void)
         if(g_InFreqSigInfo_as[LLI_u8].IsSigConfigured_b == (t_bool)True)
         {
             //------update Information------//
-            ITLineVal_u8 = (t_uint8)c_InFreqSigBspMap_as[LLI_u8].ITLine_e;
+            ITLineVal_u8 = (t_uint8)c_InFreqSigBspMap_as[LLI_u8].ITLine_u8;
             ITLineType_e = FMKTIM_INTERRUPT_LINE_TYPE_IO;
             //------Get Error Status------//
             Ret_e = FMKTIM_Get_LineErrorStatus(  ITLineType_e, 
@@ -1806,7 +1950,7 @@ static t_eReturnCode s_FMKIO_MngSigFrequency(t_eFMKTIM_InterruptLineType f_Inter
         //-------------Know which signal made the interruption -------------//
         for (LLI_u8 = (t_uint8)0; LLI_u8 < FMKIO_INPUT_SIGFREQ_NB; LLI_u8++)
         {
-            if (f_InterruptLine_u8 == (t_uint8)c_InFreqSigBspMap_as[LLI_u8].ITLine_e)
+            if(f_InterruptLine_u8 == (t_uint8)c_InFreqSigBspMap_as[LLI_u8].ITLine_u8)
             {
                 freqSig_e = (t_eFMKIO_InFreqSig)LLI_u8;
                 break;
@@ -1885,9 +2029,9 @@ static t_eReturnCode s_FMKIO_MngSigFrequency(t_eFMKTIM_InterruptLineType f_Inter
 }
 
 /*********************************
- * s_FMKIO_MngSigPwm
+ * s_FMKIO_basicAdvTimerCallback
  *********************************/
-static void s_FMKIO_MngSigPwm(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8)
+static void s_FMKIO_basicAdvTimerCallback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uint8 LLI_u8= 0;
@@ -1902,10 +2046,53 @@ static void s_FMKIO_MngSigPwm(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
         //-------------Know wich signal made the interruption -------------//
         for(LLI_u8 = (t_uint8)0 ; LLI_u8 < FMKIO_OUTPUT_SIGPWM_NB ; LLI_u8++)
         {
-            if(f_InterruptLine_u8 == (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_e)
+            if(f_InterruptLine_u8 == (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_u8)
             {
-                PwmSig_e = (t_eFMKIO_OutPwmSig)LLI_u8;
-                break;
+                if((c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_ADVANCED_TIMER)
+                || (c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_BASIC_TIMER))
+                {
+                    PwmSig_e = (t_eFMKIO_OutPwmSig)LLI_u8;
+                    break;
+                }
+            }
+        }
+        if(PwmSig_e != FMKIO_OUTPUT_SIGPWM_NB)
+        {
+            if(g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb != NULL_FONCTION)
+            {
+                g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb(PwmSig_e);
+            }
+        }
+    }
+
+    return;
+}
+/*********************************
+ * s_FMKIO_HighResTimerCallback
+ *********************************/
+static void s_FMKIO_HighResTimerCallback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint8 LLI_u8= 0;  
+    t_eFMKIO_OutPwmSig PwmSig_e = FMKIO_OUTPUT_SIGPWM_NB;
+
+    if((f_HrLine_e >= FMKHRT_HR_LINE_NB)
+    || (f_Evnt_e != FMKHRT_HR_LINE_EVNT_CB_PULSE_FINISH))
+    { 
+        Ret_e = RC_ERROR_PARAM_INVALID;
+    }
+    if(Ret_e == RC_OK)
+    {
+        //-------------Know wich signal made the interruption -------------//
+        for(LLI_u8 = (t_uint8)0 ; LLI_u8 < FMKIO_OUTPUT_SIGPWM_NB ; LLI_u8++)
+        {
+            if((t_uint8)f_HrLine_e == (t_uint8)c_OutPwmSigBspMap_as[LLI_u8].ITLine_u8)
+            {
+                if(c_OutPwmSigBspMap_as[LLI_u8].TimOrigin_e == FMKIO_HIGHRES_TIMER)
+                {
+                    PwmSig_e = (t_eFMKIO_OutPwmSig)LLI_u8;
+                    break;
+                }
             }
         }
         if(PwmSig_e != FMKIO_OUTPUT_SIGPWM_NB)

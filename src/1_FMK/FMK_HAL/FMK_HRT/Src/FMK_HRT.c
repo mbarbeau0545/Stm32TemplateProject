@@ -183,7 +183,37 @@ static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
         .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
     }
 };
+/* CAUTION : Automatic generated code section for Variable: Start */
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
+/**< High Resolution Timer information variable */
+static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
+        .bspItsc_s = HRTIM1,
+        .c_clkPort_e = FMKCPU_RCC_CLK_HRTIM1,
+        .mstInfo_s.c_IRQNType_e                        = FMKCPU_NVIC_HRTIM1_MASTER_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_1].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMA_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_2].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMB_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_3].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_4].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_5].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
+        .slvInfo_as[FMKHRT_HRTIM_SLAVE_6].c_IRQNType_e = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
+    },
+};
 
+/* CAUTION : Automatic generated code section for Variable: Stop */
 /**
 * @brief Union of all Hw Mode Cfg
 */
@@ -612,14 +642,18 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
     t_uint32 bspCompareUnit_u32;
     t_uint32 bspCompareUnitVal_u32;
     t_uint16 nbPulses_u16;
+    t_float32 factorDc_f32;
     t_sFMKHRT_TimSlaveInfo * slvTimInfo_ps;
     t_eFMKHRT_ChnlState setChnlState_e = FMKHRT_CHNLST_DISACTIVATED;
     
 
-    if((f_HRLine_e >= FMKHRT_HR_LINE_NB)
-    || (f_PwmOpe_s.dutyCycle_u16 > FMKHRT_PWM_MAX_DUTY_CYLCE))
+    if(f_HRLine_e >= FMKHRT_HR_LINE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+    }
+    if(g_FmkHrtModState_e != STATE_CYCLIC_OPE)
+    {
+        Ret_e = RC_WARNING_BUSY;
     }
     //---- Get Information about Timer -----//
     if(Ret_e == RC_OK) 
@@ -647,6 +681,18 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
     if(Ret_e == RC_OK)
     {
         slvTimInfo_ps = (t_sFMKHRT_TimSlaveInfo *)(&g_HrTimInfo_as[hrTimIstc_e].slvInfo_as[hrSlvTim_e]);
+
+        //----- compute stuff for later ----//
+        bspPeriod_u32 = __HAL_HRTIM_GETPERIOD(  (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
+                                                        bspTimerIdx_u32);
+        //---- Get the Compare Unit Channel ----//
+        ((hrChnl_e == FMKHRT_HRTIM_CHANNEL_1) ? 
+                (bspCompareUnit_u32 = HRTIM_COMPAREUNIT_1) : 
+                (bspCompareUnit_u32 = HRTIM_COMPAREUNIT_2));
+        
+        bspCompareUnitVal_u32 = __HAL_HRTIM_GETCOMPARE( (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
+                                                            bspTimerIdx_u32,
+                                                            bspCompareUnit_u32);
         //---- Update Stuff Depending On Mask Update ----//
         if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY) == BIT_IS_SET_8B)
         {
@@ -662,36 +708,51 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
             Ret_e = s_FMKHRT_GetBspPeriod(  slvTimInfo_ps->timFreqMHz_u16, 
                                             f_PwmOpe_s.frequency_u32,
                                             (&bspPeriod_u32));
+                
             if(Ret_e == RC_OK)
-            {
+            {       
+                //----- Change also dutyCycle if the PWM is working ----//
+                if(slvTimInfo_ps->chnlInfo_as[hrChnl_e].state_e == FMKHRT_CHNLST_ACTIVATED
+                && bspPeriod_u32 > (t_uint32)0)
+                {
+                    factorDc_f32 = (((t_float32)bspCompareUnitVal_u32 / (t_float32)bspPeriod_u32) 
+                    * (t_float32)FMKHRT_PWM_MAX_DUTY_CYLCE);
+
+                    bspCompareUnitVal_u32 = (t_float32)bspPeriod_u32 * factorDc_f32;
+
+                    __HAL_HRTIM_SETCOMPARE( (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
+                                            bspTimerIdx_u32,
+                                            bspCompareUnit_u32,
+                                            bspCompareUnitVal_u32);
+                }
+                
                 __HAL_HRTIM_SETPERIOD((&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
                                         bspTimerIdx_u32,
                                         bspPeriod_u32);
                 //----- Leave Channel State as Unchange ----//
                 setChnlState_e = slvTimInfo_ps->chnlInfo_as[hrChnl_e].state_e;
-            }
+            }  
         }
         if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
         {
-            bspPeriod_u32 = __HAL_HRTIM_GETPERIOD(  (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
-                                                    bspTimerIdx_u32);
-            
-            //---- Get the Compare Unit Channel ----//
-            ((hrChnl_e == FMKHRT_HRTIM_CHANNEL_1) ? 
-            (bspCompareUnit_u32 = HRTIM_COMPAREUNIT_1) : 
-            (bspCompareUnit_u32 = HRTIM_COMPAREUNIT_2));
-            
-            //---- Calcul Nuw Value ----//
-            bspCompareUnitVal_u32 = (t_uint32)(bspPeriod_u32  * (t_uint32)f_PwmOpe_s.dutyCycle_u16 
-                                                / FMKHRT_PWM_MAX_DUTY_CYLCE);
-            
-            __HAL_HRTIM_SETCOMPARE( (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
-                                    bspTimerIdx_u32,
-                                    bspCompareUnit_u32,
-                                    bspCompareUnitVal_u32);
+            if(f_PwmOpe_s.dutyCycle_u16 > FMKHRT_PWM_MAX_DUTY_CYLCE)
+            {
+                Ret_e = RC_ERROR_PARAM_INVALID;
+            }
+            else 
+            {
+                //---- Calcul Nuw Value ----//
+                bspCompareUnitVal_u32 = (t_uint32)(bspPeriod_u32  * (t_uint32)f_PwmOpe_s.dutyCycle_u16 
+                                                    / FMKHRT_PWM_MAX_DUTY_CYLCE);
+                
+                __HAL_HRTIM_SETCOMPARE( (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
+                                        bspTimerIdx_u32,
+                                        bspCompareUnit_u32,
+                                        bspCompareUnitVal_u32);
 
-            //---- Update Channel State ----//
-            setChnlState_e = FMKHRT_CHNLST_ACTIVATED;
+                //---- Update Channel State ----//
+                setChnlState_e = FMKHRT_CHNLST_ACTIVATED;
+            }
         }
         if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_NB_PULSES) == BIT_IS_SET_8B)
         {
@@ -764,6 +825,93 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
                                                     slvTimInfo_ps->HwOpeMode_e,
                                                     setChnlState_e);
             }
+        }
+    }
+
+    return Ret_e;
+}
+
+/*********************************
+ * FMKHRT_SetPwmLineWaveform
+ *********************************/
+t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
+                                        t_sFMKHRT_PwmOpeVal *f_PwmOpe_ps,
+                                        t_uint8 f_maskUpdate_u8)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    t_eFMKHRT_HighResIstc hrTimIstc_e;
+    t_eFMKHRT_HighResSlvTim hrSlvTim_e;
+    t_eFMKHRT_HrTimChannel hrChnl_e;
+    t_uint32 bspPeriod_u32;
+    t_uint32 bspTimerIdx_u32;
+    t_uint32 bspCompareUnit_u32;
+    t_uint32 bspCompareUnitVal_u32;
+    t_uint16 nbPulses_u16;
+    t_sFMKHRT_TimSlaveInfo * slvTimInfo_ps;
+    t_eFMKHRT_ChnlState setChnlState_e = FMKHRT_CHNLST_DISACTIVATED;
+    
+
+    if((f_HRLine_e >= FMKHRT_HR_LINE_NB)
+    || (f_PwmOpe_ps == (t_sFMKHRT_PwmOpeVal *)NULL))
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+    }
+    if(g_FmkHrtModState_e != STATE_CYCLIC_OPE)
+    {
+        Ret_e = RC_WARNING_BUSY;
+    }
+    //---- Get Information about Timer -----//
+    if(Ret_e == RC_OK) 
+    {   
+        Ret_e = s_FMKHRT_GetTimerInfoFromLine(  f_HRLine_e,
+                                                &hrTimIstc_e,
+                                                &hrSlvTim_e,
+                                                &hrChnl_e);
+    }
+    //----- Check Configuration -----//
+    if(Ret_e == RC_OK)
+    {
+        if((g_HrTimInfo_as[hrTimIstc_e].isConfigured_b == (t_bool)False)
+        || (g_HrTimInfo_as[hrTimIstc_e].slvInfo_as[hrSlvTim_e].isConfigured_b == (t_bool)False)
+        || (g_HrTimInfo_as[hrTimIstc_e].slvInfo_as[hrSlvTim_e].chnlInfo_as[hrChnl_e].isConfigured_b == (t_bool)False))
+        {
+            Ret_e = RC_ERROR_WRONG_CONFIG;
+        }
+    }
+    //----- Get Timer Index -----//
+    if(Ret_e == RC_OK)
+    {
+        Ret_e = s_FMKHRT_GetBspTimerIndex(hrSlvTim_e, (&bspTimerIdx_u32));
+    }
+    if(Ret_e == RC_OK)
+    {
+        slvTimInfo_ps = (t_sFMKHRT_TimSlaveInfo *)(&g_HrTimInfo_as[hrTimIstc_e].slvInfo_as[hrSlvTim_e]);
+
+        //----- compute stuff for later ----//
+        bspPeriod_u32 = __HAL_HRTIM_GETPERIOD(  (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
+                                                        bspTimerIdx_u32);
+        //---- Get the Compare Unit Channel ----//
+        ((hrChnl_e == FMKHRT_HRTIM_CHANNEL_1) ? 
+                (bspCompareUnit_u32 = HRTIM_COMPAREUNIT_1) : 
+                (bspCompareUnit_u32 = HRTIM_COMPAREUNIT_2));
+        
+        bspCompareUnitVal_u32 = __HAL_HRTIM_GETCOMPARE( (&g_HrTimInfo_as[hrTimIstc_e].bspItsc_s),
+                                                            bspTimerIdx_u32,
+                                                            bspCompareUnit_u32);
+        //---- Update Stuff Depending On Mask Update ----//
+        if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY) == BIT_IS_SET_8B)
+        {
+            f_PwmOpe_ps->frequency_u32 =  ((t_uint32)((t_float32)slvTimInfo_ps->timFreqMHz_u16) / ((t_float32)bspPeriod_u32));
+        }
+        if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
+        {     
+            f_PwmOpe_ps->dutyCycle_u16 = (t_uint16)((((t_float32)bspCompareUnitVal_u32 / (t_float32)bspPeriod_u32) 
+                                                            * (t_float32)FMKHRT_PWM_MAX_DUTY_CYLCE));
+
+        }
+        if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_NB_PULSES) == BIT_IS_SET_8B)
+        {
+            RC_WARNING_NO_OPERATION;   
         }
     }
 
@@ -1462,8 +1610,7 @@ static t_eReturnCode s_FMKHRT_GetBspPeriod( t_uint16 f_TimFreqMHz_16,
         
         if(bspPeriod_u32 > CST_MAX_UINT_16BIT)
         {
-            *f_bspPeriod_pu32 = (t_uint32)0;
-            Ret_e = RC_ERROR_LIMIT_REACHED;
+            *f_bspPeriod_pu32 = (t_uint32)CST_MAX_UINT_16BIT;
         }
         else 
         {
@@ -1528,9 +1675,9 @@ static t_eReturnCode s_FMKHRT_ComputeTimerFreqRange(t_eFMKHRT_FreqMulDiv f_CpuFr
         }
         if(Ret_e == RC_OK)
         {
-            f_slvInfo_ps->minFreqAccept_u32 = (t_uint32)((t_uint32)timFreqMHz_u16 / 
+            f_slvInfo_ps->minFreqAccept_u32 = (t_uint32)((t_uint32)(timFreqMHz_u16  * CST_MHZ_TO_HZ)/ 
                                                                     FMKHRT_PWM_MAX_ARR_VALUE);
-            f_slvInfo_ps->maxFreqAccept_u32 = (t_uint32)((t_uint32)timFreqMHz_u16 / 
+            f_slvInfo_ps->maxFreqAccept_u32 = (t_uint32)((t_uint32)(timFreqMHz_u16 * CST_MHZ_TO_HZ)/ 
                                                                     FMKHRT_PWM_MIN_ARR_VALUE);
         }   f_slvInfo_ps->timFreqMHz_u16 = timFreqMHz_u16;
     }
@@ -1778,23 +1925,8 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
         // flag automatic generated code 
         switch (f_HrLine_e)
         {
+            /* CAUTION : Automatic generated code section for switch case mapping: Start */
             case FMKHRT_HR_LINE_1:
-            {
-                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
-                {
-                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
-                }
-                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
-                {
-                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_4;
-                }
-                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
-                {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;
-                }
-                break;
-            }
-            case FMKHRT_HR_LINE_6:
             {
                 if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
                 {
@@ -1806,8 +1938,7 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;
-                }
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
                 break;
             }
             case FMKHRT_HR_LINE_2:
@@ -1822,8 +1953,7 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;
-                }
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
                 break;
             }
             case FMKHRT_HR_LINE_3:
@@ -1834,12 +1964,11 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
                 }
                 if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
                 {
-                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_1;
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_2;
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;
-                }
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
                 break;
             }
             case FMKHRT_HR_LINE_4:
@@ -1850,12 +1979,11 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
                 }
                 if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
                 {
-                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_1;
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_2;
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;
-                }
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
                 break;
             }
             case FMKHRT_HR_LINE_5:
@@ -1866,14 +1994,119 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
                 }
                 if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
                 {
-                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_1;
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_3;
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;
-                }
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
                 break;
             }
+            case FMKHRT_HR_LINE_6:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_3;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_7:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_4;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_8:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_4;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_9:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_5;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_10:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_5;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_11:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_6;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_12:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_6;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
+                break;
+            }
+            /* CAUTION : Automatic generated code section for switch case mapping: Stop */
             case FMKHRT_HR_LINE_NB:
             default:
             {
@@ -1927,8 +2160,13 @@ void HAL_HRTIM_DLLCalibrationReadyCallback(HRTIM_HandleTypeDef *hhrtim)
 
 void HRTIM1_TIMD_IRQHandler(void)
 {
-    HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
-                            HRTIM_TIMERINDEX_TIMER_D);
+    if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
+    {
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+                                HRTIM_TIMERINDEX_TIMER_D);
+    }
+
+    return;
 }
 //************************************************************************************
 // End of File

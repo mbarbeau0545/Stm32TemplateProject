@@ -186,6 +186,17 @@
     t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
                                             t_sFMKHRT_PwmOpeVal f_PwmOpe_s,
                                             t_uint8 f_maskUpdate_u8);
+    /**
+   *
+   *	@brief Function to configure a Channel from a Slave Timer in PWM Mode.\n
+   *
+   *	@param[in]  f_State_e : the new value, value from @ref t_eCyclicModState
+   *
+   *   @retval RC_OK                             @ref RC_OK
+   */
+    t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
+                                            t_sFMKHRT_PwmOpeVal * f_PwmOpe_ps,
+                                            t_uint8 f_maskUpdate_u8);
 #endif // FMK_HRT_H_INCLUDED           
 //************************************************************************************
 // End of File

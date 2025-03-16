@@ -90,17 +90,6 @@
     };
 
     /**
-     * @brief Enum Pwm Mode
-     */
-    typedef enum
-    {
-        FMKTIM_PWM_MODE_FINITE_PULSE = 0x00, /**< Interrupt Line will generate pulses  */
-        FMKTIM_PWM_MODE_INFINITE_PULSE,
-
-        FMKTIM_PWM_MODE_NB,
-    } t_eFMKTIM_PwmMode;
-
-    /**
      * @brief Enum to set bit for changing Ecdr Signal
      */
     enum 
@@ -358,7 +347,6 @@
     */
     t_eReturnCode FMKTIM_Set_PWMLineCfg(t_eFMKTIM_InterruptLineIO f_InterruptLine_e,
                                         t_uint32 f_pwmFreq_u32,
-                                        t_eFMKTIM_PwmMode f_PwmMode_e,
                                         t_cbFMKTIM_InterruptLine * f_PwmPulseFinished_pcb);
     /**
     *

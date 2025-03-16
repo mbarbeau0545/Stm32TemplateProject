@@ -21,6 +21,7 @@
 
 #include "./APP_LGC.h"
 #include "APP_CFG/ConfigFiles/APPLGC_ConfigPrivate.h"
+#include "FMK_HAL/FMK_IO/Src/FMK_IO.h"
 #include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
 
 #include "Library/SafeMem/SafeMem.h"
@@ -160,27 +161,11 @@ static void s_APPLGC_Callback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLine
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
-void GPIO_HRTIM_outputs_Config(void);
+
 // ********************************************************************
 // *                      Variables
 // ********************************************************************
-void GPIO_HRTIM_outputs_Config(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct;
 
-
-  /* Enable GPIOB clock for timer D outputs */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /* Configure HRTIM output: TD1 (PB14) and TD2 (PB15)*/
-  GPIO_InitStruct.Pin = GPIO_PIN_14 | GPIO_PIN_15;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;;
-  GPIO_InitStruct.Alternate = GPIO_AF13_HRTIM1;
-
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-}
 /*********************************
  * APPLGC_Init
  *********************************/
@@ -350,36 +335,12 @@ t_eReturnCode APPLGC_GetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_S
 static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_sFMKHRT_PwmCfg pwmCfg_s;
-    t_sFMKHRT_PwmOpeVal pwmOpe_s;
-    t_uint8 mskOpe_u8 = 0;
-
-    pwmCfg_s.deadTime_u32 = 0;
-    pwmCfg_s.frequency_u32 = 20000;
-    pwmCfg_s.polarity_e = FMKHRT_CHNL_POLARITY_HIGH;
-
-
-    Ret_e = FMKHRT_ConfigurePwmLine(FMKHRT_HR_LINE_1,
-                                    FMKHRT_FREQRANGE_DIV_4,
-                                    pwmCfg_s,
-                                    s_APPLGC_Callback);
     
-    GPIO_HRTIM_outputs_Config();
-
-    if(Ret_e == RC_OK)
-    {
-        pwmOpe_s.dutyCycle_u16 = 500;
-        pwmOpe_s.frequency_u32 = 0;
-        pwmOpe_s.nbPulses_u16 = 65000;
-
-        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
-        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_NB_PULSES);
-        
-        Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
-                                            pwmOpe_s,
-                                            mskOpe_u8);
-    }
-
+    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_13,
+                                    FMKIO_PULL_MODE_UP,
+                                    2000,
+                                    s_APPLGC_Callback,
+                                    NULL_FONCTION);
     return Ret_e;
 }
 
@@ -390,7 +351,7 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     
-
+    Ret_e = FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_13, 500);
     return Ret_e;
 }
 
@@ -400,13 +361,11 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_sFMKHRT_PwmOpeVal pwmOpe_s;
     static t_uint32 frequency_u32  = 1000;
     static t_uint32 saveTime_u32 = 0;
     t_uint32 currentTime_u32; 
-    t_uint8 mskOpe_u8 = 0;
 
-    /*if( frequency_u32 >= 30000)
+    if( frequency_u32 >= 30000)
     {
         frequency_u32 = 1000;
     }
@@ -416,16 +375,9 @@ static t_eReturnCode s_APPLGC_Operational(void)
     {
         saveTime_u32 = currentTime_u32;
         frequency_u32 += 500;
-        pwmOpe_s.dutyCycle_u16 = 500;
-        pwmOpe_s.frequency_u32 = frequency_u32;
-        pwmOpe_s.nbPulses_u16 = 200;
-    
-        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_FREQUENCY);
-        SETBIT_8B(mskOpe_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
-        Ret_e = FMKHRT_SetPwmLineWaveform(FMKHRT_HR_LINE_1,
-                                            pwmOpe_s,
-                                            mskOpe_u8);
-    }*/
+        Ret_e = FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_13,
+                                                frequency_u32);
+    }
 
 
    

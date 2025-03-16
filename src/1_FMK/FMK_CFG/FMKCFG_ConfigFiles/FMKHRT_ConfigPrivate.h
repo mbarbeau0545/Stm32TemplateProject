@@ -35,44 +35,44 @@
     // ********************************************************************
     // *                      Types
     // ********************************************************************
-    // flag automatic generated code 
+    /* CAUTION : Automatic generated code section for Enum: Start */
     /**
     * @brief High Resolution Timer Instance Number.
     */
-    typedef enum 
+    typedef enum
     {
-        FMKHRT_HIGH_RES_TIMER_1 = 0x00,
-        
+        FMKHRT_HIGH_RES_TIMER_HRTIM1 = 0x0,             /**< Timer Resolution  0 */
+    
         FMKHRT_HIGH_RES_TIMER_NB,
     } t_eFMKHRT_HighResIstc;
 
-    // flag automatic generated code 
     /**
-    * @brief High Resolution Slave Timer  Number.
+    * @brief High Resolution Slave Timer Number.
     */
-    typedef enum 
+    typedef enum
     {
-        FMKHRT_HRTIM_SLAVE_1 = 0x00,    /**< Timer Slave A */
-        FMKHRT_HRTIM_SLAVE_2,           /**< Timer Slave B */
-        FMKHRT_HRTIM_SLAVE_3,           /**< Timer Slave C */
-        FMKHRT_HRTIM_SLAVE_4,           /**< Timer Slave D */
-        FMKHRT_HRTIM_SLAVE_5,           /**< Timer Slave E */
-        FMKHRT_HRTIM_SLAVE_6,           /**< Timer Slave F */
-
-        FMKHRT_HRTIM_SLAVE_NB
+        FMKHRT_HRTIM_SLAVE_1 = 0x0,                  /**< Timer Slave A */
+        FMKHRT_HRTIM_SLAVE_2,                        /**< Timer Slave B */
+        FMKHRT_HRTIM_SLAVE_3,                        /**< Timer Slave C */
+        FMKHRT_HRTIM_SLAVE_4,                        /**< Timer Slave D */
+        FMKHRT_HRTIM_SLAVE_5,                        /**< Timer Slave E */
+        FMKHRT_HRTIM_SLAVE_6,                        /**< Timer Slave F */
+    
+        FMKHRT_HRTIM_SLAVE_NB,
     } t_eFMKHRT_HighResSlvTim;
 
-    // flag automatic generated code 
     /**
-    * @brief High Resolution Timer Instance Number.
+    * @brief High Resolution Timer Channel.
     */
-    typedef enum 
+    typedef enum
     {
-        FMKHRT_HRTIM_CHANNEL_1 = 0x00,
-        FMKHRT_HRTIM_CHANNEL_2,
-        
+        FMKHRT_HRTIM_CHANNEL_1 = 0x0,                  /**< Channel 1 */
+        FMKHRT_HRTIM_CHANNEL_2,                        /**< Channel 2 */
+    
         FMKHRT_HRTIM_CHANNEL_NB,
-    } t_eFMKHRT_HrTimChannel;
+    } t_eFMKHRT_HighResSlvTim;
+
+    /* CAUTION : Automatic generated code section for Enum: End */
 
 
     /**
@@ -232,38 +232,37 @@
         },
     };
     /* CAUTION : Automatic generated code section for Variable: Start */
-
-    /* CAUTION : Automatic generated code section for Variable: End */
-    // flag automatic generated code start 
-    const t_eFMKHRT_HighResLine c_FMkHrt_ChnlLineMapp_ae[FMKHRT_HIGH_RES_TIMER_NB]
-                                                            [FMKHRT_HRTIM_SLAVE_NB][FMKHRT_HRTIM_CHANNEL_NB] = {
-        [FMKHRT_HIGH_RES_TIMER_1] = {
+    /**< Interrupt Line/Channel Mapping for  High Resolution Line */
+    const t_eFMKHRT_HighResLine c_FMkHrt_ChnlLineMapp_ae[FMKHRT_HIGH_RES_TIMER_NB][FMKHRT_HRTIM_SLAVE_NB][FMKHRT_HRTIM_CHANNEL_NB] = {
+    [FMKHRT_HIGH_RES_TIMER_1] = {
             [FMKHRT_HRTIM_SLAVE_1] = {
                 FMKHRT_HR_LINE_1,
-                FMKHRT_HR_LINE_2
+                FMKHRT_HR_LINE_2,
             },
             [FMKHRT_HRTIM_SLAVE_2] = {
                 FMKHRT_HR_LINE_3,
-                FMKHRT_HR_LINE_4
+                FMKHRT_HR_LINE_4,
             },
             [FMKHRT_HRTIM_SLAVE_3] = {
                 FMKHRT_HR_LINE_5,
-                FMKHRT_HR_LINE_6
+                FMKHRT_HR_LINE_6,
             },
             [FMKHRT_HRTIM_SLAVE_4] = {
-                FMKHRT_HR_LINE_5,
-                FMKHRT_HR_LINE_6
+                FMKHRT_HR_LINE_7,
+                FMKHRT_HR_LINE_8,
             },
             [FMKHRT_HRTIM_SLAVE_5] = {
-                FMKHRT_HR_LINE_5,
-                FMKHRT_HR_LINE_6
+                FMKHRT_HR_LINE_9,
+                FMKHRT_HR_LINE_10,
             },
             [FMKHRT_HRTIM_SLAVE_6] = {
-                FMKHRT_HR_LINE_5,
-                FMKHRT_HR_LINE_6
+                FMKHRT_HR_LINE_11,
+                FMKHRT_HR_LINE_12,
             },
         },
     };
+    /* CAUTION : Automatic generated code section for Variable: End */
+
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************

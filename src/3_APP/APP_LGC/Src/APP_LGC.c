@@ -157,7 +157,7 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
                                         t_uint16 f_debugInfo1_u16,
                                         t_uint16 f_debugInfo2_u16);
 
-static void s_APPLGC_Callback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e);
+static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e);
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
@@ -336,7 +336,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     
-    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_13,
+    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_11,
                                     FMKIO_PULL_MODE_UP,
                                     2000,
                                     s_APPLGC_Callback,
@@ -351,7 +351,7 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     
-    Ret_e = FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_13, 500);
+    Ret_e = FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_11, 500);
     return Ret_e;
 }
 
@@ -375,7 +375,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
     {
         saveTime_u32 = currentTime_u32;
         frequency_u32 += 500;
-        Ret_e = FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_13,
+        Ret_e = FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_11,
                                                 frequency_u32);
     }
 
@@ -512,7 +512,7 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
 /*********************************
  * s_APPLGC_Callback
  *********************************/
-static void s_APPLGC_Callback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFMKHRT_HrLineEvntCb f_Evnt_e)
+static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e)
 {
     return;
 }

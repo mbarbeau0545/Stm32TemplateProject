@@ -27,23 +27,6 @@
     // ********************************************************************
     // *                      Types
     // ********************************************************************
-    // flag automatic generated code 
-    /**
-    * @brief High Resolution Line Avaiblable on CPU.
-    */
-    typedef enum 
-    {
-        FMKHRT_HR_LINE_1 = 0x00,            /**< HRTIM 1, SLAVE D, Channel 1 */
-        FMKHRT_HR_LINE_6,
-        FMKHRT_HR_LINE_2,
-        FMKHRT_HR_LINE_3,
-        FMKHRT_HR_LINE_4,
-        FMKHRT_HR_LINE_5,
-
-        FMKHRT_HR_LINE_NB,
-    } t_eFMKHRT_HighResLine;
-
-    // flag automatic generated code 
     /**
     * @brief Frequency Range to Help User (there is also Excel)
     */

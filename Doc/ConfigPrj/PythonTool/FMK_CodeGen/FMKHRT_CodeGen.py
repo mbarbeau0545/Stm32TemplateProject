@@ -21,6 +21,8 @@ from .FMK_PATH import *
 #------------------------------------------------------------------------------
 TARGET_SWITCH_CASE_HR_LINE_START = "            /* CAUTION : Automatic generated code section for switch case mapping: Start */\n"
 TARGET_SWITCH_CASE_HR_LINE_STOP = "            /* CAUTION : Automatic generated code section for switch case mapping: Stop */\n"
+TARGET_VARIABLE_HR_LINE_START = "/* CAUTION : Automatic generated code section for Variables: Start */\n"
+TARGET_VARIABLE_HR_LINE_STOP  = "/* CAUTION : Automatic generated code section for Variables: Stop */\n"
 FMKHRT_CFG_PUBLIC_PATH = 'src\\1_FMK\FMK_CFG\FMKCFG_ConfigFiles\FMKHRT_ConfigPublic.h'
 FMKHRT_CFG_PRIVATE_PATH = 'src\\1_FMK\FMK_CFG\FMKCFG_ConfigFiles\FMKHRT_ConfigPrivate.h'
 FMKHRT_C_FILE = 'src\\1_FMK\FMK_HAL\FMK_HRT\Src\FMK_HRT.c'
@@ -148,14 +150,14 @@ class FMKHRT_CodeGen():
         var_timinfo += '};\n'
         const_mapp_chnl_line += '    };\n'
         enum_channel = cls.code_gen.make_enum_from_variable(ENUM_ROOT_HR_CHNL, [f"{int(idx_chnl + 1)}" for idx_chnl in range(nb_channel)],
-                                                                't_eFMKHRT_HighResSlvTim', 0, "High Resolution Timer Channel",
+                                                                't_eFMKHRT_HrTimChannel', 0, "High Resolution Timer Channel",
                                                                 [f"Channel {int(idx_chnl + 1)}" for idx_chnl in range(nb_channel)])
         
         enum_slave = cls.code_gen.make_enum_from_variable(ENUM_ROOT_HR_SLV, [f"{int(idx_slave + 1)}" for idx_slave in range(nb_slave)],
                                                                 't_eFMKHRT_HighResSlvTim', 0, "High Resolution Slave Timer Number",
                                                                 [f"Timer Slave {LETTER_LIST[idx_slave]}" for idx_slave in range(nb_slave)])
         
-        enum_highres_timer = cls.code_gen.make_enum_from_variable(  ENUM_ROOT_HR_TIM, [f"{timer_cfg[0]}" for timer_cfg in timer_cfg_a[1:]],
+        enum_highres_timer = cls.code_gen.make_enum_from_variable(  ENUM_ROOT_HR_TIM, [f"{str(timer_cfg[0])[-1]}" for timer_cfg in timer_cfg_a[1:]],
                                                                     't_eFMKHRT_HighResIstc', 0, "High Resolution Timer Instance Number",
                                                                     [f"Timer Resolution  {idx_high_res}" for idx_high_res in range(len(timer_cfg_a[1:]))])
         
@@ -220,8 +222,8 @@ class FMKHRT_CodeGen():
        
         #---------------------For FMKTIM.c---------------------#
         print("\t- For FMKTIM.c file")
-        cls.code_gen.change_target_balise(TARGET_T_VARIABLE_START_LINE[4:], TARGET_T_VARIABLE_START_LINE[4:])
         print("\t\t- variable for timer information")
+        cls.code_gen.change_target_balise(TARGET_VARIABLE_HR_LINE_START, TARGET_VARIABLE_HR_LINE_STOP)
         cls.code_gen._write_into_file(var_timinfo, FMKHRT_C_FILE)
         
         print("\t\t- Timer IRQN Handler start")
@@ -247,10 +249,6 @@ class FMKHRT_CodeGen():
     @classmethod
     def get_itline_from_timcnl(cls, enum_idx_timer:str, enum_channel:str)->str:
         pass
-
-        
-        
-        return retval_itline
 #------------------------------------------------------------------------------
 #                             FUNCTION IMPLMENTATION
 #------------------------------------------------------------------------------

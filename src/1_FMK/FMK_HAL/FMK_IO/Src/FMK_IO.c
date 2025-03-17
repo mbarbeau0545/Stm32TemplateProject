@@ -1180,7 +1180,7 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     t_eFMKIO_OutTimerCfg timOrgn_e;
 
     if ((f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
-    ||  (f_frequency_pu32 == (t_uint32)NULL))
+    ||  (f_frequency_pu32 == (t_uint32 *)NULL))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }

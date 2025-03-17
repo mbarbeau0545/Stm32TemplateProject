@@ -41,7 +41,7 @@
     */
     typedef enum
     {
-        FMKHRT_HIGH_RES_TIMER_HRTIM1 = 0x0,             /**< Timer Resolution  0 */
+        FMKHRT_HIGH_RES_TIMER_1 = 0x0,                  /**< Timer Resolution  0 */
     
         FMKHRT_HIGH_RES_TIMER_NB,
     } t_eFMKHRT_HighResIstc;
@@ -70,7 +70,7 @@
         FMKHRT_HRTIM_CHANNEL_2,                        /**< Channel 2 */
     
         FMKHRT_HRTIM_CHANNEL_NB,
-    } t_eFMKHRT_HighResSlvTim;
+    } t_eFMKHRT_HrTimChannel;
 
     /* CAUTION : Automatic generated code section for Enum: End */
 

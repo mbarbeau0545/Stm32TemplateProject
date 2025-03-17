@@ -123,12 +123,11 @@
         //GPIO_name                     Pin_name                      
         {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_10},   // FMKIO_INPUT_SIGDIG_1,
         {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_11},   // FMKIO_INPUT_SIGDIG_2,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_12},   // FMKIO_INPUT_SIGDIG_3,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_13},   // FMKIO_INPUT_SIGDIG_4,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_14},   // FMKIO_INPUT_SIGDIG_5,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_15},   // FMKIO_INPUT_SIGDIG_6,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_0},    // FMKIO_INPUT_SIGDIG_7,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_1},    // FMKIO_INPUT_SIGDIG_8,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_13},   // FMKIO_INPUT_SIGDIG_3,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_14},   // FMKIO_INPUT_SIGDIG_4,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_15},   // FMKIO_INPUT_SIGDIG_5,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_0},    // FMKIO_INPUT_SIGDIG_6,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_1},    // FMKIO_INPUT_SIGDIG_7,
     };
 
     /**< Variable for bsp_Gpio_Pin, adc coonfig Analog input signal mapping */
@@ -138,7 +137,6 @@
         {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_5},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_13},// FMKIO_INPUT_SIGANA_2;
         {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_6},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_3}, // FMKIO_INPUT_SIGANA_3;
         {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_7},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_4}, // FMKIO_INPUT_SIGANA_4;
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_15},              FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_15},// FMKIO_INPUT_SIGANA_5;
     };
 
     /**< Variable for bsp_Gpio_Pin frequency input signal mapping */
@@ -146,46 +144,50 @@
         //GPIO_name                     Pin_name                      alternate function            Interrupt Line                ItLineType                    
         {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_0},              GPIO_AF2_TIM3,                 FMKTIM_INTERRUPT_LINE_IO_33,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_1,
         {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_1},              GPIO_AF2_TIM3,                 FMKTIM_INTERRUPT_LINE_IO_34,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_2,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_3},              GPIO_AF2_TIM3,                 FMKTIM_INTERRUPT_LINE_IO_31,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_3,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_4},              GPIO_AF2_TIM3,                 FMKTIM_INTERRUPT_LINE_IO_32,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_4,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_6},              GPIO_AF2_TIM4,                 FMKTIM_INTERRUPT_LINE_IO_41,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_3,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_7},              GPIO_AF2_TIM4,                 FMKTIM_INTERRUPT_LINE_IO_42,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_4,
     };
 
     /**< Variable for bsp_Gpio_Pin frequency input signal mapping */
     const t_sFMKIO_BspEvntSigCfg c_InEvntSigBspMap_as[FMKIO_INPUT_SIGEVNT_NB] = {
         //GPIO_name                     Pin_name                      GPIO_IRQN                     
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_2},              FMKCPU_NVIC_EXTI2_IRQN},               // FMKIO_INPUT_SIGEVNT_1,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_3},              FMKCPU_NVIC_EXTI3_IRQN},               // FMKIO_INPUT_SIGEVNT_1,
         {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_5},              FMKCPU_NVIC_EXTI9_5_IRQN},             // FMKIO_INPUT_SIGEVNT_2,
+        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_4},              FMKCPU_NVIC_EXTI4_IRQN},               // FMKIO_INPUT_SIGEVNT_3,
     };
 
     /**< Variable for bsp_Gpio_Pin Digital ouput signal mapping */
     const t_sFMKIO_BspSigCfg c_OutDigSigBspMap_as[FMKIO_OUTPUT_SIGDIG_NB] = {
         //GPIO_name                     Pin_name                      
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_10},   // FMKIO_OUTPUT_SIGDIG_1,
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_2,
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_12},   // FMKIO_OUTPUT_SIGDIG_3,
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_13},   // FMKIO_OUTPUT_SIGDIG_4,
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_14},   // FMKIO_OUTPUT_SIGDIG_5,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_8},    // FMKIO_OUTPUT_SIGDIG_6,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_7,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_12},   // FMKIO_OUTPUT_SIGDIG_8,
-        {FMKIO_GPIO_PORT_D,             FMKIO_GPIO_PIN_2},    // FMKIO_OUTPUT_SIGDIG_9,
+        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_1,
+        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_13},   // FMKIO_OUTPUT_SIGDIG_2,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_3,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_12},   // FMKIO_OUTPUT_SIGDIG_4,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_9},    // FMKIO_OUTPUT_SIGDIG_5,
+        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_8},    // FMKIO_OUTPUT_SIGDIG_6,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_3},    // FMKIO_OUTPUT_SIGDIG_7,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_9},    // FMKIO_OUTPUT_SIGDIG_8,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_5},    // FMKIO_OUTPUT_SIGDIG_9,
+        {FMKIO_GPIO_PORT_F,             FMKIO_GPIO_PIN_0},    // FMKIO_OUTPUT_SIGDIG_10,
+        {FMKIO_GPIO_PORT_F,             FMKIO_GPIO_PIN_1},    // FMKIO_OUTPUT_SIGDIG_11,
     };
 
     /**< Variable for bsp_Gpio_Pin PWM output signal mapping */
     const t_sFMKIO_BspTimerSigCfg c_OutPwmSigBspMap_as[FMKIO_OUTPUT_SIGPWM_NB] = {
         //GPIO_name                     Pin_name                      alternate function            Interrupt Line                ItLineType                    
-        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_9},              GPIO_AF6_TIM1,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_12,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_1,
-        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_10},             GPIO_AF6_TIM1,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_13,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_2,
-        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_2},              GPIO_AF6_TIM20,                (t_uint8)FMKTIM_INTERRUPT_LINE_IO_72,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_3,
-        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_3},              GPIO_AF2_TIM1,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_14,                        FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_4,
-        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_6},              GPIO_AF4_TIM8,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_61,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_5,
-        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_7},              GPIO_AF4_TIM8,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_62,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_6,
-        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_8},              GPIO_AF6_TIM20,                (t_uint8)FMKTIM_INTERRUPT_LINE_IO_73,                        FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_7,
-        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_9},              GPIO_AF4_TIM8,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_64,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_8,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_6},              GPIO_AF2_TIM4,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_41,                        FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_9,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_7},              GPIO_AF2_TIM4,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_42,                        FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_10,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_8},              GPIO_AF2_TIM4,                 (t_uint8)FMKHRT_HR_LINE_1,                                   FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_11,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_9},              GPIO_AF2_TIM4,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_44,                        FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_12,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_4},              GPIO_AF1_TIM16,                (t_uint8)FMKTIM_INTERRUPT_LINE_EVNT_3,                       FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_1,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_9},              GPIO_AF1_TIM17,                (t_uint8)FMKTIM_INTERRUPT_LINE_EVNT_4,                       FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_2,
+        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_12},             GPIO_AF1_TIM5,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_52,                        FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_3,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_15},             GPIO_AF1_TIM15,                (t_uint8)FMKTIM_INTERRUPT_LINE_EVNT_1,                       FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_OUTPUT_SIGPWM_4,
+        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_7},              GPIO_AF4_TIM8,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_62,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_5,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_2},              GPIO_AF3_TIM20,                (t_uint8)FMKTIM_INTERRUPT_LINE_IO_71,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_6,
+        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_2},              GPIO_AF2_TIM1,                 (t_uint8)FMKTIM_INTERRUPT_LINE_IO_13,                        FMKIO_ITLINE_TYPE_ADVTIM},    // FMKIO_OUTPUT_SIGPWM_7,
+        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_8},              GPIO_AF13_HRTIM1,              (t_uint8)FMKHRT_HR_LINE_1,                                   FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_8,
+        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_10},             GPIO_AF13_HRTIM1,              (t_uint8)FMKHRT_HR_LINE_3,                                   FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_9,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_12},             GPIO_AF13_HRTIM1,              (t_uint8)FMKHRT_HR_LINE_5,                                   FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_10,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_14},             GPIO_AF13_HRTIM1,              (t_uint8)FMKHRT_HR_LINE_7,                                   FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_11,
+        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_6},              GPIO_AF13_HRTIM1,              (t_uint8)FMKHRT_HR_LINE_11,                                  FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_12,
+        {{FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_8},              GPIO_AF3_HRTIM1,               (t_uint8)FMKHRT_HR_LINE_9,                                   FMKIO_ITLINE_TYPE_HRTIM},    // FMKIO_OUTPUT_SIGPWM_13,
     };
 
     /**< Variable for RxTx Reference for Can Node */

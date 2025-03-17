@@ -35,7 +35,7 @@ ENUM_ROOT_TIM_ORGN = "FMKIO_ITLINE_TYPE"
 DESCRIP_PWM = {
     "BscTim" : "Pwm with Adaptable Frequency and DutyCycle",
     "AdvTim" : "Pwm with Adaptable Frequency, DutyCycle and Pulses",
-    "HrTim" : "Pwm with Adaptable Frequency, DutyCycle, Pulses and current Feedback",
+    "HrTim" : "Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback",
 }
 #------------------------------------------------------------------------------
 #                                       CLASS
@@ -113,7 +113,18 @@ class FMKIO_CodeGen():
         enum_description = ""
         element_description_a:  List[str] = []
         # this pin are usually used by hardware
-        stm_pin = ['PA14', 'PA13', 'PA15', 'PC0', 'PC1']
+        stm_pin_used_available = [
+            'PA0', 'PA1', 'PA2', 'PA3', 'PA4', 'PA5', 'PA6', 'PA7', 'PA8', 'PA9', 'PA10', 'PA11', 'PA12', 'PA13', 'PA14', 'PA15',
+            'PB0', 'PB1', 'PB2', 'PB3', 'PB4', 'PB5', 'PB6', 'PB7', 'PB8', 'PB9', 'PB10', 'PB11', 'PB12', 'PB13', 'PB14', 'PB15',
+            'PC0', 'PC1', 'PC2', 'PC3', 'PC4', 'PC5', 'PC6', 'PC7', 'PC8', 'PC9', 'PC10', 'PC11', 'PC12', 'PC13', 'PC14', 'PC15',
+            #'PD0', 'PD1', 'PD2',
+            #'PE0', 'PE1', 'PE2', 'PE3', 'PE4', 'PE5', 'PE6', 'PE7', 'PE8', 'PE9', 'PE10', 'PE11', 'PE12', 'PE13', 'PE14', 'PE15',
+            'PF0', 'PF1', #'PF2', 'PF3', 'PF4', 'PF5', 'PF6', 'PF7', 'PF8', 'PF9', 'PF10', 'PF11', 'PF12', 'PF13', 'PF14', 'PF15',
+            #'PG0', 'PG1', 'PG2', 'PG3', 'PG4', 'PG5', 'PG6', 'PG7', 'PG8', 'PG9', 'PG10', 'PG11', 'PG12', 'PG13', 'PG14', 'PG15',
+            #'PH0', 'PH1'
+        ]
+
+        stm_pin_used = ['PA14', 'PA13', 'PA15', 'PC0', 'PC1']
         stm_tim_chnl:List = FMKTIM_CodeGen.get_tim_chnl_used()
         max_pin_per_gpio: int = 0
         #---------------------------------------------------
@@ -194,11 +205,11 @@ class FMKIO_CodeGen():
 
         for idx, pin_ana_cfg in enumerate(InAna_astr[1:]):
             sig_name = f'P{pin_ana_cfg[0][5:]}{pin_ana_cfg[1][4:]}'
-            if sig_name in stm_pin:
+            if sig_name in stm_pin_used:
                 raise GPIO_AlreadyConfgigured(f"{sig_name} has already been configured") 
 
             sig_in_ana.append(sig_name)
-            stm_pin.append(sig_name)
+            stm_pin_used.append(sig_name)
             # make const variable     
             var_InAna += "        {{" \
                         + f"{ENUM_GPIO_PORT_ROOT}_{pin_ana_cfg[0][5:]}," \
@@ -224,11 +235,11 @@ class FMKIO_CodeGen():
 
         for idx, pin_dig_cfg in enumerate(InDig_astr[1:]):
             sig_name = f'P{pin_dig_cfg[0][5:]}{pin_dig_cfg[1][4:]}'
-            if sig_name in stm_pin:
+            if sig_name in stm_pin_used:
                 raise GPIO_AlreadyConfgigured(f"{sig_name} has already been configured") 
             
             sig_in_dig.append(sig_name)
-            stm_pin.append(sig_name)
+            stm_pin_used.append(sig_name)
             var_InDig +="        {"\
                         + f"{ENUM_GPIO_PORT_ROOT}_{pin_dig_cfg[0][5:]}," \
                         + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PORT_ROOT}_{pin_dig_cfg[0][5:]}")) \
@@ -250,7 +261,7 @@ class FMKIO_CodeGen():
 
         for idx, pin_freq_cfg in enumerate(InFreq_astr[1:]):
             sig_name = f'P{pin_freq_cfg[0][5:]}{pin_freq_cfg[1][4:]}'
-            if sig_name in stm_pin:
+            if sig_name in stm_pin_used:
                 raise GPIO_AlreadyConfgigured(f"{pin_freq_cfg[5]} has already been configured")
             
             if str(pin_freq_cfg[3] + pin_freq_cfg[4]) in stm_tim_chnl:
@@ -258,7 +269,7 @@ class FMKIO_CodeGen():
 
             sig_in_freq.append(sig_name)
             stm_tim_chnl.append(str(pin_freq_cfg[3]+pin_freq_cfg[4]))
-            stm_pin.append(sig_name)
+            stm_pin_used.append(sig_name)
             # get IT Line                                     FMKCPU_TIMER_X                                         FMKCPU_CHANNEL_X
             itline = FMKTIM_CodeGen.get_itline_from_timcnl(f'{ENUM_FMKTIM_TIMER_ROOT}_{pin_freq_cfg[3][6:]}', f'{ENUM_FMKTIM_CHANNEL_ROOT}_{pin_freq_cfg[4][8:]}')
             var_InFreq += "        {" + "{" \
@@ -287,11 +298,11 @@ class FMKIO_CodeGen():
 
         for idx, pin_evnt_cfg in enumerate(InEvnt_astr[1:]):
             sig_name = f'P{pin_evnt_cfg[0][5:]}{pin_evnt_cfg[1][4:]}'
-            if sig_name in stm_pin:
+            if sig_name in stm_pin_used:
                 raise GPIO_AlreadyConfgigured(f"{sig_name} has already been configured")
             
             sig_in_evnt.append(sig_name)
-            stm_pin.append(sig_name)
+            stm_pin_used.append(sig_name)
             var_InEvnt += "        {" + "{" \
                     + f"{ENUM_GPIO_PORT_ROOT}_{pin_evnt_cfg[0][5:]}," \
                     + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PORT_ROOT}_{pin_evnt_cfg[0][5:]}")) \
@@ -315,14 +326,14 @@ class FMKIO_CodeGen():
 
         for idx, pin_pwm_cfg in enumerate(OutPWM_astr[1:]):
             sig_name = f'P{pin_pwm_cfg[0][5:]}{pin_pwm_cfg[1][4:]}'
-            if sig_name in stm_pin:
+            if sig_name in stm_pin_used:
                 raise GPIO_AlreadyConfgigured(f"{sig_name} has already been configured")
             if str(pin_pwm_cfg[3]+pin_pwm_cfg[4]) in stm_tim_chnl:
                 raise TimerCfg_alreadyUsed(f" the timer {pin_pwm_cfg[3]} and his channel {pin_pwm_cfg[4]} has already been configured")
 
             if(str(pin_pwm_cfg[5]).upper() == 'HRTIM'):
                 try:
-                    letter_idx_tim = int(LETTER_LIST.index(str(pin_pwm_cfg[3])[-1]) + 1)
+                    letter_idx_tim = 2 * int(LETTER_LIST.index(str(pin_pwm_cfg[3])[-1])) + 1
                     chnl = int(str(pin_pwm_cfg[4])[-1])
                     itline_idx = letter_idx_tim * chnl
                     itline = f'{ENUM_ROOT_HR_LINE}_{itline_idx}'
@@ -336,7 +347,7 @@ class FMKIO_CodeGen():
 
             sig_out_pwm.append(sig_name)
             stm_tim_chnl.append(str(pin_pwm_cfg[3]+pin_pwm_cfg[4]))
-            stm_pin.append(sig_name)
+            stm_pin_used.append(sig_name)
 
             var_OutPWM += "        {" + "{" \
                     + f"{ENUM_GPIO_PORT_ROOT}_{pin_pwm_cfg[0][5:]}," \
@@ -363,11 +374,11 @@ class FMKIO_CodeGen():
         var_OutDig += "\n"
         for idx, pin_dig_cfg in enumerate(OutDig_astr[1:]):
             sig_name = f'P{pin_dig_cfg[0][5:]}{pin_dig_cfg[1][4:]}'
-            if sig_name in stm_pin:
+            if sig_name in stm_pin_used:
                     raise GPIO_AlreadyConfgigured(f"{sig_name} has already been configured")
             
             sig_out_dig.append(sig_name)
-            stm_pin.append(sig_name)
+            stm_pin_used.append(sig_name)
             var_OutDig += "        {"\
                         + f"{ENUM_GPIO_PORT_ROOT}_{pin_dig_cfg[0][5:]}," \
                         + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PORT_ROOT}_{pin_dig_cfg[0][5:]}")) \
@@ -386,13 +397,13 @@ class FMKIO_CodeGen():
         for idx, serial_cfg in enumerate(SigSerial_astr):
             RxPin = str(f"P{serial_cfg[4][5:]}{serial_cfg[5][4:]}")
             TxPin = str(f"P{serial_cfg[6][5:]}{serial_cfg[7][4:]}")
-            if (RxPin in stm_pin
-            or TxPin in stm_pin):
+            if (RxPin in stm_pin_used
+            or TxPin in stm_pin_used):
                 raise GPIO_AlreadyConfgigured(f"{RxPin} or {TxPin} has already been configured")
 
             serial_sig.append([RxPin, TxPin])
-            stm_pin.append(TxPin)
-            stm_pin.append(RxPin)
+            stm_pin_used.append(TxPin)
+            stm_pin_used.append(RxPin)
 
             const_serial += '        {' + '{' + f'{ENUM_GPIO_PORT_ROOT}_{serial_cfg[4][5:]},' \
                     + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PORT_ROOT}_{serial_cfg[4][5:]}")) \
@@ -415,13 +426,13 @@ class FMKIO_CodeGen():
         for idx, can_cfg in enumerate(SigCan_astr[1:]):
             RxPin = str(f"P{can_cfg[0][5:]}{can_cfg[1][4:]}")
             TxPin = str(f"P{can_cfg[2][5:]}{can_cfg[3][4:]}")
-            if (RxPin in stm_pin 
-            or TxPin in stm_pin):
+            if (RxPin in stm_pin_used 
+            or TxPin in stm_pin_used):
                 raise GPIO_AlreadyConfgigured(f"{RxPin} or {TxPin} has already been configured")
             
             can_sig.append([RxPin, TxPin])
-            stm_pin.append(TxPin)
-            stm_pin.append(RxPin)
+            stm_pin_used.append(TxPin)
+            stm_pin_used.append(RxPin)
             
             const_can += '        {' + '{' + f'{ENUM_GPIO_PORT_ROOT}_{can_cfg[0][5:]},' \
                     + " " * (SPACE_VARIABLE - len(f"{ENUM_GPIO_PORT_ROOT}_{can_cfg[0][5:]}")) \
@@ -543,6 +554,10 @@ class FMKIO_CodeGen():
         cls.code_gen.change_target_balise(TARGET_SWITCH_GPIO_RCC_START, TARGET_SWITCH_GPIO_RCC_END)
         print("\t\t- switch case to found Rcc clock for a GPIO")
         cls.code_gen._write_into_file(switch_gpio_rcc, FMKIO_CONFIGSPEC_C)
+
+        for stm_pin in stm_pin_used_available:
+            if stm_pin not in stm_pin_used:
+                print(f'WARNING : {stm_pin} unused')
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<End code generation for FMFIO Module>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n")

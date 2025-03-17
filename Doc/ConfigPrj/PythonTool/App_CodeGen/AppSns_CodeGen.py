@@ -78,7 +78,7 @@ class AppSns_CodeGen():
                                                             "t_eAPPSNS_Sensors", 0, "Enum for Sensors list",
                                                             [str(sns_cfg[-1])  for sns_cfg in sensors_cfg_a])
         else:
-            num_sns = cls.code_gen.make_enum_from_variable(ENUM_APPSNS_SENSORS_RT, [],
+            enum_sns = cls.code_gen.make_enum_from_variable(ENUM_APPSNS_SENSORS_RT, [],
                                                             "t_eAPPSNS_Sensors", 0, "Enum for Sensors list",
                                                             [])
 

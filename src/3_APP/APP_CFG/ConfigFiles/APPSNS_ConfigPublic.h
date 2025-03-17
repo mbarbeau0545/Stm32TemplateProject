@@ -29,6 +29,15 @@
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Enum: Start */
     /**
+    * @brief Enum for Sensors list.
+    */
+    typedef enum
+    {
+    
+        APPSNS_SENSOR_NB,
+    } t_eAPPSNS_Sensors;
+
+    /**
     * @brief Enum for Sensors drivers list.
     */
     typedef enum

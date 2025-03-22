@@ -55,6 +55,7 @@ typedef struct __t_sFMKIO_AnaPwmSigInfo
 {
     t_bool IsSigConfigured_b;                   /**< Flag which indicate wether or not the signal has been configured */
     t_uint32 frequencyApplied_u32;
+    t_uint16 dcApplied_u16;
     t_cbFMKIO_PulseEvent    * pulseEvnt_pcb;      /**< callback function when a pulse is finihed if pwm pulse is set  */
     t_cbFMKIO_SigErrorMngmt * sigError_cb;      /**< callback function if an error occured  */
 
@@ -288,12 +289,30 @@ static t_eReturnCode s_FMKIO_PerformDiagnostic(void);
  *********************************/
 t_eReturnCode FMKIO_Init(void)
 {
+    t_eReturnCode Ret_e = RC_OK;
     t_uint8 LLI_u8;
+    t_uint8 idxBspPin_u8;
+    GPIO_TypeDef * bspGpio_ps;
+
     
     //--------- Gpio clock port status ---------//
     for(LLI_u8 = (t_uint8)0; LLI_u8 < FMKIO_GPIO_PORT_NB ; LLI_u8++)
     {
         g_IsGpioClockEnable_ae[LLI_u8] = FMKCPU_CLOCKPORT_OPE_DISABLE;
+
+        // set all pin to 0 to avoid random output voltage ----//
+        for(idxBspPin_u8 = (t_uint8)0 ; idxBspPin_u8 < FMKIO_GPIO_PIN_NB ; idxBspPin_u8++)
+        {
+            Ret_e = FMKIO_Get_BspGpioPort((t_eFMKIO_GpioPort)LLI_u8, &bspGpio_ps);
+
+            if(Ret_e == RC_OK)
+            {
+                HAL_GPIO_WritePin(  bspGpio_ps,
+                                    c_BspPinMapping_ua16[idxBspPin_u8],
+                                    GPIO_PIN_RESET);
+
+            }
+        }
     }
 
     //---------Set Frequency Input Default Value---------//
@@ -338,7 +357,8 @@ t_eReturnCode FMKIO_Init(void)
     for(LLI_u8 = (t_uint8)0 ; LLI_u8 < (t_uint8)FMKIO_OUTPUT_SIGPWM_NB ; LLI_u8++)
     {
         g_OutPwmSigInfo_as[LLI_u8].IsSigConfigured_b   = False;
-        g_OutPwmSigInfo_as[LLI_u8].frequencyApplied_u32   = (t_uint16)0;
+        g_OutPwmSigInfo_as[LLI_u8].frequencyApplied_u32   = (t_uint32)0;
+        g_OutPwmSigInfo_as[LLI_u8].dcApplied_u16   = (t_uint16)0;
         g_OutPwmSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION;
         g_OutPwmSigInfo_as[LLI_u8].pulseEvnt_pcb = (t_cbFMKIO_PulseEvent *)NULL_FONCTION;
     }
@@ -361,7 +381,7 @@ t_eReturnCode FMKIO_Init(void)
         g_IsIOComSerialConConfigured_ab[LLI_u8] = (t_bool)False;
     }
 
-    return RC_OK;
+    return Ret_e;
 }
 /*********************************
  * FMKIO_Cyclic
@@ -755,18 +775,19 @@ t_eReturnCode FMKIO_Set_OutPwmSigCfg(t_eFMKIO_OutPwmSig       f_signal_e,
         }
         else 
         {
-            Ret_e = RC_ERROR_MISSING_CONFIG;
+            Ret_e = RC_ERROR_WRONG_CONFIG;
         }
         
         
         if (Ret_e == RC_OK)
         {
             gpioPort_e = c_OutPwmSigBspMap_as[f_signal_e].BasicCfg_s.HwGpio_e;
+            
             Ret_e = s_FMKIO_Set_BspSigCfg(gpioPort_e,
                                       c_OutPwmSigBspMap_as[f_signal_e].BasicCfg_s.HwPin_e,
                                       (t_uint32)GPIO_MODE_AF_PP,
                                       f_pull_e,
-                                      FMKIO_SPD_MODE_LOW, // irrevelent for a input sig dig
+                                      FMKIO_SPD_MODE_HIGH, // irrevelent for a input sig dig
                                       c_OutPwmSigBspMap_as[f_signal_e].BspAlternateFunc_u8);
             
             if (Ret_e == RC_OK)
@@ -1015,7 +1036,10 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
         }
-        
+        if(Ret_e == RC_OK)
+        {
+            g_OutPwmSigInfo_as[f_signal_e].dcApplied_u16 = f_dutyCycle_u16;
+        }
     }
     return Ret_e;
 }
@@ -1063,7 +1087,10 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
             if(Ret_e == RC_OK)
             {
                 pwmOpe_u.PwmOpe_s.frequency_u32 = f_frequency_u32;
+                pwmOpe_u.PwmOpe_s.dutyCycle_u16 = g_OutPwmSigInfo_as[f_signal_e].dcApplied_u16;
+
                 SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_FREQUENCY);
+                SETBIT_8B(maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE);
 
                 Ret_e = FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_IO,
                                                     (t_uint8)ITLineIO_u8,
@@ -1074,7 +1101,9 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         else if(timOrgn_e == FMKIO_ITLINE_TYPE_HRTIM)
         {
             pwmOpe_s.frequency_u32 = f_frequency_u32;
+            pwmOpe_s.dutyCycle_u16 = g_OutPwmSigInfo_as[f_signal_e].dcApplied_u16;
             SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY);
+            SETBIT_8B(maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE);
 
             Ret_e = FMKHRT_SetPwmLineWaveform(  (t_eFMKHRT_HighResLine)ITLineIO_u8,
                                                 pwmOpe_s,

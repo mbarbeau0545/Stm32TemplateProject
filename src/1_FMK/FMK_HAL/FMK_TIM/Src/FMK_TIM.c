@@ -899,7 +899,7 @@ t_eReturnCode FMKTIM_Set_ICLineCfg(t_eFMKTIM_InterruptLineIO f_InterruptLine_e,
 /*********************************
  * FMKTIM_Set_EvntTimerCfg
  *********************************/
-t_eReturnCode FMKCP_Set_EvntTimerCfg(   t_eFMKTIM_InterruptLineEvnt f_EvntITLine_e,
+t_eReturnCode FMKTIM_Set_EvntTimerCfg(   t_eFMKTIM_InterruptLineEvnt f_EvntITLine_e,
                                         t_uint32 f_periodms_u32,
                                         t_cbFMKTIM_InterruptLine f_ITChannel_cb)
 {
@@ -1621,6 +1621,7 @@ static t_eReturnCode s_FMKTIM_Set_EvntChannelCfg(t_eFMKTIM_Timer f_timer_e,
             timerInfo_ps->isConfigured_b = (t_bool)True;
             timerInfo_ps->Channel_as[chnl_e].chnl_cb = f_ITChannel_cb;
             timerInfo_ps->Channel_as[chnl_e].RunMode_e = FMKTIM_LINE_RUNMODE_INTERRUPT;
+            timerInfo_ps->Channel_as[chnl_e].IsChnlConfigure_b = (t_bool)True;
         }
         else
         {

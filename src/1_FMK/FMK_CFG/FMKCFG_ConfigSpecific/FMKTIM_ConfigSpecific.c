@@ -297,16 +297,19 @@ t_eReturnCode FMKTIM_GetEvntTimerInitParam( t_eFMKCPU_ClockPort f_timClock_e,
         if(FMKTIM_IS_32B_TIMER(f_timClock_e) == True)
         {
             maxNumberBit_u32 = (t_uint32)(CST_MAX_UINT_32BIT);
-            maxARRValue_u32 = (t_uint32)(FMKTIM_TIMER_PWM_ARR_TARGET_32_BIT); // 32-bit target
+            minARRValue_u32 = (t_uint32)(FMKTIM_ARR_LOW_LIMIT_32BIT);
+            maxARRValue_u32 = (t_uint32)(FMKTIM_ARR_HIGH_LIMIT_32BIT); // 32-bit target
         }
         else 
         {   
             maxNumberBit_u32 = (t_uint32)(CST_MAX_UINT_16BIT);
-            maxARRValue_u32 = (t_uint32)(FMKTIM_TIMER_PWM_ARR_TARGET_16_BIT); // 16-bit target
+            minARRValue_u32 = (t_uint32)(FMKTIM_ARR_LOW_LIMIT_16BIT);
+            maxARRValue_u32 = (t_uint32)(FMKTIM_ARR_HIGH_LIMIT_16BIT); // 16-bit target
         }
         //----------Calculate Low/High/Mean Prescaler---------//
         lowPrescaler_f32 = s_FMKTIM_Timer_GetPrescaler(f_timerFreqMhz_u32, minARRValue_u32, f_EvntFreq_f32);
         highPrescaler_f32 = s_FMKTIM_Timer_GetPrescaler(f_timerFreqMhz_u32, maxARRValue_u32, f_EvntFreq_f32);
+
         realPrescaler_u32 = (t_uint32)((lowPrescaler_f32 + highPrescaler_f32) / (t_float32)2.0f);
 
         //----------Calculate ARR with prescaler---------//

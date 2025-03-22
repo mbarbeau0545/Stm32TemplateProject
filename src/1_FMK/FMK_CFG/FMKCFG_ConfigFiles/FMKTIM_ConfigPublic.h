@@ -97,10 +97,14 @@
         FMKTIM_INTERRUPT_LINE_IO_62,                       /**< General Purpose Timer, Reference to Timer 8 Channel 2 */
         FMKTIM_INTERRUPT_LINE_IO_63,                       /**< General Purpose Timer, Reference to Timer 8 Channel 3 */
         FMKTIM_INTERRUPT_LINE_IO_64,                       /**< General Purpose Timer, Reference to Timer 8 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_71,                       /**< General Purpose Timer, Reference to Timer 20 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_72,                       /**< General Purpose Timer, Reference to Timer 20 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_73,                       /**< General Purpose Timer, Reference to Timer 20 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_74,                       /**< General Purpose Timer, Reference to Timer 20 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_71,                       /**< General Purpose Timer, Reference to Timer 15 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_72,                       /**< General Purpose Timer, Reference to Timer 15 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_81,                       /**< General Purpose Timer, Reference to Timer 16 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_91,                       /**< General Purpose Timer, Reference to Timer 17 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_101,                      /**< General Purpose Timer, Reference to Timer 20 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_102,                      /**< General Purpose Timer, Reference to Timer 20 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_103,                      /**< General Purpose Timer, Reference to Timer 20 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_104,                      /**< General Purpose Timer, Reference to Timer 20 Channel 4 */
     
         FMKTIM_INTERRUPT_LINE_IO_NB,
     } t_eFMKTIM_InterruptLineIO;
@@ -110,10 +114,8 @@
     */
     typedef enum
     {
-        FMKTIM_INTERRUPT_LINE_EVNT_1 = 0x0,                  /**< Event Purpose Timer, Reference to Timer 15 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_EVNT_2,                        /**< Event Purpose Timer, Reference to Timer 15 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_EVNT_3,                        /**< Event Purpose Timer, Reference to Timer 16 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_EVNT_4,                        /**< Event Purpose Timer, Reference to Timer 17 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_EVNT_1 = 0x0,                  /**< Event Purpose Timer, Reference to Timer 6 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_EVNT_2,                        /**< Event Purpose Timer, Reference to Timer 7 Channel 1 */
     
         FMKTIM_INTERRUPT_LINE_EVNT_NB,
     } t_eFMKTIM_InterruptLineEvnt;
@@ -123,8 +125,6 @@
     */
     typedef enum
     {
-        FMKTIM_INTERRUPT_LINE_DAC_1 = 0x0,                  /**< Dac Purpose Timer, Reference to Timer 6 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_DAC_2,                        /**< Dac Purpose Timer, Reference to Timer 7 Channel 1 */
     
         FMKTIM_INTERRUPT_LINE_DAC_NB,
     } t_eFMKTIM_InterruptLineDAC;

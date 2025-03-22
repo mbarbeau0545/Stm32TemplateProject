@@ -1552,7 +1552,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html"><param name="Name" value="FMK_CPU.c"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMKCP_Set_EvntTimerCfg(t_eFMKCPU_InterruptLineEvnt f_EvntITLine_e, t_uint32 f_periodms_u32, t_cbFMKCPU_InterruptLine f_ITChannel_cb)"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMKTIM_Set_EvntTimerCfg(t_eFMKCPU_InterruptLineEvnt f_EvntITLine_e, t_uint32 f_periodms_u32, t_cbFMKCPU_InterruptLine f_ITChannel_cb)"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html"><param name="Name" value="FMK_CPU.c"></OBJECT>
   <UL>
@@ -1756,7 +1756,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8h.html"><param name="Name" value="FMK_CPU.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8h.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMKCP_Set_EvntTimerCfg(t_eFMKCPU_InterruptLineEvnt f_EvntITLine_e, t_uint32 f_periodms_u32, t_cbFMKCPU_InterruptLine f_ITChannel_cb)"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8h.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMKTIM_Set_EvntTimerCfg(t_eFMKCPU_InterruptLineEvnt f_EvntITLine_e, t_uint32 f_periodms_u32, t_cbFMKCPU_InterruptLine f_ITChannel_cb)"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8h.html"><param name="Name" value="FMK_CPU.h"></OBJECT>
   <UL>
@@ -3095,7 +3095,7 @@
     <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_d_a_8h.html#a79031befc488019787772e09ffc0c420"><param name="Name" value="FMK_CDA.h"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_d_a___config_private_8h.html#add8c925937eeaba53f5ff866d1aba303"><param name="Name" value="FMKCDA_TIME_BTWN_DIAG_MS"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMKCP_Set_EvntTimerCfg(t_eFMKCPU_InterruptLineEvnt f_EvntITLine_e, t_uint32 f_periodms_u32, t_cbFMKCPU_InterruptLine f_ITChannel_cb)"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMKTIM_Set_EvntTimerCfg(t_eFMKCPU_InterruptLineEvnt f_EvntITLine_e, t_uint32 f_periodms_u32, t_cbFMKCPU_InterruptLine f_ITChannel_cb)"></OBJECT>
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8c.html#a61a43673fea859f4068b00e35906034e"><param name="Name" value="FMK_CPU.c"></OBJECT>
   </UL>

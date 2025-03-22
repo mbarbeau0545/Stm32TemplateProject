@@ -28,7 +28,7 @@
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
-
+#define SIGNAL_IN_TEST FMKIO_OUTPUT_SIGPWM_8
 // ********************************************************************
 // *                      Types
 // ********************************************************************
@@ -52,7 +52,13 @@
 // ********************************************************************
 // *                      Prototypes
 // ********************************************************************
-	
+typedef enum 
+{
+    TYPETEST_PWM_FREQ_CHANGE = 0x00,
+    TYPETEST_PWM_DC_CHANGE,
+    TYPETEST_PWM_DC_FREQ_CHANGE,
+    TYPERTEST_PWM_PULSE_GEN
+} t_eAPPLGC_TypeTest;
 // ********************************************************************
 // *                      Variables
 // ********************************************************************
@@ -72,6 +78,15 @@ static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
 * @brief Flag to Reset Service State
 */
 static t_bool  g_resetSrvState_b = (t_bool)False; 
+
+static t_eAPPLGC_TypeTest g_TypeTest_e = TYPERTEST_PWM_PULSE_GEN;
+static t_bool g_fastTaskON = (t_bool)False;
+static t_bool g_pulseFinish_b = (t_bool)True;
+static t_uint32 f_finishpulse_u32;
+static t_uint32 f_finishpulse1_u32;
+static t_uint32 f_finishpulse2_u32;
+static t_uint32 f_finishpulse3_u32;
+static t_uint32 f_finishpulse4_u32;
 /* CAUTION : Automatic generated code section for Variable: Start */
 /* CAUTION : Automatic generated code section for Variable: End */
 //********************************************************************************
@@ -158,6 +173,13 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
                                         t_uint16 f_debugInfo2_u16);
 
 static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e);
+static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e);
+static void s_APPLGC_Callback_2(t_eFMKIO_OutPwmSig f_signal_e);
+static void s_APPLGC_Callback_3(t_eFMKIO_OutPwmSig f_signal_e);
+static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e);
+static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
+
+
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
@@ -336,11 +358,30 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     
-    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_11,
+    Ret_e = FMKIO_Set_OutPwmSigCfg(SIGNAL_IN_TEST,
                                     FMKIO_PULL_MODE_UP,
-                                    2000,
+                                    1000,
                                     s_APPLGC_Callback,
                                     NULL_FONCTION);
+    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_9,
+                                    FMKIO_PULL_MODE_UP,
+                                    1000,
+                                    s_APPLGC_Callback_2,
+                                    NULL_FONCTION);
+    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_10,
+                                    FMKIO_PULL_MODE_UP,
+                                    1000,
+                                    s_APPLGC_Callback_1,
+                                    NULL_FONCTION);
+    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_11,
+                                    FMKIO_PULL_MODE_UP,
+                                    1000,
+                                    s_APPLGC_Callback_3,
+                                    NULL_FONCTION);
+
+    Ret_e = FMKTIM_Set_EvntTimerCfg(FMKTIM_INTERRUPT_LINE_EVNT_1, 
+                            (t_uint32)5,
+                            s_APPLGC_FastTask);
     return Ret_e;
 }
 
@@ -350,11 +391,100 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
+    t_uFMKTIM_ITLineOpe itLineOpe;
+
+    if(g_TypeTest_e == TYPETEST_PWM_FREQ_CHANGE)
+
+    {
+        Ret_e = FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
+                                    500);
+    }
+    if(g_fastTaskON == True)
+    {
+        itLineOpe.EvntOpe_e = FMKTIM_EVNT_OPE_START_TIMER;
+        FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_EVNT,
+                                    FMKTIM_INTERRUPT_LINE_EVNT_1,
+                                    itLineOpe,
+                                    (t_uint8)0);
+    }
     
-    Ret_e = FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_11, 500);
+    
     return Ret_e;
 }
 
+/*********************************
+ * s_APPLGC_Operational
+ *********************************/
+static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8)
+{
+    static t_uint32 frequency_u32  = 1000;
+    static t_uint16 pulses_u16 = 0;
+    static t_uint16 dutycycle_u16 = 100;
+    static t_uint32 saveTime_u32 = 0;
+    t_uint32 currentTime_u32; 
+
+    FMKCPU_Get_Tick(&currentTime_u32);
+    switch(g_TypeTest_e)
+    {
+        case  TYPETEST_PWM_FREQ_CHANGE:
+        {
+
+            //saveTime_u32 = currentTime_u32;
+            frequency_u32 += 500;
+            FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
+                                        frequency_u32);
+            
+            break;
+        }
+        case  TYPETEST_PWM_DC_CHANGE:
+        {
+            //saveTime_u32 = currentTime_u32;
+            dutycycle_u16 += 100;
+            FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
+                                    dutycycle_u16);
+            
+            break;
+        }
+        case TYPETEST_PWM_DC_FREQ_CHANGE:
+        {  
+            frequency_u32 += 100;
+            FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
+                                        frequency_u32);
+            dutycycle_u16 += 10;
+            if(dutycycle_u16 > 1000)
+            {
+                dutycycle_u16 = 1000;
+            }
+            FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
+                                    dutycycle_u16);      
+            break;
+        }
+        case  TYPERTEST_PWM_PULSE_GEN:
+        {
+            if(g_pulseFinish_b == (t_bool)True)
+            {
+                if((currentTime_u32 - saveTime_u32) > 1000)
+                {
+                    saveTime_u32 = currentTime_u32;
+                    FMKIO_Set_OutPwmSigPulses(SIGNAL_IN_TEST,
+                                                500,
+                                                10000);
+                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_9,
+                                                500,
+                                                10000);
+                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_10,
+                                                500,
+                                                10000);
+                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_11,
+                                                500,
+                                                10000);
+                }
+            }
+            break;
+        }
+    }
+    return;
+}
 /*********************************
  * s_APPLGC_Operational
  *********************************/
@@ -362,22 +492,108 @@ static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     static t_uint32 frequency_u32  = 1000;
+    static t_uint16 pulses_u16 = 0;
+    static t_uint16 dutycycle_u16 = 100;
     static t_uint32 saveTime_u32 = 0;
     t_uint32 currentTime_u32; 
 
-    if( frequency_u32 >= 30000)
-    {
-        frequency_u32 = 1000;
-    }
     FMKCPU_Get_Tick(&currentTime_u32);
-
-    if((currentTime_u32 - saveTime_u32) > 1000)
+    switch(g_TypeTest_e)
     {
-        saveTime_u32 = currentTime_u32;
-        frequency_u32 += 500;
-        Ret_e = FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_11,
-                                                frequency_u32);
+        case  TYPETEST_PWM_FREQ_CHANGE:
+        {
+            if( frequency_u32 >= 30000)
+            {
+                frequency_u32 = 1000;
+        
+            }
+        
+            if((currentTime_u32 - saveTime_u32) > 1000)
+            {
+                saveTime_u32 = currentTime_u32;
+                frequency_u32 += 500;
+                FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
+                                            frequency_u32);
+            }
+            break;
+        }
+        case  TYPETEST_PWM_DC_CHANGE:
+        {
+            if( dutycycle_u16 >= 1000)
+            {
+                dutycycle_u16 = 100;
+        
+            }
+        
+            if((currentTime_u32 - saveTime_u32) > 1000)
+            {
+                //saveTime_u32 = currentTime_u32;
+                dutycycle_u16 += 100;
+                FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
+                                            dutycycle_u16);
+            }
+            break;
+        }
+        case TYPETEST_PWM_DC_FREQ_CHANGE:
+        {
+            if( frequency_u32 >= 30000)
+            {
+                frequency_u32 = 1000;
+        
+            }
+            if( dutycycle_u16 >= 1000)
+            {
+                dutycycle_u16 = 100;
+        
+            }
+            if((currentTime_u32 - saveTime_u32) > 1000)
+            {
+                saveTime_u32 = currentTime_u32;
+                frequency_u32 += 500;
+                FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
+                                            frequency_u32);
+                dutycycle_u16 += 100;
+                FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
+                                        dutycycle_u16);
+            }
+            
+            break;
+        }
+        case  TYPERTEST_PWM_PULSE_GEN:
+        {
+            if(g_pulseFinish_b == (t_bool)True)
+            {
+                if((currentTime_u32 - f_finishpulse_u32) > 3000)
+                {
+                    saveTime_u32 = currentTime_u32;
+                    g_pulseFinish_b = False;
+                    FMKIO_Set_OutPwmSigPulses(SIGNAL_IN_TEST,
+                                                500,
+                                                10000);
+                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_9,
+                                                500,
+                                                10000);
+                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_10,
+                                                500,
+                                                10000);
+                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_11,
+                                                500,
+                                                10000);
+                }
+            }
+            /*if(((currentTime_u32 - saveTime_u32) > 5000)
+            && (g_pulseFinish_b == False))
+            {
+                FMKIO_Set_OutPwmSigPulses(SIGNAL_IN_TEST,
+                    500,
+                    0);
+                FMKCPU_Get_Tick(&f_finishpulse_u32);
+                g_pulseFinish_b = True;
+            }*/
+            break;
+        }
     }
+    return;
 
 
    
@@ -514,6 +730,32 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
  *********************************/
 static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e)
 {
+    //g_pulseFinish_b = True;
+    FMKCPU_Get_Tick(&f_finishpulse_u32);
+    return;
+}
+
+static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e)
+{
+
+    FMKCPU_Get_Tick(&f_finishpulse1_u32);
+    return;
+}
+
+static void s_APPLGC_Callback_2(t_eFMKIO_OutPwmSig f_signal_e)
+{
+    
+    FMKCPU_Get_Tick(&f_finishpulse2_u32);
+    return;
+}
+static void s_APPLGC_Callback_3(t_eFMKIO_OutPwmSig f_signal_e)
+{
+    FMKCPU_Get_Tick(&f_finishpulse3_u32);
+    return;
+}
+static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e)
+{
+    FMKCPU_Get_Tick(&f_finishpulse4_u32);
     return;
 }
 //************************************************************************************

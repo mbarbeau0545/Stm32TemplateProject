@@ -21,6 +21,8 @@ from .FMK_PATH import *
 #------------------------------------------------------------------------------
 TARGET_SWITCH_CASE_HR_LINE_START = "            /* CAUTION : Automatic generated code section for switch case mapping: Start */\n"
 TARGET_SWITCH_CASE_HR_LINE_STOP = "            /* CAUTION : Automatic generated code section for switch case mapping: Stop */\n"
+TARGET_IRQHAND_HR_LINE_START = "/* CAUTION : Automatic generated code section for IRQ Handler: Start */\n"
+TARGET_IRQHAND_HR_LINE_STOP = "/* CAUTION : Automatic generated code section for IRQ Handler: Stop */\n"
 TARGET_VARIABLE_HR_LINE_START = "/* CAUTION : Automatic generated code section for Variables: Start */\n"
 TARGET_VARIABLE_HR_LINE_STOP  = "/* CAUTION : Automatic generated code section for Variables: Stop */\n"
 FMKHRT_CFG_PUBLIC_PATH = 'src\\1_FMK\FMK_CFG\FMKCFG_ConfigFiles\FMKHRT_ConfigPublic.h'
@@ -167,18 +169,20 @@ class FMKHRT_CodeGen():
         #----------------------------------------------------------------
         #-------------------make IRQN HANDLER DECALRATION----------------
         #----------------------------------------------------------------
-        for idx, irqn_handler in enumerate(list_irqn_hdler[1:]):
-            gencode_irqn_hdler += f'void {str(irqn_handler)}(void)\n'\
+        for irqn_handler in list_irqn_hdler:
+            idx_hres = str(irqn_handler)[7]
+            gencode_irqn_hdler += f'void {str(irqn_handler[0])}(void)\n'\
                                 + '{\n'\
-                                + f'    if(g_HrTimInfo_as[{ENUM_ROOT_HR_TIM}_{idx + 1}].isConfigured_b == (t_bool)True)\n'\
+                                + f'    if(g_HrTimInfo_as[{ENUM_ROOT_HR_TIM}_{idx_hres}].isConfigured_b == (t_bool)True)\n'\
                                 + '    {\n'
-            if 'MASTER' in str(irqn_handler):
-                gencode_irqn_hdler += f'        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[{ENUM_ROOT_HR_TIM}_{str(idx + 1)}].bspItsc_s,'\
-                                    + f'                                 HRTIM_TIMERINDEX_TIMER_MASTER);'
+            if 'MASTER' in str(irqn_handler).upper():
+                gencode_irqn_hdler += f'        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[{ENUM_ROOT_HR_TIM}_{str(idx_hres)}].bspItsc_s,\n'\
+                                    + f'                                 HRTIM_TIMERINDEX_MASTER);\n'
             else:           
-                 gencode_irqn_hdler += f'        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[{ENUM_ROOT_HR_TIM}_{str(idx + 1)}].bspItsc_s,\n'\
-                                    + f'                                 HRTIM_TIMERINDEX_TIMER_{str(irqn_handler)[11]});\n'  
+                 gencode_irqn_hdler += f'        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[{ENUM_ROOT_HR_TIM}_{str(idx_hres)}].bspItsc_s,\n'\
+                                    + f'                                 HRTIM_TIMERINDEX_TIMER_{str(irqn_handler)[12]});\n'  
             gencode_irqn_hdler += '    }\n'\
+                                + '    return;\n'\
                                 + '}\n'
 
     
@@ -226,11 +230,13 @@ class FMKHRT_CodeGen():
         cls.code_gen.change_target_balise(TARGET_VARIABLE_HR_LINE_START, TARGET_VARIABLE_HR_LINE_STOP)
         cls.code_gen._write_into_file(var_timinfo, FMKHRT_C_FILE)
         
-        print("\t\t- Timer IRQN Handler start")
+        print("\t\t- Timer Switch Case start")
         cls.code_gen.change_target_balise(TARGET_SWITCH_CASE_HR_LINE_START, TARGET_SWITCH_CASE_HR_LINE_STOP)
         cls.code_gen._write_into_file(switch_mapp_line, FMKHRT_C_FILE)
 
-        
+        print("\t\t- IRQ Handler start")
+        cls.code_gen.change_target_balise(TARGET_IRQHAND_HR_LINE_START, TARGET_IRQHAND_HR_LINE_STOP)
+        cls.code_gen._write_into_file(gencode_irqn_hdler, FMKHRT_C_FILE)
 
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<End code generation for FMKTIM Module>>>>>>>>>>>>>>>>>>>")

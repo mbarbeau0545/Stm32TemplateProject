@@ -689,7 +689,8 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
                 setChnlState_e = slvTimInfo_ps->chnlInfo_as[hrChnl_e].state_e;
             }  
         }
-        if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
+        if((GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
+        && f_PwmOpe_s.dutyCycle_u16 != (t_uint16)0)
         {
             if(f_PwmOpe_s.dutyCycle_u16 > FMKHRT_PWM_MAX_DUTY_CYLCE)
             {
@@ -731,7 +732,7 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
                     sTimerxRegs[bspTimerIdx_u32].REPxR = nbPulses_u16; // could be 0 doesn't matter
                                                                                             
             }
-            else // DISACTIVATED 
+            else // channel activated
             {
                 //---- Shut Down Basic Timer  ----//
                 Ret_e = s_FMKHRT_SetHwOutputState(  (&g_HrTimInfo_as[hrTimIstc_e]),
@@ -1190,8 +1191,6 @@ static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInf
     t_sFMKHRT_TimSlaveInfo * slvTimInfo_ps;
     t_uint32 bspTimerIdx_u32;
     t_uint32 bspChannel_u32;
-    t_uint32 currTime_u32;
-
 
     if(f_HrTimInfo_ps == (t_sFMKHRT_HrTimInfo *)NULL)
     {
@@ -1225,6 +1224,11 @@ static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInf
             && (slvTimInfo_ps->isNVICEnable_b == (t_bool)False))
             {
                 Ret_e = FMKCPU_Set_NVICState(slvTimInfo_ps->c_IRQNType_e, FMKCPU_NVIC_OPE_ENABLE);
+
+                if(Ret_e == RC_OK)
+                {
+                    slvTimInfo_ps->isNVICEnable_b = (t_bool)True;
+                }
             }
             switch(f_runMode_e)
             {
@@ -1263,8 +1267,13 @@ static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInf
             && (slvTimInfo_ps->isNVICEnable_b == (t_bool)True))
             {
                 Ret_e = FMKCPU_Set_NVICState(slvTimInfo_ps->c_IRQNType_e, FMKCPU_NVIC_OPE_DISABLE);
+
+                if(Ret_e == RC_OK)
+                {
+                    slvTimInfo_ps->isNVICEnable_b = (t_bool)False;
+                }
             }
-            switch(slvTimInfo_ps->runMode_e)
+            switch(f_runMode_e)
             {
                 case FMKHRT_RUN_MODE_POLL:
                     bspRet_e = c_FMKHRT_HwOpe_apf.

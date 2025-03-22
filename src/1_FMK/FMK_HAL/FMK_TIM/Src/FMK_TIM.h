@@ -86,7 +86,6 @@
         FMKTIM_BIT_PWM_FREQUENCY = 0x00,
         FMKTIM_BIT_PWM_DUTYCYCLE,
         FMKTIM_BIT_PWM_NB_PULSES,
-        FMKTIM_BIT_PWM_CCRX_REGISTER,
     };
 
     /**
@@ -203,8 +202,6 @@
     {
         t_uint32 frequency_u32;         /**< update frequency value */
         t_uint16 dutyCycle_u16;         /**< update duty cycle value */
-        t_uint16 nbPulses_u16;          /**< update nbPulses_u16 value */
-        t_uint16 CCrxRegister_u16;
     } t_sFMKTIM_PwmValue;
     
     typedef struct 
@@ -419,45 +416,127 @@
     *  @retval RC_ERROR_ALREADY_CONFIGURED       @ref RC_ERROR_ALREADY_CONFIGURED
     *  @retval RC_ERROR_NOT_ALLOWED              @ref RC_ERROR_NOT_ALLOWED
     */
-    t_eReturnCode FMKTIM_Set_EvntTimerCfg(   t_eFMKTIM_InterruptLineEvnt f_EvntITLine_e,
+    t_eReturnCode FMKTIM_Set_EvntTimerCfg(  t_eFMKTIM_InterruptLineEvnt f_EvntITLine_e,
                                             t_uint32 f_periodms_u32,
                                             t_cbFMKTIM_InterruptLine f_ITLine_cb);
     /**
     *
     *	@brief      Set a InterruptLine  state ON/OFF.\n
-    *   @note       Using HAL_TIM function 
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
     *           
     *
-    *	@param[in]  f_timer_e              : enum value for the timer, value from @ref t_eFMKTIM_Timer
-    *	@param[in]  f_channel_e            : enum value for the channel, value from @ref t_eFMKTIM_InterruptChnl
-    *	@param[in]  f_channelState_e       : enum value for the state operation, value from @ref t_eFMKTIM_ChnlState
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
     *
     *  @retval RC_OK                             @ref RC_OK
     *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
     *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
     */
-    t_eReturnCode FMKTIM_Set_InterruptLineOpe(  t_eFMKTIM_InterruptLineType f_ITLineType_e,
-                                                t_uint8 f_IT_line_u8,
-                                                t_uFMKTIM_ITLineOpe f_ITLineOpe_u,
-                                                t_uint8 f_mask_u8);
+    t_eReturnCode FMKTIM_Set_PwmLineValue(   t_eFMKTIM_InterruptLineIO f_Itline_e,
+                                            t_sFMKTIM_PwmOpe f_PwmOpe_s,
+                                            t_uint8 f_maskUpdate_u8);
     /**
     *
     *	@brief      Set a InterruptLine  state ON/OFF.\n
-    *   @note       Using HAL_TIM function 
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
     *           
     *
-    *	@param[in]  f_timer_e              : enum value for the timer, value from @ref t_eFMKTIM_Timer
-    *	@param[in]  f_channel_e            : enum value for the channel, value from @ref t_eFMKTIM_InterruptChnl
-    *	@param[in]  f_channelState_e       : enum value for the state operation, value from @ref t_eFMKTIM_ChnlState
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
     *
     *  @retval RC_OK                             @ref RC_OK
     *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
     *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
     */
-    t_eReturnCode FMKTIM_Get_InterruptLineValue(    t_eFMKTIM_InterruptLineType f_ITLineType_e,
-                                                    t_uint8 f_IT_line_u8,
-                                                    t_uFMKTIM_ITLineValue * f_ITLineValue_pu,
-                                                    t_uint8 f_mask_u8);
+    t_eReturnCode FMKTIM_Set_ICLineValue(   t_eFMKTIM_InterruptLineIO f_Itline_e,
+                                            t_sFMKTIM_ICOpe         f_ICOpe_s,
+                                            t_uint8                 f_mask_u8);
+    /**
+    *
+    *	@brief      Set a InterruptLine  state ON/OFF.\n
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
+    *           
+    *
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
+    *
+    *  @retval RC_OK                             @ref RC_OK
+    *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+    *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+    */
+    t_eReturnCode FMKTIM_Set_EcdrLineState( t_eFMKTIM_InterruptLineIO f_Itline_e,
+                                            t_eFMKTIM_EcdrOpe f_EcdrOpe);
+    /**
+    *
+    *	@brief      Set a InterruptLine  state ON/OFF.\n
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
+    *           
+    *
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
+    *
+    *  @retval RC_OK                             @ref RC_OK
+    *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+    *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+    */
+    t_eReturnCode FMKTIM_Set_EvntLineState(  t_eFMKTIM_InterruptLineEvnt f_EvntITLine_e,
+                                            t_eFMKTIM_EvntOpe f_EvntOpe);
+
+    /**
+    *
+    *	@brief      Set a InterruptLine  state ON/OFF.\n
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
+    *           
+    *
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
+    *
+    *  @retval RC_OK                             @ref RC_OK
+    *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+    *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+    */
+    t_eReturnCode FMKTIM_Get_PwmLineValue(  t_eFMKTIM_InterruptLineIO f_Itline_e,
+                                            t_sFMKTIM_PwmValue * f_PwmValue_ps,
+                                            t_uint8 f_mask_u8);
+    /**
+    *
+    *	@brief      Set a InterruptLine  state ON/OFF.\n
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
+    *           
+    *
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
+    *
+    *  @retval RC_OK                             @ref RC_OK
+    *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+    *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+    */
+    t_eReturnCode FMKTIM_Get_EcdrLineValue( t_eFMKTIM_InterruptLineIO f_Itline_e,
+                                            t_uint32 * f_position_u32,
+                                            t_uint32 * f_direction_u32);
+    /**
+    *
+    *	@brief      Set a InterruptLine  state ON/OFF.\n
+    *   @note       Using HAL_TIM function & Run mode Configured previously 
+    *               in API CfgF Function, we start_poll/It/Dma the Line
+    *           
+    *
+    *	@param[in]  f_ITLine_e              : enum value for the timer, value from @ref t_eFMKTIM_InterruptLineIO
+    *	@param[in]  f_EcdrState_e            : enum value for the channel, value from @ref t_eFMKTIM_EcdrStartOption
+    *
+    *  @retval RC_OK                             @ref RC_OK
+    *  @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
+    *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
+    */
+    t_eReturnCode FMKTIM_Get_ICLineValue(   t_eFMKTIM_InterruptLineIO f_Itline_e,
+                                            t_sFMKTIM_ICValue * ICValue_ps,
+                                            t_uint8 f_mask_u8);
 
     /**
     *

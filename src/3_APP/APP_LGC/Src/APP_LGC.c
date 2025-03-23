@@ -401,11 +401,8 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
     }
     if(g_fastTaskON == True)
     {
-        itLineOpe.EvntOpe_e = FMKTIM_EVNT_OPE_START_TIMER;
-        FMKTIM_Set_InterruptLineOpe(FMKTIM_INTERRUPT_LINE_TYPE_EVNT,
-                                    FMKTIM_INTERRUPT_LINE_EVNT_1,
-                                    itLineOpe,
-                                    (t_uint8)0);
+        Ret_e = FMKTIM_Set_EvntLineState(   FMKTIM_INTERRUPT_LINE_EVNT_1,
+                                            FMKTIM_EVNT_OPE_START_TIMER);
     }
     
     

@@ -931,6 +931,9 @@ t_eReturnCode FMKTIM_Set_EvntTimerCfg(   t_eFMKTIM_InterruptLineEvnt f_EvntITLin
     return Ret_e;
 }
 
+/*********************************
+ * FMKTIM_Set_PwmLineValue
+ *********************************/
 t_eReturnCode FMKTIM_Set_PwmLineValue(   t_eFMKTIM_InterruptLineIO f_Itline_e,
                                         t_sFMKTIM_PwmOpe f_PwmOpe_s,
                                         t_uint8 f_maskUpdate_u8)
@@ -969,7 +972,7 @@ t_eReturnCode FMKTIM_Set_PwmLineValue(   t_eFMKTIM_InterruptLineIO f_Itline_e,
         }
         if(Ret_e == RC_OK)
         {
-            Ret_e = s_FMKTIM_Set_PwmOpeState(   timer_e, 
+            Ret_e = s_FMKTIM_Set_PwmOpeState(   timerInfo_ps, 
                                                 chnl_e,
                                                 f_PwmOpe_s,
                                                 f_maskUpdate_u8);
@@ -1008,6 +1011,7 @@ t_eReturnCode FMKTIM_Set_ICLineValue(t_eFMKTIM_InterruptLineIO f_Itline_e,
                                                &chnl_e);
 
         timerInfo_ps = (t_sFMKTIM_TimerInfo *)(&g_TimerInfo_as[timer_e]);
+        bspIsct_ps = (TIM_TypeDef *)(timerInfo_ps->bspTimer_s.Instance);
 
         if((timerInfo_ps->isConfigured_b == (t_bool)False)
         || (timerInfo_ps->Channel_as[chnl_e].IsChnlConfigure_b == (t_bool)False))
@@ -1258,7 +1262,6 @@ t_eReturnCode FMKTIM_Get_PwmLineValue(  t_eFMKTIM_InterruptLineIO f_Itline_e,
     t_eFMKTIM_Timer timer_e = FMKTIM_TIMER_NB;
     t_eFMKTIM_InterruptChnl chnl_e = FMKTIM_CHANNEL_NB;
     t_sFMKTIM_TimerInfo * timerInfo_ps;
-    t_eFMKTIM_ChnlState chnlState_e;
     t_uint32 comparedValue_u32;
 
     if((f_Itline_e >= FMKTIM_INTERRUPT_LINE_IO_NB))
@@ -1978,7 +1981,7 @@ static t_eReturnCode s_FMKTIM_Set_PwmOpeState(  t_sFMKTIM_TimerInfo * f_timInfo_
             else // channel activated
             {
                 //---- shut basic timer ----// 
-                Ret_e = s_FMKTIM_Set_HwChannelState(    (&f_timInfo_ps),
+                Ret_e = s_FMKTIM_Set_HwChannelState(    f_timInfo_ps,
                                                         f_chnl_e,
                                                         FMKTIM_LINE_RUNMODE_INTERRUPT,
                                                         FMKTIM_HWTIM_CFG_EVNT,
@@ -1986,7 +1989,7 @@ static t_eReturnCode s_FMKTIM_Set_PwmOpeState(  t_sFMKTIM_TimerInfo * f_timInfo_
                 //---- shut down channel ----// 
                 if(Ret_e == RC_OK)
                 {
-                    Ret_e = s_FMKTIM_Set_HwChannelState(    (&f_timInfo_ps),
+                    Ret_e = s_FMKTIM_Set_HwChannelState(    f_timInfo_ps,
                                                             f_chnl_e,
                                                             f_timInfo_ps->Channel_as[f_chnl_e].RunMode_e,
                                                             f_timInfo_ps->HwCfg_e,
@@ -2003,7 +2006,7 @@ static t_eReturnCode s_FMKTIM_Set_PwmOpeState(  t_sFMKTIM_TimerInfo * f_timInfo_
                 chnlState_e = FMKTIM_CHNLST_ACTIVATED;
                 
                 //---- Reset Basic Timer Genration for RCR ----//
-                Ret_e = s_FMKTIM_Set_HwChannelState(    (&f_timInfo_ps),
+                Ret_e = s_FMKTIM_Set_HwChannelState(    f_timInfo_ps,
                                                         f_chnl_e,
                                                         FMKTIM_LINE_RUNMODE_INTERRUPT,
                                                         FMKTIM_HWTIM_CFG_EVNT,
@@ -2021,7 +2024,7 @@ static t_eReturnCode s_FMKTIM_Set_PwmOpeState(  t_sFMKTIM_TimerInfo * f_timInfo_
             if(f_timInfo_ps->Channel_as[f_chnl_e].State_e != chnlState_e)
             {
                 //----- Start Pwm Polling Mode -----//
-                Ret_e = s_FMKTIM_Set_HwChannelState((&f_timInfo_ps),
+                Ret_e = s_FMKTIM_Set_HwChannelState((f_timInfo_ps),
                                                     f_chnl_e,
                                                     f_timInfo_ps->Channel_as[f_chnl_e].RunMode_e,
                                                     f_timInfo_ps->HwCfg_e,
@@ -2050,8 +2053,6 @@ static t_eReturnCode s_FMKTIM_Set_HwChannelState( t_sFMKTIM_TimerInfo * f_timInf
     t_uint32 bspChannel_u32 = 0;
     t_sFMKTIM_ChnlInfo  * channel_ps;
     HAL_StatusTypeDef bspRet_e = HAL_OK;
-    static t_uint16 s_mskChnState_ua16[FMKTIM_TIMER_NB] = {0};
-
 
     if((f_runMode_e >= FMKTIM_LINE_RUNMODE_NB)
     || (f_hwTimCfg_e >= FMKTIM_HWTIM_CFG_NB))

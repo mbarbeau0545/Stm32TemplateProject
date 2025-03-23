@@ -13,8 +13,8 @@
 // ********************************************************************
 #include "./FMK_IO.h"
 #include "FMK_CFG/FMKCFG_ConfigFiles/FMKIO_ConfigPrivate.h"
+#include "APP_CTRL/APP_SYS/Src/APP_SYS.h"
 #include "FMK_HAL/FMK_TIM/Src/FMK_TIM.h"
-#include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
 #include "FMK_HAL/FMK_CDA/Src/FMK_CDA.h"
 #include "FMK_HAL/FMK_CPU/Src/FMK_CPU.h"
 #include "Library/SafeMem/SafeMem.h"
@@ -468,13 +468,16 @@ t_eReturnCode FMKIO_Set_InDigSigCfg(t_eFMKIO_InDigSig f_signal_e, t_eFMKIO_PullM
     t_eReturnCode Ret_e = RC_OK;
     t_eFMKIO_GpioPort gpioPort_e;
 
-    if (f_signal_e >= FMKIO_INPUT_SIGDIG_NB || f_pull_e >= FMKIO_PULL_MODE_NB)
+    if ((f_signal_e >= FMKIO_INPUT_SIGDIG_NB) 
+    ||  (f_pull_e >= FMKIO_PULL_MODE_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InDigSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -502,13 +505,16 @@ t_eReturnCode FMKIO_Set_InAnaSigCfg(t_eFMKIO_InAnaSig f_signal_e,
 {
     t_eReturnCode Ret_e = RC_OK;
 
-    if (f_signal_e >= FMKIO_INPUT_SIGANA_NB || f_pull_e >= FMKIO_PULL_MODE_NB)
+    if ((f_signal_e >= FMKIO_INPUT_SIGANA_NB) 
+    ||  (f_pull_e >= FMKIO_PULL_MODE_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InAnaSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -551,10 +557,12 @@ t_eReturnCode FMKIO_Set_InFreqSigCfg(   t_eFMKIO_InFreqSig f_signal_e,
     || f_freqMeas_e >= FMKIO_FREQ_MEAS_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InFreqSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -620,10 +628,12 @@ t_eReturnCode FMKIO_Set_InEncoderSigCfg(t_eFMKIO_InEcdrSignals f_InEncdr_e,
     if(f_InEncdr_e >= FMKIO_INPUT_ENCODER_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InEcdrSigInfo_as[f_InEncdr_e].isEcdrConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -687,14 +697,17 @@ t_eReturnCode FMKIO_Set_InEvntSigCfg(t_eFMKIO_InEvntSig f_signal_e,
     ||  (f_trigger_e >= FMKIO_STC_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_Evnt_cb == (t_cbFMKIO_EventFunc *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InEvntSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -744,10 +757,12 @@ t_eReturnCode FMKIO_Set_OutPwmSigCfg(t_eFMKIO_OutPwmSig       f_signal_e,
     || f_pull_e >= FMKIO_PULL_MODE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutPwmSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -769,7 +784,7 @@ t_eReturnCode FMKIO_Set_OutPwmSigCfg(t_eFMKIO_OutPwmSig       f_signal_e,
             pwmCfg_s.polarity_e = FMKHRT_CHNL_POLARITY_HIGH;
 
             Ret_e = FMKHRT_ConfigurePwmLine((t_eFMKHRT_HighResLine)ITLineIO_u8,
-                                            FMKHRT_FREQRANGE_DIV_4,
+                                            FMKIO_PRM_FREQ_RANGE,
                                             pwmCfg_s,
                                             s_FMKIO_HighResTimerCallback);
         }
@@ -818,10 +833,12 @@ t_eReturnCode FMKIO_Set_OutDigSigCfg(t_eFMKIO_OutDigSig f_signal_e,
     ||  (f_spd_e >= FMKIO_SPD_MODE_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutDigSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -852,11 +869,13 @@ t_eReturnCode FMKIO_Set_ComCanCfg(t_eFMKIO_ComSigCan f_SigCan_e)
     if(f_SigCan_e >= FMKIO_COM_SIGNAL_CAN_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
 
     if(g_IsIOComCanConfigured_ab[f_SigCan_e] == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     
     if(Ret_e == RC_OK)
@@ -897,11 +916,13 @@ t_eReturnCode FMKIO_Set_ComSerialCfg(t_eFMKIO_ComSigSerial f_SigSerial_e)
     if(f_SigSerial_e >= FMKIO_COM_SIGNAL_SERIAL_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
 
     if( g_IsIOComSerialConConfigured_ab[f_SigSerial_e] == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     
     if(Ret_e == RC_OK)
@@ -942,10 +963,12 @@ t_eReturnCode FMKIO_Set_OutDigSigValue(t_eFMKIO_OutDigSig f_signal_e, t_eFMKIO_D
     if (f_signal_e >= FMKIO_OUTPUT_SIGDIG_NB || f_value_e >= FMKIO_DIG_VALUE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutDigSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -995,10 +1018,12 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutPwmSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1032,6 +1057,7 @@ t_eReturnCode FMKIO_Set_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         else 
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
         if(Ret_e == RC_OK)
         {
@@ -1056,10 +1082,12 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     if (f_signal_e >= FMKIO_OUTPUT_SIGPWM_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutPwmSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1102,6 +1130,7 @@ t_eReturnCode FMKIO_Set_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         else 
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
     }
     
@@ -1132,10 +1161,12 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
     ||  (f_pulses_u16 > (t_uint16)CST_MAX_UINT_16BIT))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutPwmSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1173,10 +1204,12 @@ t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e,
         else if (timOrgn_e == FMKIO_ITLINE_TYPE_BSCTIM)
         {
             Ret_e =  RC_ERROR_WRONG_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
         else
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
     }
     return Ret_e;
@@ -1198,10 +1231,12 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     ||  (f_frequency_pu32 == (t_uint32 *)NULL))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutPwmSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1242,6 +1277,7 @@ t_eReturnCode FMKIO_Get_OutPwmSigFrequency(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         else 
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
     }
     return Ret_e;
@@ -1263,10 +1299,12 @@ t_eReturnCode FMKIO_Get_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
     ||  (f_dutyCycle_pu16 == (t_uint16 *)NULL))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutPwmSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1307,6 +1345,7 @@ t_eReturnCode FMKIO_Get_OutPwmSigDutyCycle(t_eFMKIO_OutPwmSig f_signal_e, t_uint
         else 
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
     }
     return Ret_e;
@@ -1325,14 +1364,17 @@ t_eReturnCode FMKIO_Get_InEcdrPositionValue(t_eFMKIO_InEcdrSignals f_signal_e, t
     if(f_signal_e >= FMKIO_INPUT_ENCODER_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InEcdrSigInfo_as[f_signal_e].EcdrOpe == FMKIO_ENCODER_START_DIR)
     {
         Ret_e = RC_ERROR_NOT_ALLOWED;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InEcdrSigInfo_as[f_signal_e].isEcdrConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_INSTANCE_NOT_INITIALIZED;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1341,6 +1383,7 @@ t_eReturnCode FMKIO_Get_InEcdrPositionValue(t_eFMKIO_InEcdrSignals f_signal_e, t
     if(f_value_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1375,14 +1418,17 @@ t_eReturnCode FMKIO_Get_InEcdrDirectionValue(t_eFMKIO_InEcdrSignals f_signal_e, 
     if(f_signal_e >= FMKIO_INPUT_ENCODER_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InEcdrSigInfo_as[f_signal_e].EcdrOpe == FMKIO_ENCODER_START_POS)
     {
         Ret_e = RC_ERROR_NOT_ALLOWED;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InEcdrSigInfo_as[f_signal_e].isEcdrConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_INSTANCE_NOT_INITIALIZED;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1391,6 +1437,7 @@ t_eReturnCode FMKIO_Get_InEcdrDirectionValue(t_eFMKIO_InEcdrSignals f_signal_e, 
     if(f_Dirvalue_pe == (t_eFMKIO_EcdrDir *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1432,14 +1479,17 @@ t_eReturnCode FMKIO_Get_InDigSigValue(t_eFMKIO_InDigSig f_signal_e, t_eFMKIO_Dig
     if (f_signal_e >= FMKIO_INPUT_SIGDIG_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (f_value_pe == (t_eFMKIO_DigValue *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InDigSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1480,14 +1530,17 @@ t_eReturnCode FMKIO_Get_InAnaSigValue(t_eFMKIO_InAnaSig f_signal_e, t_uint16 *f_
     if (f_signal_e >= FMKIO_INPUT_SIGANA_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (f_value_pu16 == (t_uint16 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InAnaSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {
@@ -1518,14 +1571,17 @@ t_eReturnCode FMKIO_Get_InFreqSigValue(t_eFMKIO_InFreqSig f_signal_e, t_uint32 *
     if (f_signal_e >= FMKIO_INPUT_SIGFREQ_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_InFreqSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if (f_value_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1603,14 +1659,17 @@ t_eReturnCode FMKIO_Get_OutDigSigValue(t_eFMKIO_OutDigSig f_signal_e, t_eFMKIO_D
     if (f_signal_e >= FMKIO_OUTPUT_SIGDIG_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (f_value_pe == (t_eFMKIO_DigValue *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_OutDigSigInfo_as[f_signal_e].IsSigConfigured_b == (t_bool)False)
     {
         Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkIO_ModState_e != STATE_CYCLIC_OPE)
     {

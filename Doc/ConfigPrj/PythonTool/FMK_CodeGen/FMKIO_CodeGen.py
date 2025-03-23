@@ -126,6 +126,8 @@ class FMKIO_CodeGen():
 
         stm_pin_used = ['PA14', 'PA13', 'PA15', 'PC0', 'PC1']
         stm_tim_chnl:List = FMKTIM_CodeGen.get_tim_chnl_used()
+        stm_pwm_chl_use = []
+        stm_freq_chnl_use = []
         max_pin_per_gpio: int = 0
         #---------------------------------------------------
         #-----------------make GPIO enum--------------------
@@ -269,6 +271,7 @@ class FMKIO_CodeGen():
 
             sig_in_freq.append(sig_name)
             stm_tim_chnl.append(str(pin_freq_cfg[3]+pin_freq_cfg[4]))
+            stm_freq_chnl_use.append(str(pin_freq_cfg[3]+ ' ' + pin_freq_cfg[4]))
             stm_pin_used.append(sig_name)
             # get IT Line                                     FMKCPU_TIMER_X                                         FMKCPU_CHANNEL_X
             itline = FMKTIM_CodeGen.get_itline_from_timcnl(f'{ENUM_FMKTIM_TIMER_ROOT}_{pin_freq_cfg[3][6:]}', f'{ENUM_FMKTIM_CHANNEL_ROOT}_{pin_freq_cfg[4][8:]}')
@@ -347,6 +350,7 @@ class FMKIO_CodeGen():
 
             sig_out_pwm.append(sig_name)
             stm_tim_chnl.append(str(pin_pwm_cfg[3]+pin_pwm_cfg[4]))
+            stm_pwm_chl_use.append(str(pin_pwm_cfg[3]+ ' ' +pin_pwm_cfg[4]))
             stm_pin_used.append(sig_name)
 
             var_OutPWM += "        {" + "{" \
@@ -466,7 +470,7 @@ class FMKIO_CodeGen():
         
         enum_InFreq = cls.code_gen.make_enum_from_variable(ENUM_INSIGFREQ_ROOT, [str(idx + 1) for idx in range((len(InFreq_astr[1:])))],
                                                             "t_eFMKIO_InFreqSig", 0, "List of input frequency pin available on this board",
-                                                            [f'Reference to {sig_name}' for sig_name in sig_in_freq])
+                                                            [f'Reference to {sig_name}, {stm_freq_chnl_use[idx]}' for idx, sig_name in enumerate(sig_in_freq)])
         
         enum_InEvnt = cls.code_gen.make_enum_from_variable(ENUM_INSIGEVNT_ROOT, [str(idx + 1) for idx in range((len(InEvnt_astr[1:])))],
                                                             "t_eFMKIO_InEvntSig", 0, "List of input event pin available on this board",
@@ -480,7 +484,7 @@ class FMKIO_CodeGen():
         
         enum_OutPWM = cls.code_gen.make_enum_from_variable(ENUM_OUTSIGPWM_ROOT, [str(idx + 1) for idx in range((len(OutPWM_astr[1:])))],
                                                             "t_eFMKIO_OutPwmSig", 0, "List of output PWM pin available on this board",
-                                                            [f'Reference to {sig_name}, {desc_pwm[idx]}' for idx,sig_name in enumerate(sig_out_pwm)])
+                                                            [f'Reference to {sig_name}, {stm_pwm_chl_use[idx]} ,{desc_pwm[idx]}' for idx,sig_name in enumerate(sig_out_pwm)])
        
         #-----------------------------------------------------------
         #------------code genration for FMKIO module----------------

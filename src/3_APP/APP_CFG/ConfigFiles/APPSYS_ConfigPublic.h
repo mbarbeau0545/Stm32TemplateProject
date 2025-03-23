@@ -19,10 +19,12 @@
     // *                      Includes
     // ********************************************************************
     #include "TypeCommon.h"
+    #include "string.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-
+    #define BASE_PATH "src\\"
+    #define SHORTEN_PATH(path) (strstr(path, BASE_PATH) ? strstr(path, BASE_PATH) : path)
     //#define APPSYS_MODULE_FMKCAN_ENABLE
     #define APPSYS_MODULE_FMKSRL_ENABLE
     #define APPSYS_MODULE_APPLGC_ENABLE

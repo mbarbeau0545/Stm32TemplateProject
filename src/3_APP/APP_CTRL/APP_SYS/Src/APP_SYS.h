@@ -22,7 +22,8 @@
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-    #define ASSERT(info) APPSYS_AssertionTrap(info, __FILE__, __LINE__)
+    
+    #define ASSERT(info) APPSYS_AssertionTrap(info, SHORTEN_PATH(__FILE__), __LINE__)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -66,7 +67,7 @@
     *	@brief  Call driver cyclic function
     *
     */
-    void APPSYS_AssertionTrap(  t_uint32 f_Info_u32, 
+    void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
                                 const char *f_file_str, 
                                 t_uint32 f_line_u32);
 

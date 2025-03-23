@@ -346,10 +346,13 @@
     /**
     *
     *	@brief      Set an output in PWM configuration.\n
-    *	@note       Allow the user to choose among pwm intputs.\n 
+    *	@note       Allow the user to choose among pwm outputs.\n 
     *               This function configure bspInit , call HAL_function,
-    *               call FMKCPU to configure a timer in order to convert generate
+    *               call FMKTIM/FMKHRT to configure a timer in order to convert generate
     *               the pwm period and dutycycle.\n
+    *  @warning     If user wants to generate pulse, timer used by the pin must be an advanced or High Resolution Cfg.
+    *               If the timer is an High Resolution one, not all the frequency are allwed compare to to basic and advenced timer 
+    *               The parameter that deals with the frequency range is FMKIO_PRM_FREQ_RANGE
     *               IMPORTANT NOTE -> For SMT32, each signal has a timer and a channel
     *               based on hardware confifguration. A timer has multiple channel that shared the frequency
     *               f_frequency_u32, once the timer set with this frequency the other signal (channel) 
@@ -575,7 +578,8 @@
     *
     *
     *	@param[in]      f_signal_e        : the input pwm signal, a value from @ref t_eFMKIO_OutPwmSig
-    *	@param[in]      f_frequency_u16   : the frequency, value between 0 (0%) - 1000 (100%)
+    *	@param[in]      f_dutyCycle_u16   : the frequency, value between 0 (0%) - 1000 (100%)
+    *	@param[in]      f_pulses_u16      : number of pulses, max = 0xFFFF
     *	 
     *   @retval RC_OK                             @ref RC_OK
     *   @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID

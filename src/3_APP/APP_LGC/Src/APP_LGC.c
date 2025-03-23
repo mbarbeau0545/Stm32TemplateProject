@@ -391,7 +391,6 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uFMKTIM_ITLineOpe itLineOpe;
 
     if(g_TypeTest_e == TYPETEST_PWM_FREQ_CHANGE)
 
@@ -590,10 +589,6 @@ static t_eReturnCode s_APPLGC_Operational(void)
             break;
         }
     }
-    return;
-
-
-   
     /*t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)

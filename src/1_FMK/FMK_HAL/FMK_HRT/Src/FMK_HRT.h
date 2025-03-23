@@ -85,12 +85,12 @@
     /**
      * @brief Enum to set bit for changing PWM Signal
      */
-    enum 
+    typedef enum 
     {
         FMKHRT_BIT_PWM_FREQUENCY = 0x00,
         FMKHRT_BIT_PWM_DUTYCYCLE,
         FMKHRT_BIT_PWM_NB_PULSES,
-    };
+    } t_eFMKHRT_BitPwmOpe;
     //----------------------------- UNION TYPES---------------------------//
     /**
      * @brief Divided Main Freq for the Frequency Timer
@@ -165,9 +165,24 @@
 
    /**
    *
-   *	@brief Function to configure a Channel from a Slave Timer in PWM Mode.\n
+   *	@brief  Configure a Channel from a Slave Timer in PWM Mode.\n
+   *    @note   This function configure bsp instance, slave timer & channel to 
+   *            generate a PWM based on f_PwmCfg_s configuration. Current feedback mesure
+   *            are possible (not implemented yet).
+   *    @warning
+   *            The frequency of the bsp Instance is shared by all slave and each slave timer
+   *            have poor choices of prescaler t_eFMKHRT_FreqMulDiv ('cause it's 4 bits register).
+   *            It means every channel has a minimum frequency (freqSlave / 65530 == ARR) and a maximum frequency 
+   *            (freqSlave / 1024) that the user has to be aware of. 
+   *            A help to calculte the min/max frequency is provide in Hardware Excel Configuration sheet HRTIM_FreqHelp.
+   *            Once a slave is configured, the freqMin and freqMax are calculated and if user 
+   *            are below or above this limit, the limit is take instead of the one desire.
+   *            
    *
-   *	@param[in]  f_State_e : the new value, value from @ref t_eCyclicModState
+   *	@param[in]  f_HRLine_e          : High Resolution Line to Configure.
+   *	@param[in]  f_CpuFreqMulDiv_e   : Prescaler Frequency to applied for the slave timer, value from @ref f_CpuFreqMulDiv_e
+   *	@param[in]  f_PwmCfg_s          : Pwm Output configuration.
+   *	@param[in]  f_pulseEvntCb_pcb   : pulse genration finish callback 
    *
    *   @retval RC_OK                             @ref RC_OK
    */
@@ -177,25 +192,29 @@
                                             t_cbFMKHRT_HrLineEvnt * f_pulseEvntCb_pcb);
    /**
    *
-   *	@brief Function to configure a Channel from a Slave Timer in PWM Mode.\n
+   *	@brief Function to Set DutyCycle/ frequency / pulses for a High Res Line
    *
-   *	@param[in]  f_State_e : the new value, value from @ref t_eCyclicModState
+   *    @param[in]  f_HRLine_e          : High Resolution Line to Configure.
+   *    @param[in]  f_PwmOpe_s          : Pwm WaveForm Value
+   *    @param[in]  f_maskUpdate_u8     : mask to know which parameterr has to be upate, value from @ref t_eFMKHRT_BitPwmOpe
    *
-   *   @retval RC_OK                             @ref RC_OK
+   *    @retval RC_OK                             @ref RC_OK
    */
     t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
                                             t_sFMKHRT_PwmOpeVal f_PwmOpe_s,
                                             t_uint8 f_maskUpdate_u8);
     /**
    *
-   *	@brief Function to configure a Channel from a Slave Timer in PWM Mode.\n
+   *	@brief Function to Get DutyCycle/ frequency / pulses for a High Res Line
    *
-   *	@param[in]  f_State_e : the new value, value from @ref t_eCyclicModState
+   *    @param[in]  f_HRLine_e          : High Resolution Line to Configure.
+   *    @param[in]  f_PwmVal_ps         : Container for Pwm WaveForm Value
+   *    @param[in]  f_maskUpdate_u8     : mask to know which parameterr has to be upate, value from @ref t_eFMKHRT_BitPwmOpe
    *
-   *   @retval RC_OK                             @ref RC_OK
+   *    @retval RC_OK                             @ref RC_OK
    */
     t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
-                                            t_sFMKHRT_PwmOpeVal * f_PwmOpe_ps,
+                                            t_sFMKHRT_PwmOpeVal * f_PwmVal_ps,
                                             t_uint8 f_maskUpdate_u8);
 #endif // FMK_HRT_H_INCLUDED           
 //************************************************************************************

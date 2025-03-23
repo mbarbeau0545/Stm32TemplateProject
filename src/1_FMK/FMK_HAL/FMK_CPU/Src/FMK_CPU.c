@@ -14,6 +14,7 @@
 #include "./FMK_CPU.h"
 #include "FMK_CFG/FMKCFG_ConfigFiles/FMKCPU_ConfigPrivate.h"
 #include "Constant.h"
+#include "APP_CTRL/APP_SYS/Src/APP_SYS.h"
 
 #include "Library/SafeMem/SafeMem.h"
 // ********************************************************************
@@ -485,6 +486,7 @@ t_eReturnCode FMKCPU_Set_SysClockCfg(t_eFMKCPU_CoreClockSpeed f_SystemCoreFreq_e
     if(f_SystemCoreFreq_e >= FMKCPU_CORE_CLOCK_SPEED_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -535,6 +537,7 @@ t_eReturnCode FMKCPU_Set_SysClockCfg(t_eFMKCPU_CoreClockSpeed f_SystemCoreFreq_e
         {
             g_FmkCpu_ModState_e = STATE_CYCLIC_ERROR;
             Ret_e = RC_ERROR_WRONG_RESULT;
+            ASSERT((t_uint16)Ret_e);
         }
         else 
         {
@@ -549,6 +552,7 @@ t_eReturnCode FMKCPU_Set_SysClockCfg(t_eFMKCPU_CoreClockSpeed f_SystemCoreFreq_e
                 if(bspSysClkFreqHz_u32 != (t_uint32)(SysClkFreqHz_u32 * CST_MHZ_TO_HZ))
                 {
                     Ret_e = RC_ERROR_WRONG_RESULT;
+                    ASSERT((t_uint16)Ret_e);
                 }
                 else 
                 {
@@ -573,6 +577,7 @@ t_eReturnCode FMKCPU_Set_HardwareInit(void)
     if(bspRet_e != HAL_OK)
     {
         Ret_e = RC_ERROR_WRONG_RESULT;
+        ASSERT((t_uint16)Ret_e);
     }
 
 #ifdef FMKCPU_STM32_ECU_FAMILY_G
@@ -594,6 +599,7 @@ t_eReturnCode FMKCPU_Set_HardwareInit(void)
     if(Ret_e != RC_OK)
     {
         g_FmkCpu_ModState_e = STATE_CYCLIC_ERROR;
+        ASSERT((t_uint16)Ret_e);
     }
 
     return Ret_e;
@@ -611,6 +617,7 @@ t_eReturnCode FMKCPU_Set_NVICState(t_eFMKCPU_IRQNType f_IRQN_e, t_eFMKCPU_NVIC_O
     if (f_IRQN_e > (t_eFMKCPU_IRQNType)FMKCPU_NVIC_NB || f_OpeState_e >= FMKCPU_NVIC_OPE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -654,9 +661,11 @@ t_eReturnCode FMKCPU_Set_HwClock(t_eFMKCPU_ClockPort f_clkPort_e,
 {
     t_eReturnCode Ret_e = RC_OK;
 
-    if (f_clkPort_e >= FMKCPU_RCC_CLK_NB || f_OpeState_e >= FMKCPU_CLOCKPORT_OPE_NB)
+    if ((f_clkPort_e >= FMKCPU_RCC_CLK_NB) 
+    ||  (f_OpeState_e >= FMKCPU_CLOCKPORT_OPE_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {
@@ -729,6 +738,7 @@ t_eReturnCode FMKCPU_Set_WwdgCfg(t_eFMKCPu_WwdgResetPeriod f_period_e)
         if(bspRet_e != HAL_OK)
         {
             Ret_e = RC_ERROR_WRONG_STATE;
+            ASSERT((t_uint16)Ret_e);
         }
     }
 
@@ -747,6 +757,7 @@ t_eReturnCode FMKCPU_ResetWwdg(void)
     if(bspRet_e != HAL_OK)
     {
         Ret_e = RC_ERROR_WRONG_RESULT;
+        ASSERT((t_uint16)Ret_e);
     }
     return Ret_e;
 }
@@ -767,10 +778,12 @@ t_eReturnCode FMKCPU_RqstDmaInit(   t_eFMKCPU_DmaRqst f_DmaRqstType,
     if (f_DmaRqstType >= FMKCPU_DMA_RQSTYPE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     } 
     if(f_ModuleHandle_pv == (void *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -783,6 +796,7 @@ t_eReturnCode FMKCPU_RqstDmaInit(   t_eFMKCPU_DmaRqst f_DmaRqstType,
         if(DmaChnl_ps->isChnlConfigured_b == (t_bool)True)
         {
             Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+            ASSERT((t_uint16)Ret_e);
         }
         if(Ret_e == RC_OK)
         {
@@ -844,10 +858,12 @@ t_eReturnCode FMKCPU_GetOscRccSrc(  t_eFMKCPU_ClockPort f_clockPort_e,
     if(f_clockPort_e >= FMKCPU_RCC_CLK_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_ClkOsc_pe == (t_eFMKCPU_SysClkOsc *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -868,14 +884,17 @@ t_eReturnCode FMKCPU_GetSysClkValue(    t_eFMKCPU_SysClkOsc f_ClkOsc_e,
     if(f_ClkOsc_e >= FMKCPU_SYS_CLOCK_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_OscValueMHz_pu16 == (t_uint16 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_IsSysClkInit_b == (t_bool)False)
     {
         Ret_e = RC_WARNING_BUSY;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -943,10 +962,12 @@ static t_eReturnCode s_FMKCPU_Set_DmaBspCfg(t_eFMKCPU_DmaRqst f_RqstType_e,
     if(f_RqstType_e >= FMKCPU_DMA_RQSTYPE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_bspDma_ps == (DMA_HandleTypeDef *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1056,10 +1077,12 @@ static t_eReturnCode s_FMKCPU_Get_DmaBspPriority(t_eFMKCPU_DmaTransferPriority f
     if(f_priority_e >= FMKCPU_DMA_TRANSPRIO_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_bspPriority_pu32 == (t_uint32 *)0)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1098,11 +1121,13 @@ static t_eReturnCode s_FMKCPU_LinkDma(  t_eFMKCPU_DmaType f_DmaType_e,
     if(f_DmaType_e >= FMKCPU_DMA_TYPE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if((f_modHandle_pu == (t_uFMKCPU_DmaHandleType *)NULL)
     || (f_bspDma_ps == (DMA_HandleTypeDef *)NULL))
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1165,10 +1190,12 @@ static t_eReturnCode s_FMKCPU_Get_BspNVICPriority(t_eFMKCPU_NVICPriority f_prior
     if (f_BspNVICPriority_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if (f_priority_e >= FMKCPU_NVIC_PRIORITY_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (Ret_e == RC_OK)
     {

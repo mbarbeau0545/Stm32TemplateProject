@@ -210,28 +210,7 @@
         t_uint32 ARR_Register_u32;
         t_uint16 CCRxRegister_u16;
     } t_sFMKTIM_ICValue;
-    /**< union for Centralize Certain Function */
-    typedef union __t_uFMKTIM_InterruptLine
-    {
-        t_eFMKTIM_InterruptLineIO ITLine_IO_e;
-        t_eFMKTIM_InterruptLineEvnt ITLine_Evnt_e;
-        t_eFMKTIM_InterruptLineDAC ITLine_Dac_e;
-    } t_uFMKTIM_InterruptLine;
 
-    typedef union 
-    {
-        t_eFMKTIM_EcdrOpe EncoderOpe_e;
-        t_sFMKTIM_ICOpe ICOpe_s;
-        t_eFMKTIM_EvntOpe EvntOpe_e;
-        t_sFMKTIM_PwmOpe PwmOpe_s;
-    } t_uFMKTIM_ITLineOpe;
-
-    typedef union 
-    {
-        t_sFMKTIM_EncoderValue EncoderValue_s;
-        t_sFMKTIM_ICValue ICValue_s;
-        t_sFMKTIM_PwmValue PwmValue_s;
-    } t_uFMKTIM_ITLineValue;
     //-----------------------------TYPEDEF TYPES---------------------------//
     /**
     *

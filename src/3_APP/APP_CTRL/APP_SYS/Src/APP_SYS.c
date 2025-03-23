@@ -21,10 +21,16 @@
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
-
+#define APPSYS_FILE_NAME_LEN 64
 // ********************************************************************
 // *                      Types
 // ********************************************************************
+typedef struct 
+{
+    t_uint16 debugInfo_u16;
+    char file_ac[APPSYS_FILE_NAME_LEN];
+    t_uint32 line_u32;
+} t_sAPPSYS_AssertInfo;
 /* CAUTION : Automatic generated code section for Enum: Start */
 
 /* CAUTION : Automatic generated code section for Enum: End */
@@ -49,6 +55,9 @@
 static t_eCyclicModState g_ModuleState_ae[APPSYS_MODULE_NB];
 static t_eCyclicModState g_AppSysModuleState_e = STATE_CYCLIC_PREOPE;
 static t_uint32 g_CyclicDuration_u32 = (t_uint32)0;
+
+static t_bool g_lockAssert_b = (t_bool)False;
+static t_sAPPSYS_AssertInfo g_AssertInfo_s;
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
@@ -99,11 +108,13 @@ void APPSYS_Init(void)
 
             if(Ret_e != RC_OK)
             {
-                ASSERT((t_uint32)modIndex_u8);
+                ASSERT((t_uint16)modIndex_u8);
             }
         }
     }
 
+    g_AssertInfo_s.debugInfo_u16 = (t_uint16)0;
+    g_AssertInfo_s.line_u32 = (t_uint32)0;
 
     if(Ret_e < RC_OK)
     {    
@@ -172,6 +183,10 @@ static void s_APPSYS_Set_ModulesCyclic(void)
             ASSERT((t_uint32)modIndex_u8);
         }
     }
+
+    //---- reset lock assert ----//
+    g_lockAssert_b = (t_bool)False;
+
     return;
 }
 
@@ -257,10 +272,24 @@ static t_eReturnCode s_APPSYS_Operational(void)
     return Ret_e;
 }
 
-void APPSYS_AssertionTrap(  t_uint32 f_Info_u32, 
-                            const char *f_file_str, 
-                            t_uint32 f_line_u32r)
+/*********************************
+ * APPSYS_AssertionTrap
+ *********************************/
+void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
+                            const char * f_file_str, 
+                            t_uint32 f_line_u32)
 {
+
+    if(g_lockAssert_b == (t_bool)False)
+    {
+        if(g_lockAssert_b == (t_bool)False)
+        {
+            g_AssertInfo_s.debugInfo_u16 = f_Info_u16;
+            strncpy(g_AssertInfo_s.file_ac, f_file_str, APPSYS_FILE_NAME_LEN - 1);
+            g_AssertInfo_s.file_ac[APPSYS_FILE_NAME_LEN - 1] = '\0';  // Assurer la terminaison
+            g_AssertInfo_s.line_u32 = f_line_u32;
+        }
+    }
     return;
 }
 //************************************************************************************

@@ -16,6 +16,7 @@
     #include "TypeCommon.h"
     #include "./FMKCDA_ConfigPublic.h"
     #include "./FMKCPU_ConfigPublic.h"
+    #include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
@@ -30,6 +31,12 @@
     #endif
 
     #define FMKIO_ENCODER_BUFFER ((t_uint8)10)
+
+    /**
+     * @brief Parameter for Pwm Output Frequency Range, 
+     *          refer to FMKHRT_ConfigurePwmLine for more details 
+     */
+    #define FMKIO_PRM_FREQ_RANGE FMKHRT_FREQRANGE_DIV_4
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -117,10 +124,10 @@
     */
     typedef enum
     {
-        FMKIO_INPUT_SIGFREQ_1 = 0x0,                  /**< Reference to PB0 */
-        FMKIO_INPUT_SIGFREQ_2,                        /**< Reference to PB1 */
-        FMKIO_INPUT_SIGFREQ_3,                        /**< Reference to PB6 */
-        FMKIO_INPUT_SIGFREQ_4,                        /**< Reference to PB7 */
+        FMKIO_INPUT_SIGFREQ_1 = 0x0,                  /**< Reference to PB0, TIMER_3 CHANNEL_3 */
+        FMKIO_INPUT_SIGFREQ_2,                        /**< Reference to PB1, TIMER_3 CHANNEL_4 */
+        FMKIO_INPUT_SIGFREQ_3,                        /**< Reference to PB6, TIMER_4 CHANNEL_1 */
+        FMKIO_INPUT_SIGFREQ_4,                        /**< Reference to PB7, TIMER_4 CHANNEL_2 */
     
         FMKIO_INPUT_SIGFREQ_NB,
     } t_eFMKIO_InFreqSig;
@@ -162,19 +169,19 @@
     */
     typedef enum
     {
-        FMKIO_OUTPUT_SIGPWM_1 = 0x0,                  /**< Reference to PB4, Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_2,                        /**< Reference to PB9, Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_3,                        /**< Reference to PC12, Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_4,                        /**< Reference to PB15, Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_5,                        /**< Reference to PC7, Pwm with Adaptable Frequency, DutyCycle and Pulses */
-        FMKIO_OUTPUT_SIGPWM_6,                        /**< Reference to PB2, Pwm with Adaptable Frequency, DutyCycle and Pulses */
-        FMKIO_OUTPUT_SIGPWM_7,                        /**< Reference to PC2, Pwm with Adaptable Frequency, DutyCycle and Pulses */
-        FMKIO_OUTPUT_SIGPWM_8,                        /**< Reference to PA8, Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
-        FMKIO_OUTPUT_SIGPWM_9,                        /**< Reference to PA10, Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
-        FMKIO_OUTPUT_SIGPWM_10,                       /**< Reference to PB12, Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
-        FMKIO_OUTPUT_SIGPWM_11,                       /**< Reference to PB14, Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
-        FMKIO_OUTPUT_SIGPWM_12,                       /**< Reference to PC6, Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
-        FMKIO_OUTPUT_SIGPWM_13,                       /**< Reference to PC8, Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_1 = 0x0,                  /**< Reference to PB4,TIMER_16 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_2,                        /**< Reference to PB9,TIMER_17 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_3,                        /**< Reference to PC12,TIMER_5 CHANNEL_2 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_4,                        /**< Reference to PB15,TIMER_15 CHANNEL_2 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_5,                        /**< Reference to PC7,TIMER_8 CHANNEL_2 ,Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_6,                        /**< Reference to PB2,TIMER_20 CHANNEL_1 ,Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_7,                        /**< Reference to PC2,TIMER_1 CHANNEL_3 ,Pwm with Adaptable Frequency, DutyCycle and Pulses */
+        FMKIO_OUTPUT_SIGPWM_8,                        /**< Reference to PA8,TIMER_A CHANNEL_1 ,Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_9,                        /**< Reference to PA10,TIMER_B CHANNEL_1 ,Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_10,                       /**< Reference to PB12,TIMER_C CHANNEL_1 ,Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_11,                       /**< Reference to PB14,TIMER_D CHANNEL_1 ,Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_12,                       /**< Reference to PC6,TIMER_F CHANNEL_1 ,Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
+        FMKIO_OUTPUT_SIGPWM_13,                       /**< Reference to PC8,TIMER_E CHANNEL_1 ,Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback */
     
         FMKIO_OUTPUT_SIGPWM_NB,
     } t_eFMKIO_OutPwmSig;

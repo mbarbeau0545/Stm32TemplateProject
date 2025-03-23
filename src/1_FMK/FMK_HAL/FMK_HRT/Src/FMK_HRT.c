@@ -17,6 +17,7 @@
 // *                      Includes
 // ********************************************************************
 #include "FMK_HAL/FMK_CPU/Src/FMK_CPU.h"
+#include "APP_CTRL/APP_SYS/Src/APP_SYS.h"
 #include "./FMK_HRT.h"
 #include "FMK_CFG/FMKCFG_ConfigFiles/FMKHRT_ConfigPrivate.h"
 // ********************************************************************
@@ -187,7 +188,7 @@ static t_sFMKHRT_HrTimInfo g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_NB] = {
 };
 /* CAUTION : Automatic generated code section for Variables: Stop */
 /**
-* @brief Union of all Hw Mode Cfg
+* @brief Pulses left manamgent
 */
 t_uint32 g_SlvChnlTimPulsesRemain_ua32[FMKHRT_HIGH_RES_TIMER_NB][FMKHRT_HRTIM_SLAVE_NB][FMKHRT_HRTIM_CHANNEL_NB];
 //********************************************************************************
@@ -500,6 +501,7 @@ t_eReturnCode FMKHRT_GetState(t_eCyclicModState *f_State_pe)
     if(f_State_pe == (t_eCyclicModState *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -538,6 +540,7 @@ t_eReturnCode FMKHRT_ConfigurePwmLine(  t_eFMKHRT_HighResLine f_HRLine_e,
     if(f_HRLine_e >= FMKHRT_HR_LINE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     //---- Get Information about Timer -----//
     if(Ret_e == RC_OK) 
@@ -621,6 +624,7 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
     if(f_HRLine_e >= FMKHRT_HR_LINE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkHrtModState_e != STATE_CYCLIC_OPE)
     {
@@ -796,7 +800,7 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
  * FMKHRT_SetPwmLineWaveform
  *********************************/
 t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e, 
-                                        t_sFMKHRT_PwmOpeVal *f_PwmOpe_ps,
+                                        t_sFMKHRT_PwmOpeVal * f_PwmVal_ps,
                                         t_uint8 f_maskUpdate_u8)
 {
     t_eReturnCode Ret_e = RC_OK;
@@ -811,9 +815,10 @@ t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
     
 
     if((f_HRLine_e >= FMKHRT_HR_LINE_NB)
-    || (f_PwmOpe_ps == (t_sFMKHRT_PwmOpeVal *)NULL))
+    || (f_PwmVal_ps == (t_sFMKHRT_PwmOpeVal *)NULL))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkHrtModState_e != STATE_CYCLIC_OPE)
     {
@@ -835,6 +840,7 @@ t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
         || (g_HrTimInfo_as[hrTimIstc_e].slvInfo_as[hrSlvTim_e].chnlInfo_as[hrChnl_e].isConfigured_b == (t_bool)False))
         {
             Ret_e = RC_ERROR_WRONG_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
     }
     //----- Get Timer Index -----//
@@ -860,11 +866,11 @@ t_eReturnCode FMKHRT_GetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
         //---- Update Stuff Depending On Mask Update ----//
         if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_FREQUENCY) == BIT_IS_SET_8B)
         {
-            f_PwmOpe_ps->frequency_u32 =  ((t_uint32)((t_float32)slvTimInfo_ps->timFreqMHz_u16) / ((t_float32)bspPeriod_u32));
+            f_PwmVal_ps->frequency_u32 =  ((t_uint32)((t_float32)slvTimInfo_ps->timFreqMHz_u16) / ((t_float32)bspPeriod_u32));
         }
         if(GETBIT(f_maskUpdate_u8, FMKHRT_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
         {     
-            f_PwmOpe_ps->dutyCycle_u16 = (t_uint16)((((t_float32)bspCompareUnitVal_u32 / (t_float32)bspPeriod_u32) 
+            f_PwmVal_ps->dutyCycle_u16 = (t_uint16)((((t_float32)bspCompareUnitVal_u32 / (t_float32)bspPeriod_u32) 
                                                             * (t_float32)FMKHRT_PWM_MAX_DUTY_CYLCE));
 
         }
@@ -899,6 +905,7 @@ static t_eReturnCode s_FMKHRT_SetBspHrTimInit( t_eFMKHRT_HighResIstc f_HrTimIstc
     if(f_HrTimIstc_e >= FMKHRT_HIGH_RES_TIMER_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -935,6 +942,7 @@ static t_eReturnCode s_FMKHRT_SetBspHrTimInit( t_eFMKHRT_HighResIstc f_HrTimIstc
         if(bspRet_e != HAL_OK)
         {
             Ret_e = RC_ERROR_WRONG_RESULT;
+            ASSERT((t_uint16)Ret_e);
         }
         //---- HR Timer Configuration Done ----//
         if(Ret_e == RC_OK)
@@ -968,6 +976,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
     if(f_HrTimInfo_ps ==(t_sFMKHRT_HrTimInfo *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1055,6 +1064,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
         if(bspRet_e != HAL_OK)
         {
             Ret_e = RC_ERROR_WRONG_RESULT;
+            ASSERT((t_uint16)Ret_e);
         }
         
     }
@@ -1085,6 +1095,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTi
     if(slvInfo_ps->chnlInfo_as[f_chnl_e].isConfigured_b == (t_bool)True)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1169,6 +1180,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTi
             if(bspRet_e != HAL_OK)
             {
                 Ret_e = RC_ERROR_WRONG_RESULT;
+                ASSERT((t_uint16)Ret_e);
             }
         }
     }
@@ -1195,11 +1207,13 @@ static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInf
     if(f_HrTimInfo_ps == (t_sFMKHRT_HrTimInfo *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if((f_chnl_e >= FMKHRT_HRTIM_CHANNEL_NB)
     || (f_HwOpeTimer_e >= FMKHRT_HW_OPE_TIM_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     //---- get bsp information ----//
     if(Ret_e == RC_OK)
@@ -1306,6 +1320,7 @@ static t_eReturnCode s_FMKHRT_SetHwOutputState( t_sFMKHRT_HrTimInfo * f_HrTimInf
         if(bspRet_e != HAL_OK)
         {
             Ret_e = RC_ERROR_WRONG_RESULT;
+            ASSERT((t_uint16)Ret_e);
         }
         //----- Update Only when it's the HwMode of the timer -----//
         if((f_HwOpeTimer_e == slvTimInfo_ps->HwOpeMode_e) && (Ret_e == RC_OK))
@@ -1460,6 +1475,7 @@ static void s_FMKHRT_BspCallbackMngmnt( HRTIM_HandleTypeDef * f_bspItsc_ps,
         
     }
 
+    return;
 }
 /*********************************
  * s_FMKHRT_GetBspTimerIndex
@@ -1472,10 +1488,12 @@ static t_eReturnCode s_FMKHRT_GetBspTimerIndex( t_eFMKHRT_HighResSlvTim f_hrSlvT
     if(f_hrSlvTim_e >= FMKHRT_HRTIM_SLAVE_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_bspTimerIdx_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1521,6 +1539,7 @@ static t_eReturnCode s_FMKHRT_GetPrescalerRatio(t_eFMKHRT_FreqMulDiv f_CpuFreqMu
     && (f_CpuFreqMulDiv_e >= FMKHRT_FREQRANGE_DIVMUL_NB))
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1571,6 +1590,7 @@ static t_eReturnCode s_FMKHRT_GetBspPeriod( t_uint16 f_TimFreqMHz_16,
     if(f_bspPeriod_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1604,6 +1624,7 @@ static t_eReturnCode s_FMKHRT_ComputeTimerFreqRange(t_eFMKHRT_FreqMulDiv f_CpuFr
     if(f_slvInfo_ps == (t_sFMKHRT_TimSlaveInfo *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1648,7 +1669,8 @@ static t_eReturnCode s_FMKHRT_ComputeTimerFreqRange(t_eFMKHRT_FreqMulDiv f_CpuFr
                                                                     FMKHRT_PWM_MAX_ARR_VALUE);
             f_slvInfo_ps->maxFreqAccept_u32 = (t_uint32)((t_uint32)(timFreqMHz_u16 * CST_MHZ_TO_HZ)/ 
                                                                     FMKHRT_PWM_MIN_ARR_VALUE);
-        }   f_slvInfo_ps->timFreqMHz_u16 = timFreqMHz_u16;
+           f_slvInfo_ps->timFreqMHz_u16 = timFreqMHz_u16;
+        }
     }
 
     return Ret_e;
@@ -1665,6 +1687,7 @@ static t_eReturnCode s_FMKHRT_GetEnumTimeIdxFromBsp(    t_uint32 f_bspTimIdx_u32
     if(f_timSlv_pe == (t_eFMKHRT_HighResSlvTim *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1710,10 +1733,12 @@ static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_ChnlPolarity f_Polarit
     if(f_Polarity_e >= FMKHRT_CHNL_POLARITY_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_bspPolarity_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1729,6 +1754,7 @@ static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_ChnlPolarity f_Polarit
         {
             Ret_e = RC_ERROR_NOT_ALLOWED;
             *f_bspPolarity_pu32 = (t_uint32)0;
+            ASSERT((t_uint16)Ret_e);
         }
     }
 
@@ -1747,10 +1773,12 @@ static t_eReturnCode s_FMKHRT_GetBspChannel(t_eFMKHRT_HighResSlvTim f_hrSlvTim_e
     || (f_chnl_e >= FMKHRT_HRTIM_CHANNEL_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if(f_bspOutputChnl_pu32 == (t_uint32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -1887,6 +1915,7 @@ static t_eReturnCode s_FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLi
     || (f_HrTimIstc_pe == NULL))
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -2131,7 +2160,7 @@ void HRTIM1_TIMA_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
                                  HRTIM_TIMERINDEX_TIMER_A);
     }
     return;
@@ -2140,7 +2169,7 @@ void HRTIM1_TIMB_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
                                  HRTIM_TIMERINDEX_TIMER_B);
     }
     return;
@@ -2149,7 +2178,7 @@ void HRTIM1_TIMC_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
                                  HRTIM_TIMERINDEX_TIMER_C);
     }
     return;
@@ -2158,7 +2187,7 @@ void HRTIM1_TIMD_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
                                  HRTIM_TIMERINDEX_TIMER_D);
     }
     return;
@@ -2167,7 +2196,7 @@ void HRTIM1_TIME_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
                                  HRTIM_TIMERINDEX_TIMER_E);
     }
     return;
@@ -2176,7 +2205,7 @@ void HRTIM1_TIMF_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
                                  HRTIM_TIMERINDEX_TIMER_F);
     }
     return;
@@ -2185,8 +2214,8 @@ void HRTIM1_Master_IRQHandler(void)
 {
     if(g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].isConfigured_b == (t_bool)True)
     {
-        HAL_HRTIM_IRQHandler(  &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
-                                HRTIM_TIMERINDEX_MASTER);
+        HAL_HRTIM_IRQHandler(   &g_HrTimInfo_as[FMKHRT_HIGH_RES_TIMER_1].bspItsc_s,
+                                 HRTIM_TIMERINDEX_MASTER);
     }
     return;
 }

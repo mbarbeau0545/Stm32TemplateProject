@@ -34,8 +34,8 @@ ENUM_ROOT_TIM_ORGN = "FMKIO_ITLINE_TYPE"
 
 DESCRIP_PWM = {
     "BscTim" : "Pwm with Adaptable Frequency and DutyCycle",
-    "AdvTim" : "Pwm with Adaptable Frequency, DutyCycle and Pulses",
-    "HrTim" : "Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback",
+    "AdvTim" : "Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation)",
+    "HrTim" : "Pwm with Adaptable Frequency > 500 Hz, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)",
 }
 #------------------------------------------------------------------------------
 #                                       CLASS

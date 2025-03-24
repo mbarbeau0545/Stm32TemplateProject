@@ -28,7 +28,7 @@
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
-#define SIGNAL_IN_TEST FMKIO_OUTPUT_SIGPWM_8
+#define SIGNAL_IN_TEST FMKIO_OUTPUT_SIGPWM_1
 // ********************************************************************
 // *                      Types
 // ********************************************************************
@@ -79,7 +79,7 @@ static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
 */
 static t_bool  g_resetSrvState_b = (t_bool)False; 
 
-static t_eAPPLGC_TypeTest g_TypeTest_e = TYPERTEST_PWM_PULSE_GEN;
+static t_eAPPLGC_TypeTest g_TypeTest_e = TYPETEST_PWM_FREQ_CHANGE;
 static t_bool g_fastTaskON = (t_bool)False;
 static t_bool g_pulseFinish_b = (t_bool)True;
 static t_uint32 f_finishpulse_u32;
@@ -173,10 +173,10 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
                                         t_uint16 f_debugInfo2_u16);
 
 static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e);
-static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e);
+/*static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e);
 static void s_APPLGC_Callback_2(t_eFMKIO_OutPwmSig f_signal_e);
 static void s_APPLGC_Callback_3(t_eFMKIO_OutPwmSig f_signal_e);
-static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e);
+static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e);*/
 static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
 
 
@@ -359,24 +359,9 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     t_eReturnCode Ret_e = RC_OK;
     
     Ret_e = FMKIO_Set_OutPwmSigCfg(SIGNAL_IN_TEST,
-                                    FMKIO_PULL_MODE_UP,
-                                    1000,
+                                    FMKIO_PULL_MODE_DOWN,
+                                    100,
                                     s_APPLGC_Callback,
-                                    NULL_FONCTION);
-    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_9,
-                                    FMKIO_PULL_MODE_UP,
-                                    1000,
-                                    s_APPLGC_Callback_2,
-                                    NULL_FONCTION);
-    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_10,
-                                    FMKIO_PULL_MODE_UP,
-                                    1000,
-                                    s_APPLGC_Callback_1,
-                                    NULL_FONCTION);
-    Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_11,
-                                    FMKIO_PULL_MODE_UP,
-                                    1000,
-                                    s_APPLGC_Callback_3,
                                     NULL_FONCTION);
 
     Ret_e = FMKTIM_Set_EvntTimerCfg(FMKTIM_INTERRUPT_LINE_EVNT_1, 
@@ -426,7 +411,15 @@ static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
         {
 
             //saveTime_u32 = currentTime_u32;
-            frequency_u32 += 500;
+            
+            if(frequency_u32 > 60000)
+            {
+                frequency_u32 = 60000;
+            }
+            else 
+            {
+                frequency_u32 += 500;
+            }
             FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
                                         frequency_u32);
             
@@ -436,6 +429,10 @@ static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
         {
             //saveTime_u32 = currentTime_u32;
             dutycycle_u16 += 100;
+            if(dutycycle_u16 > 1000)
+            {
+                dutycycle_u16 = 0;
+            }
             FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
                                     dutycycle_u16);
             
@@ -443,16 +440,21 @@ static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
         }
         case TYPETEST_PWM_DC_FREQ_CHANGE:
         {  
-            frequency_u32 += 100;
-            FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
-                                        frequency_u32);
-            dutycycle_u16 += 10;
-            if(dutycycle_u16 > 1000)
+            if((currentTime_u32 - saveTime_u32) > 1000)
             {
-                dutycycle_u16 = 1000;
+                saveTime_u32 = currentTime_u32;
+
+                frequency_u32 += 100;
+                FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
+                                            frequency_u32);
+                dutycycle_u16 += 10;
+                if(dutycycle_u16 > 1000)
+                {
+                    dutycycle_u16 = 1000;
+                }
+                FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
+                                        dutycycle_u16);
             }
-            FMKIO_Set_OutPwmSigDutyCycle(SIGNAL_IN_TEST,
-                                    dutycycle_u16);      
             break;
         }
         case  TYPERTEST_PWM_PULSE_GEN:
@@ -463,15 +465,6 @@ static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
                 {
                     saveTime_u32 = currentTime_u32;
                     FMKIO_Set_OutPwmSigPulses(SIGNAL_IN_TEST,
-                                                500,
-                                                10000);
-                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_9,
-                                                500,
-                                                10000);
-                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_10,
-                                                500,
-                                                10000);
-                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_11,
                                                 500,
                                                 10000);
                 }
@@ -544,7 +537,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
             }
             if((currentTime_u32 - saveTime_u32) > 1000)
             {
-                saveTime_u32 = currentTime_u32;
+                //saveTime_u32 = currentTime_u32;
                 frequency_u32 += 500;
                 FMKIO_Set_OutPwmSigFrequency(SIGNAL_IN_TEST,
                                             frequency_u32);
@@ -565,26 +558,15 @@ static t_eReturnCode s_APPLGC_Operational(void)
                     g_pulseFinish_b = False;
                     FMKIO_Set_OutPwmSigPulses(SIGNAL_IN_TEST,
                                                 500,
-                                                10000);
-                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_9,
-                                                500,
-                                                10000);
-                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_10,
-                                                500,
-                                                10000);
-                    FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_11,
-                                                500,
-                                                10000);
+                                                1000);
                 }
             }
-            /*if(((currentTime_u32 - saveTime_u32) > 5000)
+            /*if(((currentTime_u32 - saveTime_u32) > 1000)
             && (g_pulseFinish_b == False))
             {
                 FMKIO_Set_OutPwmSigPulses(SIGNAL_IN_TEST,
                     500,
                     0);
-                FMKCPU_Get_Tick(&f_finishpulse_u32);
-                g_pulseFinish_b = True;
             }*/
             break;
         }
@@ -722,12 +704,12 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
  *********************************/
 static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e)
 {
-    //g_pulseFinish_b = True;
+    g_pulseFinish_b = True;
     FMKCPU_Get_Tick(&f_finishpulse_u32);
     return;
 }
 
-static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e)
+/*static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e)
 {
 
     FMKCPU_Get_Tick(&f_finishpulse1_u32);
@@ -749,7 +731,7 @@ static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e)
 {
     FMKCPU_Get_Tick(&f_finishpulse4_u32);
     return;
-}
+}*/
 //************************************************************************************
 // End of File
 //************************************************************************************

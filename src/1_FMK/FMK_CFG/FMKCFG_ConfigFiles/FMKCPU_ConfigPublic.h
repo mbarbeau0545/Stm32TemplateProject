@@ -328,6 +328,8 @@
         FMKCPU_DMA_RQSTYPE_ADC1 = 0x0,               /**< Reference to Bsp Dma Request for ADC1 */
         FMKCPU_DMA_RQSTYPE_ADC2,                     /**< Reference to Bsp Dma Request for ADC2 */
         FMKCPU_DMA_RQSTYPE_ADC3,                     /**< Reference to Bsp Dma Request for ADC3 */
+        FMKCPU_DMA_RQSTYPE_ADC4,                     /**< Reference to Bsp Dma Request for ADC4 */
+        FMKCPU_DMA_RQSTYPE_ADC5,                     /**< Reference to Bsp Dma Request for ADC5 */
         FMKCPU_DMA_RQSTYPE_UART4_RX,                 /**< Reference to Bsp Dma Request for UART4_RX */
         FMKCPU_DMA_RQSTYPE_UART4_TX,                 /**< Reference to Bsp Dma Request for UART4_TX */
         FMKCPU_DMA_RQSTYPE_USART1_RX,                /**< Reference to Bsp Dma Request for USART1_RX */

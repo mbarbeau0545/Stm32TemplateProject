@@ -500,8 +500,8 @@ t_eReturnCode FMKIO_Set_InDigSigCfg(t_eFMKIO_InDigSig f_signal_e, t_eFMKIO_PullM
  * FMKIO_Set_InAnaSigCfg
  *********************************/
 t_eReturnCode FMKIO_Set_InAnaSigCfg(t_eFMKIO_InAnaSig f_signal_e, 
-                                        t_eFMKIO_PullMode f_pull_e,
-                                        t_cbFMKIO_SigErrorMngmt *f_sigErr_cb)
+                                    t_eFMKIO_PullMode f_pull_e,
+                                    t_cbFMKIO_SigErrorMngmt *f_sigErr_cb)
 {
     t_eReturnCode Ret_e = RC_OK;
 

@@ -282,13 +282,10 @@ void APPSYS_AssertionTrap(  t_uint16 f_Info_u16,
 
     if(g_lockAssert_b == (t_bool)False)
     {
-        if(g_lockAssert_b == (t_bool)False)
-        {
-            g_AssertInfo_s.debugInfo_u16 = f_Info_u16;
-            strncpy(g_AssertInfo_s.file_ac, f_file_str, APPSYS_FILE_NAME_LEN - 1);
-            g_AssertInfo_s.file_ac[APPSYS_FILE_NAME_LEN - 1] = '\0';  // Assurer la terminaison
-            g_AssertInfo_s.line_u32 = f_line_u32;
-        }
+        g_AssertInfo_s.debugInfo_u16 = f_Info_u16;
+        strncpy(g_AssertInfo_s.file_ac, f_file_str, APPSYS_FILE_NAME_LEN - 1);
+        g_AssertInfo_s.file_ac[APPSYS_FILE_NAME_LEN - 1] = '\0';  // Assurer la terminaison
+        g_AssertInfo_s.line_u32 = f_line_u32;
     }
     return;
 }

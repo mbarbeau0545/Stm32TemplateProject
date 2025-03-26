@@ -81,6 +81,12 @@ t_eReturnCode FMKCPU_SetRequestType(t_eFMKCPU_DmaRqst f_RqstType_e,
             case FMKCPU_DMA_RQSTYPE_ADC3:
                 f_bspDma_ps->Init.Request = DMA_REQUEST_ADC3;
                 break;
+            case FMKCPU_DMA_RQSTYPE_ADC4:
+                f_bspDma_ps->Init.Request = DMA_REQUEST_ADC4;
+                break;
+            case FMKCPU_DMA_RQSTYPE_ADC5:
+                f_bspDma_ps->Init.Request = DMA_REQUEST_ADC5;
+                break;
             case FMKCPU_DMA_RQSTYPE_UART4_RX:
                 f_bspDma_ps->Init.Request = DMA_REQUEST_UART4_RX;
                 break;

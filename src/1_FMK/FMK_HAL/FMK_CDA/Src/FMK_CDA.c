@@ -14,7 +14,8 @@
 #include "./FMK_CDA.h"
 #include "FMK_HAL/FMK_CPU/Src/FMK_CPU.h"
 #include "FMK_CFG/FMKCFG_ConfigFiles/FMKCDA_ConfigPrivate.h"
-#include "stm32g4xx_hal.h"
+#include "APP_CTRL/APP_SYS/Src/APP_SYS.h"
+
 
 // ********************************************************************
 // *                      Defines
@@ -40,7 +41,7 @@ typedef struct
     t_uint32 rawValue_au32[FMKCDA_ADC_CHANNEL_NB];                   /**< Array for analog value for all channel */
     t_uint16 savedVal_ua16[FMKCDA_ADC_CHANNEL_NB];
     t_eFMKCDA_AdcChannel BspChnlmapp_ae[FMKCDA_ADC_CHANNEL_NB];      /**< Mapping with raywvalue array and channelINfo structure abalog value */    
-    t_bool flagReadBuffer_b;                                         /**< Flag reading buffer  */
+    t_bool flagOpeRW_b;                                             /**< Flag reading/ writing buffer  */
     t_uint32 lastUpate_u32;                                          /**< time between the last update */
 } t_sFMKCDA_AdcBuffer;
 
@@ -87,30 +88,35 @@ t_sFMKCDA_AdcInfo g_AdcInfo_as[FMKCDA_ADC_NB] = {
         .BspInit_s.Instance = ADC1,
         .c_clock_e = FMKCPU_RCC_CLK_ADC12,
         .c_IRQNType_e = FMKCPU_NVIC_ADC1_2_IRQN,
+        .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC1,
     },
     {
         // ADC_2
         .BspInit_s.Instance = ADC2,
         .c_clock_e = FMKCPU_RCC_CLK_ADC12,
         .c_IRQNType_e = FMKCPU_NVIC_ADC1_2_IRQN,
+        .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC2,
     },
     {
         // ADC_3
         .BspInit_s.Instance = ADC3,
         .c_clock_e = FMKCPU_RCC_CLK_ADC345,
         .c_IRQNType_e = FMKCPU_NVIC_ADC3_IRQN,
+        .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC3,
     },
     {
         // ADC_4
         .BspInit_s.Instance = ADC4,
         .c_clock_e = FMKCPU_RCC_CLK_ADC345,
         .c_IRQNType_e = FMKCPU_NVIC_ADC4_IRQN,
+        .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC4,
     },
     {
         // ADC_5
         .BspInit_s.Instance = ADC5,
         .c_clock_e = FMKCPU_RCC_CLK_ADC345,
         .c_IRQNType_e = FMKCPU_NVIC_ADC5_IRQN,
+        .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC5,
     },
 };
 
@@ -211,7 +217,7 @@ static t_eReturnCode s_FMKCDA_Operational(void);
  * @retval RC_WARNING_BUSY                     @ref RC_WARNING_BUSY
  *
  */
-static t_eReturnCode s_FMKCDA_ConfigurationState(void);
+static t_eReturnCode s_FMKCDA_PreOPerational(void);
 /**
  *
  *	@brief      Perform Diagnostic on adc & dac
@@ -274,7 +280,7 @@ t_eReturnCode FMKCDA_Init(void)
         g_adcCalibInfo_as[adcIndex_u8].isValueSet_b = (t_bool)False;
         
         g_AdcBuffer_as[adcIndex_u8].lastUpate_u32 = (t_uint32)0;
-        g_AdcBuffer_as[adcIndex_u8].flagReadBuffer_b = (t_bool)False;
+        g_AdcBuffer_as[adcIndex_u8].flagOpeRW_b = (t_bool)False;
 
         g_counterRank_au8[adcIndex_u8] = (t_uint8)0;
 
@@ -303,21 +309,24 @@ t_eReturnCode FMKCDA_Cyclic(void)
     {
         case STATE_CYCLIC_CFG:
         {
-            Ret_e = s_FMKCDA_ConfigurationState();
-            if(Ret_e  == RC_OK)
-            {
-                g_FmkCda_ModState_e = STATE_CYCLIC_WAITING;
-            }
+            g_FmkCda_ModState_e = STATE_CYCLIC_WAITING;
             break;
         }
         case STATE_CYCLIC_WAITING:
         {
-            // nothing to do just wait AppSys Signal
             break;
         }
         case STATE_CYCLIC_PREOPE:
         {
-            g_FmkCda_ModState_e = STATE_CYCLIC_OPE;
+            Ret_e = s_FMKCDA_PreOPerational();
+            if(Ret_e == RC_OK)
+            {
+                g_FmkCda_ModState_e = STATE_CYCLIC_OPE;
+            }
+            else if(Ret_e < RC_OK)
+            {
+                g_FmkCda_ModState_e = STATE_CYCLIC_ERROR;
+            }
             break;
         }
         case STATE_CYCLIC_OPE:
@@ -384,6 +393,7 @@ t_eReturnCode FMKCDA_Set_AdcChannelCfg( t_eFMKCDA_Adc f_Adc_e,
     || f_channel_e >= c_FmkCda_AdcMaxChnl_ua8[f_Adc_e])
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)f_Adc_e);
     }
     if(g_AdcInfo_as[f_Adc_e].IsConfigured_b == (t_bool)False)
     {
@@ -394,6 +404,7 @@ t_eReturnCode FMKCDA_Set_AdcChannelCfg( t_eFMKCDA_Adc f_Adc_e,
     && f_hwAdcCfg_e != g_AdcInfo_as[f_Adc_e].HwCfg_e)
     {
         Ret_e = RC_ERROR_WRONG_CONFIG;
+        ASSERT((t_uint16)g_AdcInfo_as[f_Adc_e].IsConfigured_b);
     }
     if (Ret_e == RC_OK)
     {
@@ -419,14 +430,16 @@ t_eReturnCode FMKCDA_Get_AnaChannelMeasure(t_eFMKCDA_Adc f_Adc_e, t_eFMKCDA_AdcC
     || f_channel_e >= c_FmkCda_AdcMaxChnl_ua8[f_Adc_e])
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)Ret_e);
     }
     if (f_AnaMeasure_u16 == (t_uint16 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)Ret_e);
     }
     if(g_FmkCda_ModState_e != STATE_CYCLIC_OPE)
     {
-        Ret_e = RC_ERROR_WRONG_STATE;
+        Ret_e = RC_WARNING_BUSY;
     }
     if(Ret_e == RC_OK)
     {
@@ -437,6 +450,7 @@ t_eReturnCode FMKCDA_Get_AnaChannelMeasure(t_eFMKCDA_Adc f_Adc_e, t_eFMKCDA_AdcC
         || cnlInfo_ps->isConfigured_b == (t_bool)False)
         {
             Ret_e = RC_ERROR_MISSING_CONFIG;
+            ASSERT((t_uint16)Ret_e);
         }
         if(GETBIT(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_OK) == BIT_IS_RESET_16B)
         {
@@ -473,10 +487,12 @@ t_eReturnCode FMKCDA_Get_AdcError(t_eFMKCDA_Adc f_adc_e, t_uint16 * f_chnlErrInf
     if(f_adc_e >= FMKCDA_ADC_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)f_adc_e);
     }
     if(f_chnlErrInfo_pu16 == (t_uint16 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)f_chnlErrInfo_pu16);
     }
     if(Ret_e == RC_OK)
     {
@@ -491,7 +507,7 @@ t_eReturnCode FMKCDA_Get_AdcError(t_eFMKCDA_Adc f_adc_e, t_uint16 * f_chnlErrInf
 /*********************************
  * s_FMKCDA_Operational
  *********************************/
-static t_eReturnCode s_FMKCDA_ConfigurationState(void)
+static t_eReturnCode s_FMKCDA_PreOPerational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uint8 AdcIndex_u8 = 0;
@@ -505,22 +521,22 @@ static t_eReturnCode s_FMKCDA_ConfigurationState(void)
 
     for(AdcIndex_u8 = (t_uint8)0 ; 
            (AdcIndex_u8 < FMKCDA_ADC_NB) 
-        && (g_AdcInfo_as[AdcIndex_u8].IsConfigured_b == (t_bool)True)
         && (Ret_e == RC_OK) ; 
         AdcIndex_u8++)
     {
-
-        Ret_e = s_FMKCDA_Set_BspChannelCfg(c_FmkCda_HwVrefCfg[AdcIndex_u8].adc_e,
-                                         c_FmkCda_HwVrefCfg[AdcIndex_u8].chnl_e);
-        
-        //----- Different ADC has the same link for Vref -> it's OK ----//
-        if(Ret_e == RC_ERROR_ALREADY_CONFIGURED)
+        if(g_AdcInfo_as[AdcIndex_u8].IsConfigured_b == (t_bool)True)
         {
-            Ret_e = RC_OK;
+            Ret_e = s_FMKCDA_Set_BspChannelCfg(c_FmkCda_HwVrefCfg[AdcIndex_u8].adc_e,
+                                            c_FmkCda_HwVrefCfg[AdcIndex_u8].chnl_e);
+            
+            //----- Different ADC has the same link for Vref -> it's OK ----//
+            if(Ret_e == RC_ERROR_ALREADY_CONFIGURED)
+            {
+                Ret_e = RC_OK;
+            }
         }
     }
     
-
     return Ret_e;
 }
 /*********************************
@@ -538,51 +554,55 @@ static t_eReturnCode s_FMKCDA_Operational(void)
    FMKCPU_Get_Tick(&currentTime_u32);
 
     //------ For every adc in stm32 ------//
-    for(adcIndex_u8 = (t_uint8)0 ; 
-           (adcIndex_u8 < (t_uint8)FMKCDA_ADC_NB)
-        && (g_AdcInfo_as[adcIndex_u8].IsConfigured_b == (t_bool)true) ; 
-        adcIndex_u8++)
+    for(adcIndex_u8 = (t_uint8)0 ; adcIndex_u8 < (t_uint8)FMKCDA_ADC_NB ; adcIndex_u8++)
     {
         adcInfo_ps = (t_sFMKCDA_AdcInfo *)(&g_AdcInfo_as[adcIndex_u8]);
-        //------ If an Adc Error has been raised, deal with it ------//
-        if((adcInfo_ps->flagErrDetected_b == True)
-        ||((currentTime_u32 - s_SavedTime_u32) > (t_uint32)FMKCDA_TIME_BTWN_DIAG_MS))
-        {
-            s_SavedTime_u32 = currentTime_u32;
-            Ret_e = s_FMKCDA_PerformDiagnostic((t_eFMKCDA_Adc)adcIndex_u8);
-        }
 
-        //------ if the adc is not running and the adc is configured,
-        //       launch a conversion only if error_state = NO_ERROR or PRESENTS ------//
-        if((adcInfo_ps->IsAdcRunning_b == (t_bool)False)
-        && ((GETBIT(adcInfo_ps->Error_u16,FMKCDA_ERRSTATE_OK) == BIT_IS_SET_16B)
-        ||  (GETBIT(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_PRESENTS) == BIT_IS_SET_16B)))
+        if(adcInfo_ps->IsConfigured_b == (t_bool)true)
         {
-            //Ret_e = s_FMKCDA_StartAdcConversion((t_eFMKCDA_Adc)adcIndex_u8, g_AdcInfo_as[adcIndex_u8].HwCfg_e);
-            if(Ret_e == RC_OK) 
+            //------ If an Adc Error has been raised, deal with it ------//
+            if((adcInfo_ps->flagErrDetected_b == True)
+            ||((currentTime_u32 - s_SavedTime_u32) > (t_uint32)FMKCDA_TIME_BTWN_DIAG_MS))
             {
-                g_AdcInfo_as[adcIndex_u8].IsAdcRunning_b = True;
-                RESETBIT_16B(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_PRESENTS);
-                SETBIT_16B(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_OK);
+                s_SavedTime_u32 = currentTime_u32;
+                Ret_e = s_FMKCDA_PerformDiagnostic((t_eFMKCDA_Adc)adcIndex_u8);
             }
-        }
-        else
-        {   
-            //------ Update Current Time ------//
-            FMKCPU_Get_Tick(&currentTime_u32);
-            #warning('Logic to deal error -> To modify')
-            //------ check last time update to make actions if there is no update from adc
-            // also add 5ms in case interrutpion occured during getting the Tick ------//
 
-            if((t_uint32)((currentTime_u32 + (t_uint32)5) - g_AdcBuffer_as[adcIndex_u8].lastUpate_u32) > (t_uint32)FMKCDA_OVR_CONVERSION_MS)
+            //------ if the adc is not running and the adc is configured,
+            //       launch a conversion only if error_state = NO_ERROR or PRESENTS ------//
+            if((adcInfo_ps->IsAdcRunning_b == (t_bool)False)
+            && ((GETBIT(adcInfo_ps->Error_u16,FMKCDA_ERRSTATE_OK) == BIT_IS_SET_16B)
+            ||  (GETBIT(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_PRESENTS) == BIT_IS_SET_16B)))
             {
-                // update information 
-                adcInfo_ps->IsAdcRunning_b = False;
-                SETBIT_16B(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_PRESENTS);
+                Ret_e = s_FMKCDA_StartAdcConversion((t_eFMKCDA_Adc)adcIndex_u8, g_AdcInfo_as[adcIndex_u8].HwCfg_e);
+                if(Ret_e == RC_OK) 
+                {
+                    g_AdcInfo_as[adcIndex_u8].IsAdcRunning_b = True;
+                    RESETBIT_16B(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_PRESENTS);
+                    SETBIT_16B(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_OK);
+                }
             }
             else
-            {// put the buffer into adc channel block
-                Ret_e = s_FMKCDA_UpdateChannelValue((t_eFMKCDA_Adc)adcIndex_u8);
+            {   
+                //------ Update Current Time ------//
+                FMKCPU_Get_Tick(&currentTime_u32);
+                //------ check last time update to make actions if there is no update from adc
+                // also add 5ms in case interrutpion occured during getting the Tick ------//
+                if(g_AdcBuffer_as[adcIndex_u8].flagOpeRW_b == (t_bool)false)
+                {
+                    if((t_uint32)(currentTime_u32 - g_AdcBuffer_as[adcIndex_u8].lastUpate_u32) > (t_uint32)FMKCDA_OVR_CONVERSION_MS)
+                    {
+                        // update information 
+                        adcInfo_ps->IsAdcRunning_b = False;
+                        SETBIT_16B(adcInfo_ps->Error_u16, FMKCDA_ERRSTATE_PRESENTS);
+                        ASSERT((t_uint16)adcInfo_ps->Error_u16);
+                    }
+                    else 
+                    {// put the buffer into adc channel block
+                        Ret_e = s_FMKCDA_UpdateChannelValue((t_eFMKCDA_Adc)adcIndex_u8);
+                    }
+                }
+                
             }
         }
     }
@@ -631,6 +651,7 @@ static t_eReturnCode s_FMKCDA_StartAdcConversion(t_eFMKCDA_Adc f_Adc_e, t_eFMKCD
         }
         else if(bspRet_e != HAL_OK)
         {
+            ASSERT((t_uint16)bspRet_e);
             Ret_e = RC_ERROR_WRONG_STATE;
         }
     }
@@ -763,6 +784,7 @@ static t_eReturnCode s_FMKCDA_Set_BspAdcCfg(t_eFMKCDA_Adc f_Adc_e,
 
     if (f_Adc_e >= FMKCDA_ADC_NB || f_HwAdcCfg_e >= FMKCDA_ADC_CFG_NB)
     {
+        ASSERT((t_uint16)f_HwAdcCfg_e);
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
     if (Ret_e == RC_OK)
@@ -798,7 +820,8 @@ static t_eReturnCode s_FMKCDA_Set_BspAdcCfg(t_eFMKCDA_Adc f_Adc_e,
 #endif
 
         // Gestion du mode DMA
-        if (FMKCPU_ADC_DMA_MODE == DMA_CIRCULAR) {
+        if (FMKCPU_ADC_DMA_MODE == DMA_CIRCULAR) 
+        {
             bspAdcInit_s->DMAContinuousRequests = ENABLE;
         } 
         else 
@@ -869,10 +892,12 @@ static t_eReturnCode s_FMKCDA_Set_BspAdcCfg(t_eFMKCDA_Adc f_Adc_e,
             else
             {
                 Ret_e = RC_ERROR_WRONG_STATE;
+                ASSERT((t_uint16)BspRet_e);
             }
         }
         else
         {
+            ASSERT((t_uint16)Ret_e);
             Ret_e = RC_ERROR_WRONG_STATE;
         }
     }
@@ -892,16 +917,19 @@ static t_eReturnCode s_FMKCDA_Set_BspChannelCfg(t_eFMKCDA_Adc f_Adc_e, t_eFMKCDA
     if((f_Adc_e >= FMKCDA_ADC_NB)
     || (f_channel_e >= FMKCDA_ADC_CHANNEL_NB))
     {
+        ASSERT((t_uint16)f_channel_e);
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
     if( (Ret_e == RC_OK)
-   &&   (g_AdcInfo_as[f_Adc_e].IsConfigured_b == (t_bool)False))
+    &&  (g_AdcInfo_as[f_Adc_e].IsConfigured_b == (t_bool)False))
     {
+        ASSERT((t_uint16)g_AdcInfo_as[f_Adc_e].IsConfigured_b);
         Ret_e = RC_ERROR_MISSING_CONFIG;
     }
     if((Ret_e == RC_OK)
     && (g_AdcInfo_as[f_Adc_e].Channel_as[f_channel_e].isConfigured_b == (t_bool)True))
     {
+        ASSERT((t_uint16)0);
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
     }
     if(Ret_e == RC_OK)
@@ -948,6 +976,7 @@ static t_eReturnCode s_FMKCDA_Set_BspChannelCfg(t_eFMKCDA_Adc f_Adc_e, t_eFMKCDA
             else
             {
                 Ret_e = RC_ERROR_WRONG_STATE;
+                ASSERT((t_uint16)BspRet_e);
             }
         }
     }
@@ -1004,7 +1033,7 @@ static t_eReturnCode s_FMKCDA_UpdateChannelValue(t_eFMKCDA_Adc f_Adc_e)
     }
 
     //------ update flag reading ------//
-    adcBuffer_ps->flagReadBuffer_b = (t_bool)True;
+    adcBuffer_ps->flagOpeRW_b = (t_bool)True;
 
     //------  here the dma load the buffer with FILO method, first in last out ------//
     reverseLLI_u8 = (t_uint8)(adcCtrRank_u8 - 1);
@@ -1022,7 +1051,7 @@ static t_eReturnCode s_FMKCDA_UpdateChannelValue(t_eFMKCDA_Adc f_Adc_e)
         reverseLLI_u8 -= (t_uint8)1;
     }  
     //------ update flag reading ------//
-    adcBuffer_ps->flagReadBuffer_b = (t_bool)False; 
+    adcBuffer_ps->flagOpeRW_b = (t_bool)False; 
 
     return Ret_e;
 }
@@ -1052,16 +1081,18 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     if (IT_Adc_e < FMKCDA_ADC_NB)
     {
         //------ update saved value only if cyclic is not reading it ------//
-        if(g_AdcBuffer_as[IT_Adc_e].flagReadBuffer_b == (t_bool)False)
+        if(g_AdcBuffer_as[IT_Adc_e].flagOpeRW_b == (t_bool)False)
         {
+            g_AdcBuffer_as[IT_Adc_e].flagOpeRW_b = True;
             //                                      number of channel configured
             for(LLI_u8 = (t_uint8)0 ; LLI_u8 < (t_uint8)(g_counterRank_au8[IT_Adc_e]) ; LLI_u8++)
             {
                 g_AdcBuffer_as[IT_Adc_e].savedVal_ua16[LLI_u8] = (t_uint16)g_AdcBuffer_as[IT_Adc_e].rawValue_au32[LLI_u8];
             }
+            FMKCPU_Get_Tick(&g_AdcBuffer_as[IT_Adc_e].lastUpate_u32);
+            g_AdcBuffer_as[IT_Adc_e].flagOpeRW_b = False;
         }
         //------ update last time the value has been changed and reset bit present error ------//
-        FMKCPU_Get_Tick(&g_AdcBuffer_as[IT_Adc_e].lastUpate_u32);
         //------ reset present bit ------//
         RESETBIT_16B(g_AdcInfo_as[IT_Adc_e].Error_u16, FMKCDA_ERRSTATE_PRESENTS);
     }
@@ -1133,29 +1164,48 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
 *********************************/
 void ADC1_2_IRQHandler(void)
 {
-    HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_1].BspInit_s);
-    HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_2].BspInit_s);
+    if(g_AdcInfo_as[FMKCDA_ADC_1].IsConfigured_b == (t_bool)True)
+    {
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_1].BspInit_s);
+    }
+    if(g_AdcInfo_as[FMKCDA_ADC_2].IsConfigured_b == (t_bool)True)
+    {
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_2].BspInit_s);
+    }
+    return;
 }
 /*********************************
  * ADC3_IRQHandler
 *********************************/
 void ADC3_IRQHandler(void)
 {
-    HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_3].BspInit_s);
+    if(g_AdcInfo_as[FMKCDA_ADC_3].IsConfigured_b == (t_bool)True)
+    {
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_3].BspInit_s);
+    }
+    return;
 }
 /*********************************
  * ADC4_IRQHandler
 *********************************/
 void ADC4_IRQHandler(void)
 {
-    HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_4].BspInit_s);
+    if(g_AdcInfo_as[FMKCDA_ADC_4].IsConfigured_b == (t_bool)True)
+    {
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_4].BspInit_s);
+    }
+    return;
 }
 /*********************************
  * ADC5_IRQHandler
 *********************************/
 void ADC5_IRQHandler(void)
 {
-    HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_5].BspInit_s);
+    if(g_AdcInfo_as[FMKCDA_ADC_5].IsConfigured_b == (t_bool)True)
+    {
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_5].BspInit_s);
+    }
+    return;
 }
 /* CAUTION : Automatic generated code section for ADCx IRQN_Handler: End */
 

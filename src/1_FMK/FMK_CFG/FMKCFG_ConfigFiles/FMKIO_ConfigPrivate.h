@@ -127,25 +127,27 @@
         {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_14},   // FMKIO_INPUT_SIGDIG_4,
         {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_15},   // FMKIO_INPUT_SIGDIG_5,
         {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_0},    // FMKIO_INPUT_SIGDIG_6,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_1},    // FMKIO_INPUT_SIGDIG_7,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_7},    // FMKIO_INPUT_SIGDIG_7,
+        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_10},   // FMKIO_INPUT_SIGDIG_8,
+        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_13},   // FMKIO_INPUT_SIGDIG_9,
     };
 
     /**< Variable for bsp_Gpio_Pin, adc coonfig Analog input signal mapping */
     const t_sFMKIO_AnaAdcCfg c_InAnaSigBspMap_as[FMKIO_INPUT_SIGANA_NB] = {
         //GPIO_name                     Pin_name                      ADC_Used                      Adc_Channel                   
-        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_4},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_17},// FMKIO_INPUT_SIGANA_1;
-        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_5},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_13},// FMKIO_INPUT_SIGANA_2;
-        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_6},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_3}, // FMKIO_INPUT_SIGANA_3;
-        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_7},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_4}, // FMKIO_INPUT_SIGANA_4;
+        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_1},               FMKCDA_ADC_1,                  FMKCDA_ADC_CHANNEL_2}, // FMKIO_INPUT_SIGANA_1;
+        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_4},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_17},// FMKIO_INPUT_SIGANA_2;
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_1},               FMKCDA_ADC_1,                  FMKCDA_ADC_CHANNEL_12},// FMKIO_INPUT_SIGANA_3;
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_0},               FMKCDA_ADC_1,                  FMKCDA_ADC_CHANNEL_15},// FMKIO_INPUT_SIGANA_4;
+        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_5},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_13},// FMKIO_INPUT_SIGANA_5;
+        {{FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_6},               FMKCDA_ADC_2,                  FMKCDA_ADC_CHANNEL_3}, // FMKIO_INPUT_SIGANA_6;
     };
 
     /**< Variable for bsp_Gpio_Pin frequency input signal mapping */
     const t_sFMKIO_BspTimerSigCfg c_InFreqSigBspMap_as[FMKIO_INPUT_SIGFREQ_NB] = {
         //GPIO_name                     Pin_name                      alternate function            Interrupt Line                ItLineType                    
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_0},              GPIO_AF2_TIM3,                 FMKTIM_INTERRUPT_LINE_IO_33,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_1,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_1},              GPIO_AF2_TIM3,                 FMKTIM_INTERRUPT_LINE_IO_34,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_2,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_6},              GPIO_AF2_TIM4,                 FMKTIM_INTERRUPT_LINE_IO_41,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_3,
-        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_7},              GPIO_AF2_TIM4,                 FMKTIM_INTERRUPT_LINE_IO_42,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_4,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_6},              GPIO_AF2_TIM4,                 FMKTIM_INTERRUPT_LINE_IO_41,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_1,
+        {{FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_7},              GPIO_AF2_TIM4,                 FMKTIM_INTERRUPT_LINE_IO_42,                                 FMKIO_ITLINE_TYPE_BSCTIM},    // FMKIO_INPUT_SIGFREQ_2,
     };
 
     /**< Variable for bsp_Gpio_Pin frequency input signal mapping */
@@ -160,16 +162,15 @@
     const t_sFMKIO_BspSigCfg c_OutDigSigBspMap_as[FMKIO_OUTPUT_SIGDIG_NB] = {
         //GPIO_name                     Pin_name                      
         {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_1,
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_13},   // FMKIO_OUTPUT_SIGDIG_2,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_3,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_12},   // FMKIO_OUTPUT_SIGDIG_4,
-        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_9},    // FMKIO_OUTPUT_SIGDIG_5,
-        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_8},    // FMKIO_OUTPUT_SIGDIG_6,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_3},    // FMKIO_OUTPUT_SIGDIG_7,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_9},    // FMKIO_OUTPUT_SIGDIG_8,
-        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_5},    // FMKIO_OUTPUT_SIGDIG_9,
-        {FMKIO_GPIO_PORT_F,             FMKIO_GPIO_PIN_0},    // FMKIO_OUTPUT_SIGDIG_10,
-        {FMKIO_GPIO_PORT_F,             FMKIO_GPIO_PIN_1},    // FMKIO_OUTPUT_SIGDIG_11,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_11},   // FMKIO_OUTPUT_SIGDIG_2,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_12},   // FMKIO_OUTPUT_SIGDIG_3,
+        {FMKIO_GPIO_PORT_A,             FMKIO_GPIO_PIN_9},    // FMKIO_OUTPUT_SIGDIG_4,
+        {FMKIO_GPIO_PORT_B,             FMKIO_GPIO_PIN_8},    // FMKIO_OUTPUT_SIGDIG_5,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_3},    // FMKIO_OUTPUT_SIGDIG_6,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_9},    // FMKIO_OUTPUT_SIGDIG_7,
+        {FMKIO_GPIO_PORT_C,             FMKIO_GPIO_PIN_5},    // FMKIO_OUTPUT_SIGDIG_8,
+        {FMKIO_GPIO_PORT_F,             FMKIO_GPIO_PIN_0},    // FMKIO_OUTPUT_SIGDIG_9,
+        {FMKIO_GPIO_PORT_F,             FMKIO_GPIO_PIN_1},    // FMKIO_OUTPUT_SIGDIG_10,
     };
 
     /**< Variable for bsp_Gpio_Pin PWM output signal mapping */

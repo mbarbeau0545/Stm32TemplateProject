@@ -11,6 +11,7 @@
 #                                       IMPORT
 #------------------------------------------------------------------------------
 from .FMK_PATH import *
+from .FMKCPU_CodeGen import ENUM_FMKCPU_DMARQST
 from PyCodeGene import LoadConfig_FromExcel as LCFE, TARGET_T_END_LINE,TARGET_T_ENUM_END_LINE, \
                                                     TARGET_T_ENUM_START_LINE,TARGET_T_START_LINE,TARGET_T_VARIABLE_START_LINE,\
                                                     TARGET_T_VARIABLE_END_LINE,TARGET_T_STRUCT_START_LINE,\
@@ -119,6 +120,7 @@ class FMKCDA_CodeGen():
                         + f"        .BspInit_s.Instance = ADC{adc_index},\n" \
                         + f"        .c_clock_e = {ENUM_FMKCPU_RCC_ROOT}_{str(adc_info[3]).upper()},\n" \
                         + f"        .c_IRQNType_e = {ENUM_FMKCPU_NVIC_ROOT}_{str(adc_info[2]).upper()},\n" \
+                        + f'        .c_DmaAdc_e = {ENUM_FMKCPU_DMARQST}_ADC{adc_index},\n'\
                         + "    },\n"
             #make rank coutner 
             var_rank_counter += "    (t_uint8)0,\n"
@@ -144,8 +146,12 @@ class FMKCDA_CodeGen():
             list_adc_asso = str(adc_irqn[1]).split(',')
             for adc_asso in list_adc_asso:
                 adc_asso = adc_asso.replace(' ', '')
-                func_irqn   += '    HAL_ADC_IRQHandler(&g_AdcInfo_as[' \
-                            + f'{ENUM_ADC_ISCT_ROOT}_{adc_asso[-1]}].BspInit_s);\n'
+                func_irqn += f'    if(g_AdcInfo_as[{ENUM_ADC_ISCT_ROOT}_{str(adc_asso)[-1]}].IsConfigured_b == (t_bool)True)\n'\
+                            + '    {\n'\
+                            + '        HAL_ADC_IRQHandler(&g_AdcInfo_as[' \
+                            + f'{ENUM_ADC_ISCT_ROOT}_{adc_asso[-1]}].BspInit_s);\n'\
+                            + '    }\n'
+            func_irqn += '    return;\n'         
             func_irqn += '}\n'
         #----------------------------------------------------------------
         #-----------------------------make channel switch case-----------

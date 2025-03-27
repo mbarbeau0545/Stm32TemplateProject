@@ -32,11 +32,11 @@
     #define FMKCDA_ADC_INTERN_VREFINT_CAL_5_ADDRESS ((volatile t_uint16 *)0x1FFF75AA)
     #define FMKCDA_ADC_INTERN_TS_CAL1_ADDRESS ((volatile t_uint16*)0x1FFF75A8)
     #define FMKCDA_ADC_INTERN_TS_CAL2_ADDRESS ((volatile t_uint16*)0x1FFF75CA)
-    #define FMKCDA_ADC_1_MAX_CHANNELS ((t_uint8)18)
-    #define FMKCDA_ADC_2_MAX_CHANNELS ((t_uint8)18)
-    #define FMKCDA_ADC_3_MAX_CHANNELS ((t_uint8)18)
-    #define FMKCDA_ADC_4_MAX_CHANNELS ((t_uint8)18)
-    #define FMKCDA_ADC_5_MAX_CHANNELS ((t_uint8)18)
+    #define FMKCDA_ADC_1_MAX_CHANNELS ((t_uint8)19)
+    #define FMKCDA_ADC_2_MAX_CHANNELS ((t_uint8)19)
+    #define FMKCDA_ADC_3_MAX_CHANNELS ((t_uint8)19)
+    #define FMKCDA_ADC_4_MAX_CHANNELS ((t_uint8)19)
+    #define FMKCDA_ADC_5_MAX_CHANNELS ((t_uint8)19)
     /* CAUTION : Automatic generated code section for ADC channels number: End */
 
     #define FMKCDA_TIME_BTWN_DIAG_MS ((t_uint16)2000)   /**< Time between diagnostic for adc & dac channel in cyclic ope mode*/
@@ -91,11 +91,11 @@
 
     /**< Variable for Hardware configuration adc and channel for Voltage Reference for each adc */
     const t_sFMKCDA_HwAdcCfg c_FmkCda_HwVrefCfg[FMKCDA_ADC_NB] = {
-        {FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_17},                // for FMKCDA_ADC_1
-        {FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_17},                // for FMKCDA_ADC_2
-        {FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_17},                // for FMKCDA_ADC_3
-        {FMKCDA_ADC_4,                         FMKCDA_ADC_CHANNEL_17},                // for FMKCDA_ADC_4
-        {FMKCDA_ADC_5,                         FMKCDA_ADC_CHANNEL_17},                // for FMKCDA_ADC_5
+        {FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_1
+        {FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_2
+        {FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_3
+        {FMKCDA_ADC_4,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_4
+        {FMKCDA_ADC_5,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_5
     };
 
     /**< Variable for Interna Sensors configuration*/

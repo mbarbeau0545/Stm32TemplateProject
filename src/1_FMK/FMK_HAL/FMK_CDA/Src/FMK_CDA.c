@@ -56,7 +56,7 @@ typedef struct
 /**< Structure for adc information*/
 typedef struct
 {
-    ADC_HandleTypeDef           BspInit_s;                              /**< Store the bsp information needed */
+    ADC_HandleTypeDef           bspIsct_s;                              /**< Store the bsp information needed */
     t_eFMKCDA_HwAdcCfg          HwCfg_e;                                /**< Store in which mode the ADC is currently set */
     t_sFMKCDA_ChnlInfo          Channel_as[FMKCDA_ADC_CHANNEL_NB];      /**< Structure channel information for each channel */
     const t_eFMKCPU_ClockPort   c_clock_e;                              /**< constant to store the clock for each ADC */
@@ -85,35 +85,35 @@ typedef struct
 t_sFMKCDA_AdcInfo g_AdcInfo_as[FMKCDA_ADC_NB] = {
     {
         // ADC_1
-        .BspInit_s.Instance = ADC1,
+        .bspIsct_s.Instance = ADC1,
         .c_clock_e = FMKCPU_RCC_CLK_ADC12,
         .c_IRQNType_e = FMKCPU_NVIC_ADC1_2_IRQN,
         .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC1,
     },
     {
         // ADC_2
-        .BspInit_s.Instance = ADC2,
+        .bspIsct_s.Instance = ADC2,
         .c_clock_e = FMKCPU_RCC_CLK_ADC12,
         .c_IRQNType_e = FMKCPU_NVIC_ADC1_2_IRQN,
         .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC2,
     },
     {
         // ADC_3
-        .BspInit_s.Instance = ADC3,
+        .bspIsct_s.Instance = ADC3,
         .c_clock_e = FMKCPU_RCC_CLK_ADC345,
         .c_IRQNType_e = FMKCPU_NVIC_ADC3_IRQN,
         .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC3,
     },
     {
         // ADC_4
-        .BspInit_s.Instance = ADC4,
+        .bspIsct_s.Instance = ADC4,
         .c_clock_e = FMKCPU_RCC_CLK_ADC345,
         .c_IRQNType_e = FMKCPU_NVIC_ADC4_IRQN,
         .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC4,
     },
     {
         // ADC_5
-        .BspInit_s.Instance = ADC5,
+        .bspIsct_s.Instance = ADC5,
         .c_clock_e = FMKCPU_RCC_CLK_ADC345,
         .c_IRQNType_e = FMKCPU_NVIC_ADC5_IRQN,
         .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC5,
@@ -630,7 +630,7 @@ static t_eReturnCode s_FMKCDA_StartAdcConversion(t_eFMKCDA_Adc f_Adc_e, t_eFMKCD
         {
             case FMKCDA_ADC_CFG_SCAN_DMA:
             {
-                bspRet_e = HAL_ADC_Start_DMA(&g_AdcInfo_as[f_Adc_e].BspInit_s,
+                bspRet_e = HAL_ADC_Start_DMA(&g_AdcInfo_as[f_Adc_e].bspIsct_s,
                                             (t_uint32 *)g_AdcBuffer_as[f_Adc_e].rawValue_au32,
                                             (t_uint32)(g_counterRank_au8[f_Adc_e])); // corresponing to the number of channel 
                                                                         //configured for this adc
@@ -668,7 +668,7 @@ static t_eReturnCode s_FMKCDA_PerformDiagnostic(t_eFMKCDA_Adc f_adc_e)
     t_sFMKCDA_AdcInfo * adcInfo_ps;
 
     adcInfo_ps = (t_sFMKCDA_AdcInfo *)&g_AdcInfo_as[f_adc_e];
-    adcErr_u32 = HAL_ADC_GetError(&adcInfo_ps->BspInit_s);
+    adcErr_u32 = HAL_ADC_GetError(&adcInfo_ps->bspIsct_s);
     
     if(adcErr_u32 != HAL_ADC_ERROR_NONE)
     {
@@ -762,6 +762,9 @@ static t_eReturnCode s_FMKCDA_Get_BspChannel(t_eFMKCDA_AdcChannel f_channel_e, t
             case FMKCDA_ADC_CHANNEL_17:
                 *f_bspChannel_32 = ADC_CHANNEL_17;
                 break;
+            case FMKCDA_ADC_CHANNEL_18:
+                *f_bspChannel_32 = ADC_CHANNEL_18;
+                break;
             /* CAUTION : Automatic generated code section for switch_case ADC channel: End */
             case FMKCDA_ADC_CHANNEL_NB:
             default:
@@ -789,7 +792,7 @@ static t_eReturnCode s_FMKCDA_Set_BspAdcCfg(t_eFMKCDA_Adc f_Adc_e,
     }
     if (Ret_e == RC_OK)
     {
-        bspAdcInit_s = (ADC_InitTypeDef *)(&g_AdcInfo_as[f_Adc_e].BspInit_s.Init);
+        bspAdcInit_s = (ADC_InitTypeDef *)(&g_AdcInfo_as[f_Adc_e].bspIsct_s.Init);
         adcInfo_ps =  (t_sFMKCDA_AdcInfo *)(&g_AdcInfo_as[f_Adc_e]);
 
         //----- Generic Configuration -----//
@@ -806,14 +809,13 @@ static t_eReturnCode s_FMKCDA_Set_BspAdcCfg(t_eFMKCDA_Adc f_Adc_e,
 #elif defined FMKCPU_STM32_ECU_FAMILY_G
         bspAdcInit_s->ScanConvMode = ADC_SCAN_ENABLE;
         bspAdcInit_s->LowPowerAutoWait = DISABLE; // Désactiver l'attente automatique par défaut
-        bspAdcInit_s->OversamplingMode = DISABLE; // Désactiver le suréchantillonnage par défaut
         bspAdcInit_s->SamplingMode = ADC_SAMPLING_MODE_NORMAL; // Mode d'échantillonnage normal
         bspAdcInit_s->GainCompensation = 0; // Pas de compensation de gain par défaut
 
         //----- Over samppling parameter -----//
         bspAdcInit_s->OversamplingMode = ENABLE;
-        bspAdcInit_s->Oversampling.Ratio = ADC_OVERSAMPLING_RATIO_16; // Exemple : suréchantillonnage x16
-        bspAdcInit_s->Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_4;
+        bspAdcInit_s->Oversampling.Ratio = ADC_OVERSAMPLING_RATIO_128; // Exemple : suréchantillonnage x16
+        bspAdcInit_s->Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_7;
         bspAdcInit_s->Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
 #else
             #error("Famille STM32 non supportée. Vérifiez la configuration.")
@@ -877,12 +879,12 @@ static t_eReturnCode s_FMKCDA_Set_BspAdcCfg(t_eFMKCDA_Adc f_Adc_e,
         {// set NVIC state and Dma Request if DMA is in hardware config
             Ret_e = FMKCPU_RqstDmaInit( adcInfo_ps->c_DmaAdc_e,
                                         FMKCPU_DMA_TYPE_ADC,
-                                        (void *)(&adcInfo_ps->BspInit_s));
+                                        (void *)(&adcInfo_ps->bspIsct_s));
         }
         //----- Init hardware ADC -----//
         if (Ret_e == RC_OK)
         {
-            BspRet_e = HAL_ADC_Init(&adcInfo_ps->BspInit_s);
+            BspRet_e = HAL_ADC_Init(&adcInfo_ps->bspIsct_s);
 
             if (BspRet_e == HAL_OK)
             {
@@ -942,7 +944,7 @@ static t_eReturnCode s_FMKCDA_Set_BspChannelCfg(t_eFMKCDA_Adc f_Adc_e, t_eFMKCDA
         BspChannelInit_s.OffsetSign = ADC_OFFSET_SIGN_POSITIVE;  // Offset positif par défaut
         BspChannelInit_s.OffsetSaturation = DISABLE;              // Saturation désactivée
 #elif defined FMKCPU_STM32_ECU_FAMILY_G
-        BspChannelInit_s.SamplingTime = ADC_SAMPLETIME_47CYCLES_5; // Configuration spécifique à la famille G
+        BspChannelInit_s.SamplingTime = ADC_SAMPLETIME_640CYCLES_5; // Configuration spécifique à la famille G
         BspChannelInit_s.SingleDiff = ADC_SINGLE_ENDED;           // Single-ended par défaut
         BspChannelInit_s.OffsetNumber = ADC_OFFSET_NONE;        // Pas d'offset initial
         BspChannelInit_s.Offset = 0;                            // Offset à 0
@@ -959,10 +961,11 @@ static t_eReturnCode s_FMKCDA_Set_BspChannelCfg(t_eFMKCDA_Adc f_Adc_e, t_eFMKCDA
             //----- For mapping purpose -----// 
             g_counterRank_au8[f_Adc_e] += (t_uint8)1;
             BspChannelInit_s.Channel = bspChannel_u32;
-            BspChannelInit_s.Rank = g_counterRank_au8[f_Adc_e];
+            BspChannelInit_s.Rank = ADC_REGULAR_RANK_1;
+
 
             //----- configure adc channel -----//
-            BspRet_e = HAL_ADC_ConfigChannel(&g_AdcInfo_as[f_Adc_e].BspInit_s,
+            BspRet_e = HAL_ADC_ConfigChannel(&g_AdcInfo_as[f_Adc_e].bspIsct_s,
                                             &BspChannelInit_s);
 
             if (BspRet_e == HAL_OK)
@@ -1071,7 +1074,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
     //------ Find the Adc ------//
     for (adcIndex_u8 = (t_uint8)0; adcIndex_u8 < (t_uint8)FMKCDA_ADC_NB; adcIndex_u8++)
     {
-        if (&g_AdcInfo_as[adcIndex_u8].BspInit_s == (ADC_HandleTypeDef *)hadc)
+        if (&g_AdcInfo_as[adcIndex_u8].bspIsct_s == (ADC_HandleTypeDef *)hadc)
         {
             IT_Adc_e = (t_eFMKCDA_Adc)adcIndex_u8;
             break;
@@ -1116,7 +1119,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
     //------ Find Adc ------//
     for (adcIndex_u8 = (t_uint8)0; adcIndex_u8 < (t_uint8)FMKCDA_ADC_NB; adcIndex_u8++)
     {
-        if (&g_AdcInfo_as[adcIndex_u8].BspInit_s == (ADC_HandleTypeDef *)hadc)
+        if (&g_AdcInfo_as[adcIndex_u8].bspIsct_s == (ADC_HandleTypeDef *)hadc)
         {
             IT_Adc_e = (t_eFMKCDA_Adc)adcIndex_u8;
             break;
@@ -1145,7 +1148,7 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
     // find enum adc corresponding
     for(LLI_u8 = (t_uint8)0 ; LLI_u8 < FMKCDA_ADC_NB ; LLI_u8++)
     {
-        if(&g_AdcInfo_as[LLI_u8].BspInit_s == hadc)
+        if(&g_AdcInfo_as[LLI_u8].bspIsct_s == hadc)
         {
             break;
         }
@@ -1166,11 +1169,11 @@ void ADC1_2_IRQHandler(void)
 {
     if(g_AdcInfo_as[FMKCDA_ADC_1].IsConfigured_b == (t_bool)True)
     {
-        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_1].BspInit_s);
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_1].bspIsct_s);
     }
     if(g_AdcInfo_as[FMKCDA_ADC_2].IsConfigured_b == (t_bool)True)
     {
-        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_2].BspInit_s);
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_2].bspIsct_s);
     }
     return;
 }
@@ -1181,7 +1184,7 @@ void ADC3_IRQHandler(void)
 {
     if(g_AdcInfo_as[FMKCDA_ADC_3].IsConfigured_b == (t_bool)True)
     {
-        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_3].BspInit_s);
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_3].bspIsct_s);
     }
     return;
 }
@@ -1192,7 +1195,7 @@ void ADC4_IRQHandler(void)
 {
     if(g_AdcInfo_as[FMKCDA_ADC_4].IsConfigured_b == (t_bool)True)
     {
-        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_4].BspInit_s);
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_4].bspIsct_s);
     }
     return;
 }
@@ -1203,7 +1206,7 @@ void ADC5_IRQHandler(void)
 {
     if(g_AdcInfo_as[FMKCDA_ADC_5].IsConfigured_b == (t_bool)True)
     {
-        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_5].BspInit_s);
+        HAL_ADC_IRQHandler(&g_AdcInfo_as[FMKCDA_ADC_5].bspIsct_s);
     }
     return;
 }

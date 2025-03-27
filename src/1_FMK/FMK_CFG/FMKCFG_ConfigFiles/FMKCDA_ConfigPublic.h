@@ -76,6 +76,7 @@
         FMKCDA_ADC_CHANNEL_15,                       /**< Reference to HAL adc channel 15 */
         FMKCDA_ADC_CHANNEL_16,                       /**< Reference to HAL adc channel 16 */
         FMKCDA_ADC_CHANNEL_17,                       /**< Reference to HAL adc channel 17 */
+        FMKCDA_ADC_CHANNEL_18,                       /**< Reference to HAL adc channel 18 */
     
         FMKCDA_ADC_CHANNEL_NB,
     } t_eFMKCDA_AdcChannel;

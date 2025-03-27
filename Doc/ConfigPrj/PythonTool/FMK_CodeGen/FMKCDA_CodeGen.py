@@ -117,7 +117,7 @@ class FMKCDA_CodeGen():
             def_adcx_max_channel += f"    #define FMKCDA_ADC_{adc_index}_MAX_CHANNELS ((t_uint8){adc_info[1]})\n"
             #make adc info
             var_adc_info += "    {\n" + f"        // ADC_{adc_index}\n" \
-                        + f"        .BspInit_s.Instance = ADC{adc_index},\n" \
+                        + f"        .bspIsct_s.Instance = ADC{adc_index},\n" \
                         + f"        .c_clock_e = {ENUM_FMKCPU_RCC_ROOT}_{str(adc_info[3]).upper()},\n" \
                         + f"        .c_IRQNType_e = {ENUM_FMKCPU_NVIC_ROOT}_{str(adc_info[2]).upper()},\n" \
                         + f'        .c_DmaAdc_e = {ENUM_FMKCPU_DMARQST}_ADC{adc_index},\n'\
@@ -149,7 +149,7 @@ class FMKCDA_CodeGen():
                 func_irqn += f'    if(g_AdcInfo_as[{ENUM_ADC_ISCT_ROOT}_{str(adc_asso)[-1]}].IsConfigured_b == (t_bool)True)\n'\
                             + '    {\n'\
                             + '        HAL_ADC_IRQHandler(&g_AdcInfo_as[' \
-                            + f'{ENUM_ADC_ISCT_ROOT}_{adc_asso[-1]}].BspInit_s);\n'\
+                            + f'{ENUM_ADC_ISCT_ROOT}_{adc_asso[-1]}].bspIsct_s);\n'\
                             + '    }\n'
             func_irqn += '    return;\n'         
             func_irqn += '}\n'

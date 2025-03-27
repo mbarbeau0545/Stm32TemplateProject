@@ -366,7 +366,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     SrlCfg_s.CfgSpec_u.uartCfg_s.Type_e = FMKSRL_UART_TYPECFG_UART,
     
     Ret_e = FMKIO_Set_InAnaSigCfg(  FMKIO_INPUT_SIGANA_4,
-                                    FMKIO_PULL_MODE_DOWN,
+                                    FMKIO_PULL_MODE_DISABLE,
                                     NULL_FONCTION);
             
     
@@ -416,7 +416,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
     if((currentTime_u32 - saveTime_u32) > 1000)
     {
         saveTime_u32 = currentTime_u32;
-        Ret_e = FMKIO_Get_InAnaSigValue(FMKIO_INPUT_SIGANA_1, &anaValue_u16);
+        Ret_e = FMKIO_Get_InAnaSigValue(FMKIO_INPUT_SIGANA_4, &anaValue_u16);
 
         if(Ret_e == RC_OK)
         {

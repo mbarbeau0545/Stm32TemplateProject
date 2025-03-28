@@ -8777,7 +8777,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html#a9aafdd5172a07e6cc0fb7419a2382ebc"><param name="Name" value="Mu8ExtractByte3fromU32"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="struct____t__s_f_m_k_f_d_c_a_n___node_info.html#a36d4862ccce7d01b5ba12982a7955b04"><param name="Name" value="nodeHealth_e"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html#a070d2ce7b6bb7e5c05602aa8c308d0c4"><param name="Name" value="NULL"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html#aa12e75ca820c68fa135f0882a9a4727c"><param name="Name" value="NULL_FONCTION"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html#aa12e75ca820c68fa135f0882a9a4727c"><param name="Name" value="NULL_FUNCTION"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#a369bf127a909e141c854638034729841"><param name="Name" value="PLLM_Divider_u32"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#ad427341fe91384719a583b4293d91fa1"><param name="Name" value="PLLP_Divider_u32"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#aaf1674602f2af0d11677f17eb0546568"><param name="Name" value="PLLR_Divider_u32"></OBJECT>
@@ -9970,7 +9970,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html"><param name="Name" value="TypeCommon.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html#aa12e75ca820c68fa135f0882a9a4727c"><param name="Name" value="NULL_FONCTION"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html#aa12e75ca820c68fa135f0882a9a4727c"><param name="Name" value="NULL_FUNCTION"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_type_common_8h.html"><param name="Name" value="TypeCommon.h"></OBJECT>
   <UL>

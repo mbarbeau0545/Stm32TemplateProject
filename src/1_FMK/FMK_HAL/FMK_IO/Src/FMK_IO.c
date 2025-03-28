@@ -324,7 +324,7 @@ t_eReturnCode FMKIO_Init(void)
         g_InFreqSigInfo_as[LLI_u8].FlagValueWriting_b  = False;
         g_InFreqSigInfo_as[LLI_u8].value_u32           = (t_uint32)0;
         g_InFreqSigInfo_as[LLI_u8].savedValue_32      = (t_uint32)0;
-        g_InFreqSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION;
+        g_InFreqSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION;
 
         g_InFreqLastCapture_ua32[LLI_u8] = (t_uint32)0;
     }
@@ -333,7 +333,7 @@ t_eReturnCode FMKIO_Init(void)
     for(LLI_u8 = (t_uint8)0 ; LLI_u8 < (t_uint8)FMKIO_INPUT_SIGANA_NB ; LLI_u8++)
     {
         g_InAnaSigInfo_as[LLI_u8].IsSigConfigured_b   = False;
-        g_InAnaSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION;
+        g_InAnaSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION;
     }
 
     //---------Set Digital Input Default Value---------//
@@ -345,10 +345,10 @@ t_eReturnCode FMKIO_Init(void)
     //---------Set Event Input Default Value---------//
     for(LLI_u8 = (t_uint8)0 ; LLI_u8 < (t_uint8)FMKIO_INPUT_SIGEVNT_NB ; LLI_u8++)
     {
-        g_InEvntSigInfo_as[LLI_u8].EvntFunc_cb = (t_cbFMKIO_EventFunc *)NULL_FONCTION;
+        g_InEvntSigInfo_as[LLI_u8].EvntFunc_cb = (t_cbFMKIO_EventFunc *)NULL_FUNCTION;
         g_InEvntSigInfo_as[LLI_u8].IsSigConfigured_b   = False;
         g_InEvntSigInfo_as[LLI_u8].debcDelay_u32 = (t_uint32)0;
-        g_InEvntSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION;
+        g_InEvntSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION;
 
         g_lastTick_ua32[LLI_u8] = (t_uint32)0;
     }
@@ -359,8 +359,8 @@ t_eReturnCode FMKIO_Init(void)
         g_OutPwmSigInfo_as[LLI_u8].IsSigConfigured_b   = False;
         g_OutPwmSigInfo_as[LLI_u8].frequencyApplied_u32   = (t_uint32)0;
         g_OutPwmSigInfo_as[LLI_u8].dcApplied_u16   = (t_uint16)0;
-        g_OutPwmSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION;
-        g_OutPwmSigInfo_as[LLI_u8].pulseEvnt_pcb = (t_cbFMKIO_PulseEvent *)NULL_FONCTION;
+        g_OutPwmSigInfo_as[LLI_u8].sigError_cb = (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION;
+        g_OutPwmSigInfo_as[LLI_u8].pulseEvnt_pcb = (t_cbFMKIO_PulseEvent *)NULL_FUNCTION;
     }
 
     //---------Set Digital Output Default Value---------//
@@ -1880,7 +1880,7 @@ static t_eReturnCode s_FMKIO_PerformDiagnostic(void)
                                                   &cpuChnlStatus_u16);
             if((Ret_e == RC_OK)
             && (GETBIT(cpuChnlStatus_u16, FMKTIM_ERRSTATE_OK) != BIT_IS_SET_16B)
-            && (g_OutPwmSigInfo_as[LLI_u8].sigError_cb != (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION))
+            && (g_OutPwmSigInfo_as[LLI_u8].sigError_cb != (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION))
             {
                 g_OutPwmSigInfo_as[LLI_u8].sigError_cb( FMKIO_SIGTYPE_OUTPUT_PWM, 
                                                         LLI_u8,
@@ -1904,7 +1904,7 @@ static t_eReturnCode s_FMKIO_PerformDiagnostic(void)
 
             if((Ret_e == RC_OK)
             && (GETBIT(cpuChnlStatus_u16, FMKTIM_ERRSTATE_OK) !=  BIT_IS_SET_16B)
-            && (g_InFreqSigInfo_as[LLI_u8].sigError_cb != (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION))
+            && (g_InFreqSigInfo_as[LLI_u8].sigError_cb != (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION))
             {
                 g_InFreqSigInfo_as[LLI_u8].sigError_cb( FMKIO_SIGTYPE_INPUT_FREQ,
                                                         LLI_u8,
@@ -1923,7 +1923,7 @@ static t_eReturnCode s_FMKIO_PerformDiagnostic(void)
 
             if((Ret_e == RC_OK)
             && (GETBIT(adcChnlStatus_u16, FMKCDA_ERRSTATE_OK) == BIT_IS_RESET_16B)
-            && (g_InAnaSigInfo_as[LLI_u8].sigError_cb != (t_cbFMKIO_SigErrorMngmt *)NULL_FONCTION))
+            && (g_InAnaSigInfo_as[LLI_u8].sigError_cb != (t_cbFMKIO_SigErrorMngmt *)NULL_FUNCTION))
             {
                 g_InAnaSigInfo_as[LLI_u8].sigError_cb(  FMKIO_SIGTYPE_INPUT_ANA,
                                                         LLI_u8,
@@ -2106,7 +2106,7 @@ static void s_FMKIO_basicAdvTimerCallback(t_eFMKTIM_InterruptLineType f_Interrup
         }
         if(PwmSig_e != FMKIO_OUTPUT_SIGPWM_NB)
         {
-            if(g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb != NULL_FONCTION)
+            if(g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb != NULL_FUNCTION)
             {
                 g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb(PwmSig_e);
             }
@@ -2145,7 +2145,7 @@ static void s_FMKIO_HighResTimerCallback(t_eFMKHRT_HighResLine f_HrLine_e, t_eFM
         }
         if(PwmSig_e != FMKIO_OUTPUT_SIGPWM_NB)
         {
-            if(g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb != NULL_FONCTION)
+            if(g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb != NULL_FUNCTION)
             {
                 g_OutPwmSigInfo_as[PwmSig_e].pulseEvnt_pcb(PwmSig_e);
             }

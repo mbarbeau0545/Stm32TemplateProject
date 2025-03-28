@@ -574,6 +574,10 @@ t_eReturnCode FMKCPU_Set_HardwareInit(void)
     HAL_StatusTypeDef bspRet_e = HAL_OK;
 
     bspRet_e = HAL_Init();
+    if(bspRet_e == HAL_OK)
+    {
+        bspRet_e = HAL_InitTick(0x00); // High Priority
+    }
     if(bspRet_e != HAL_OK)
     {
         Ret_e = RC_ERROR_WRONG_RESULT;
@@ -679,7 +683,7 @@ t_eReturnCode FMKCPU_Set_HwClock(t_eFMKCPU_ClockPort f_clkPort_e,
 #endif
             if(Ret_e == RC_OK)
             {
-                if (c_FMKCPU_ClkFunctions_apcb[f_clkPort_e].EnableClk_pcb != (t_cbFMKCPU_ClockDisable *)NULL_FONCTION)
+                if (c_FMKCPU_ClkFunctions_apcb[f_clkPort_e].EnableClk_pcb != (t_cbFMKCPU_ClockDisable *)NULL_FUNCTION)
                 {
                     c_FMKCPU_ClkFunctions_apcb[f_clkPort_e].EnableClk_pcb();
                 }
@@ -694,7 +698,7 @@ t_eReturnCode FMKCPU_Set_HwClock(t_eFMKCPU_ClockPort f_clkPort_e,
         }
         case FMKCPU_CLOCKPORT_OPE_DISABLE:
         {
-            if (c_FMKCPU_ClkFunctions_apcb[f_clkPort_e].DisableClk_pcb != (t_cbFMKCPU_ClockDisable *)NULL_FONCTION)
+            if (c_FMKCPU_ClkFunctions_apcb[f_clkPort_e].DisableClk_pcb != (t_cbFMKCPU_ClockDisable *)NULL_FUNCTION)
             {
                 c_FMKCPU_ClkFunctions_apcb[f_clkPort_e].DisableClk_pcb();
             }

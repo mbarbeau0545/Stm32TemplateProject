@@ -140,14 +140,14 @@ class AppAct_CodeGen():
                     var_drv += f"{drv_cfg[0]}_Init,"
                     var_drv += " " * ((SPACE_VARIABLE * 2) - len(f"{VAR_DRV_ACT_FUNC_RT}_{drv_cfg[0]}_Init"))
                 else: 
-                    var_drv += f"(t_cbAppAct_DrvInit *)NULL_FONCTION,"
-                    var_drv += " " * ((SPACE_VARIABLE * 2) - len(f"(t_cbAppAct_DrvInit *)NULL_FONCTION,")) \
+                    var_drv += f"(t_cbAppAct_DrvInit *)NULL_FUNCTION,"
+                    var_drv += " " * ((SPACE_VARIABLE * 2) - len(f"(t_cbAppAct_DrvInit *)NULL_FUNCTION,")) \
                 
                 if "Yes" in str(drv_cfg[2]):
                     var_drv += f"{drv_cfg[0]}_Cyclic" + "},"
                     
                 else: 
-                    var_drv += f"(t_cbAppAct_DrvInit *)NULL_FONCTION" + "},"
+                    var_drv += f"(t_cbAppAct_DrvInit *)NULL_FUNCTION" + "},"
         
                 var_drv += f"  // {ENUM_APPACT_DRV_RT}_{str(drv_cfg[0]).upper()}\n"
                 # make DRV state

@@ -65,6 +65,32 @@
      *
      */
      t_eReturnCode APPUDS_Cyclic(void);
+     /**
+    *
+    *	@brief
+    *	@note   
+    *
+    *
+    *	@param[in] 
+    *	@param[out]
+    *	 
+    *
+    *
+    */
+    t_eReturnCode APPUDS_GetState(t_eCyclicModState *f_State_pe);
+    /**
+    *
+    *	@brief
+    *	@note   
+    *
+    *
+    *	@param[in] 
+    *	@param[out]
+    *	 
+    *
+    *
+    */
+    t_eReturnCode APPUDS_SetState(t_eCyclicModState f_State_e);
      //********************************************************************************
      //                      Public functions - Prototyupes
      //********************************************************************************

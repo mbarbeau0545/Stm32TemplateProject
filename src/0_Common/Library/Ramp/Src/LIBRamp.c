@@ -239,7 +239,7 @@ static t_eReturnCode s_LIBRamp_SetInitRegistration(t_sLIBRamp_RampCfg * f_rampCf
         rampInfo_ps->startValue_f32 = f_rampCfg_ps->startValue_f32;
         rampInfo_ps->Mode_e = f_rampCfg_ps->rampMode_e;
         rampInfo_ps->currentStep_u32 = (t_uint32)0;
-        rampInfo_ps->currentValue_f32 = (t_float32)0;
+        rampInfo_ps->currentValue_f32 = (t_float32)rampInfo_ps->startValue_f32;
         rampInfo_ps->isConfigured_b = (t_bool)True;
         switch(rampInfo_ps->Mode_e)
         {

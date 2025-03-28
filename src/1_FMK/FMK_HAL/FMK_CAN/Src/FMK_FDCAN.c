@@ -652,7 +652,7 @@ t_eReturnCode FMKFDCAN_Init(void)
             g_UserRegisterEvnt_as[idxNode_u8][LLI_u8].itemId_s.FramePurpose_e = FMKFDCAN_FRAME_PURPOSE_NB;
             g_UserRegisterEvnt_as[idxNode_u8][LLI_u8].itemId_s.IdType_e = FMKFDCAN_IDTYPE_NB;
             g_UserRegisterEvnt_as[idxNode_u8][LLI_u8].maskId_u32 = (t_uint32)0;
-            g_UserRegisterEvnt_as[idxNode_u8][LLI_u8].rcvItem_cb = (t_cbFMKFDCAN_RcvItem *)NULL_FONCTION;
+            g_UserRegisterEvnt_as[idxNode_u8][LLI_u8].rcvItem_cb = (t_cbFMKFDCAN_RcvItem *)NULL_FUNCTION;
         }
         //-------------------Configure the Rx, Tx Queue----------------//
         RxBufferCfg_s.bufferHead_pv = g_RxBufferEvnt_as[idxNode_u8];
@@ -761,7 +761,7 @@ t_eReturnCode FMKFDCAN_ConfigureRxItemEvent(t_eFMKFDCAN_NodeList f_Node_e, t_sFM
     t_uint8 idxCounter_u8 = (t_uint8)0;
 
     if((f_Node_e >= FMKFDCAN_NODE_NB)
-    || (f_RxItemCfg_s.callback_cb == (t_cbFMKFDCAN_RcvItem *)NULL_FONCTION))
+    || (f_RxItemCfg_s.callback_cb == (t_cbFMKFDCAN_RcvItem *)NULL_FUNCTION))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }

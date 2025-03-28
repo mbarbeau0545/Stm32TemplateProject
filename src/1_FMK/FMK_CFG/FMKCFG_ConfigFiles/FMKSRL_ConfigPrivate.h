@@ -245,7 +245,7 @@
      */
     const t_sFMKSRL_BspAbortFunc c_FmkSrl_AbortRxBspFunc_apf[FMKSRL_HW_PROTOCOL_NB] = {
         {FMKSRL_HAL_UART_AbortReceive,              FMKSRL_HAL_UART_AbortReceive_IT,         FMKSRL_HAL_UART_AbortReceive_IT},   // FMKSRL_HW_PROTOCOL_UART    
-        {NULL_FONCTION,                             NULL_FONCTION,                           NULL_FONCTION},                     // FMKSRL_HW_PROTOCOL_USART
+        {NULL_FUNCTION,                             NULL_FUNCTION,                           NULL_FUNCTION},                     // FMKSRL_HW_PROTOCOL_USART
     };
 
     /**
@@ -253,7 +253,7 @@
      */
     const t_sFMKSRL_BspAbortFunc c_FmkSrl_AbortTxBspFunc_apf[FMKSRL_HW_PROTOCOL_NB] = {
         {FMKSRL_HAL_UART_AbortTransmit,             FMKSRL_HAL_UART_AbortTransmit_IT,         FMKSRL_HAL_UART_AbortTransmit_IT},   // FMKSRL_HW_PROTOCOL_UART    
-        {NULL_FONCTION,                             NULL_FONCTION,                            NULL_FONCTION},                      // FMKSRL_HW_PROTOCOL_USART
+        {NULL_FUNCTION,                             NULL_FUNCTION,                            NULL_FUNCTION},                      // FMKSRL_HW_PROTOCOL_USART
     };
     //********************************************************************************
     //                      Public functions - Prototyupes

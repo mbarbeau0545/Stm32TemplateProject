@@ -104,7 +104,7 @@ enum
 /**
  * @brief Container for module stazte
  */
-static t_eCyclicModState g_AppUds_ModState_e = STATE_CYCLIC_OPE;
+static t_eCyclicModState g_AppUds_ModState_e = STATE_CYCLIC_CFG;
 /**
  * 
  * @brief Container to know when a client is trying to connect to the UDS Server
@@ -199,8 +199,7 @@ t_eReturnCode APPUDS_Cyclic(void)
 
             if(Ret_e == RC_OK)
             {
-                //g_AppUds_ModState_e = STATE_CYCLIC_WAITING;
-                g_AppUds_ModState_e = STATE_CYCLIC_PREOPE;
+                g_AppUds_ModState_e = STATE_CYCLIC_WAITING;
             }
             break;
         }
@@ -231,6 +230,36 @@ t_eReturnCode APPUDS_Cyclic(void)
     }
 
     return Ret_e;
+}
+
+/*********************************
+ * APPLGC_GetState
+ *********************************/
+t_eReturnCode APPUDS_GetState(t_eCyclicModState *f_State_pe)
+{
+    t_eReturnCode Ret_e = RC_OK;
+
+    if(f_State_pe == (t_eCyclicModState *)NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;
+    }
+    if(Ret_e == RC_OK)
+    {
+        *f_State_pe = g_AppUds_ModState_e;
+    }
+
+    return Ret_e;
+}
+
+/*********************************
+ * APPLGC_SetState
+ *********************************/
+t_eReturnCode APPUDS_SetState(t_eCyclicModState f_State_e)
+{
+
+    g_AppUds_ModState_e = f_State_e;
+
+    return RC_OK;
 }
 
 /*void APPUDS_PretendClientCo(void)
@@ -274,6 +303,7 @@ static t_eReturnCode s_APPUDS_OperationalState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     static t_eAPPUDS_FsmOpeState s_FsmOperationalState_e = APPUDS_FSM_OPE_IDLE;
+    
     switch(s_FsmOperationalState_e)
     {
         case APPUDS_FSM_OPE_IDLE:

@@ -41,6 +41,17 @@
 
 	/* CAUTION : Automatic generated code section : End */
 	//-----------------------------TYPEDEF TYPES---------------------------//
+    typedef enum 
+    {
+        APPSYS_FAST_TASK_DISABLE = 0x00,
+        APPSYS_FAST_TASK_ENABLE,
+    } t_eAPPSYS_FastTaskState;
+    /*
+    *
+    *	@brief  Perform Application system init
+    *	@note   
+    */
+    typedef void (t_cbAPPSYS_FastTask)(void);
     // ********************************************************************
     // *                      Prototypes
     // ********************************************************************
@@ -48,13 +59,17 @@
     // ********************************************************************
     // *                      Variables
     // ********************************************************************
-    /*****************************************************************************
+
+    //********************************************************************************
+    //                      Public functions - Prototyupes
+    //********************************************************************************
+    /*
     *
     *	@brief  Perform Application system init
     *	@note   
     */
     void APPSYS_Init(void);
-    /*****************************************************************************
+    /*
     *
     *	@brief  Perform Application system cyclic
     *	@note   
@@ -70,10 +85,22 @@
     void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
                                 const char *f_file_str, 
                                 t_uint32 f_line_u32);
+    /**
+    *
+    *	@brief  Add a Fast Task to be call every APPSYS_ELASPED_TIME_FASTTASK
+    *   @note   Once you register it, the fast task will be considered enable 
+    *           in the PreOPerationnal state of your module
+    *
+    */
+    void APPSYS_AddFastTask(t_eAppSys_ModuleList f_ModuleId_e, t_cbAPPSYS_FastTask * f_moduleFastTask_pcb);
 
-    //********************************************************************************
-    //                      Public functions - Prototyupes
-    //********************************************************************************
+    /**
+    *
+    *	@brief  Add a Fast Task to be call every APPSYS_ELASPED_TIME_FASTTASK
+    *
+    */
+   t_eReturnCode APPSYS_SetFastTaskState(t_eAppSys_ModuleList f_ModuleId_e,  t_eAPPSYS_FastTaskState f_state_e);
+    
 
 #endif // APP_SYS_H_INCLUDED           
 //************************************************************************************

@@ -20,11 +20,13 @@
 #include "string.h"
 
 #include "./APP_LGC.h"
+#include "./APP_CTRL/APP_SYS/Src/APP_SYS.h"
 #include "APP_CFG/ConfigFiles/APPLGC_ConfigPrivate.h"
 #include "FMK_HAL/FMK_IO/Src/FMK_IO.h"
 #include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
 
 #include "Library/SafeMem/SafeMem.h"
+#include "Library/Ramp/Src/LIBRamp.h"
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
@@ -78,7 +80,11 @@ static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
 * @brief Flag to Reset Service State
 */
 static t_bool  g_resetSrvState_b = (t_bool)False; 
-
+static t_bool g_isFastTaskEEnable_b = False;
+static t_uint8 g_rampId_u8;
+static t_uint8 g_rampId2_u8;
+static t_uint8 g_rampId3_u8;
+static t_uint8 g_rampId4_u8;
 /* CAUTION : Automatic generated code section for Variable: Start */
 /* CAUTION : Automatic generated code section for Variable: End */
 //********************************************************************************
@@ -172,7 +178,7 @@ static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e);
 static void s_APPLGC_Callback_2(t_eFMKIO_OutPwmSig f_signal_e);
 static void s_APPLGC_Callback_3(t_eFMKIO_OutPwmSig f_signal_e);
 static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e);*/
-static void s_APPLGC_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
+static void s_APPLGC_FastTask(void);
 
 
 //****************************************************************************
@@ -353,6 +359,13 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_sFMKSRL_DrvSerialCfg SrlCfg_s;
+    t_sLIBRamp_RampCfg cfgLinear = {
+        .rampMode_e = LIBRAMP_MODE_EXPONENTIAL,
+        .startValue_f32 = 6000.0,
+        .totalSteps_u32 = 2000,
+        .rampInfo_u.expCfg_s.expFactor_f32 = 4.0,
+        .rampInfo_u.expCfg_s.smoothingFactor_f32 = 3000,
+    };
     SrlCfg_s.runMode_e = FMKSRL_LINE_RUNMODE_DMA;
     SrlCfg_s.hwProtType_e = FMKSRL_HW_PROTOCOL_UART;
 
@@ -365,17 +378,47 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     SrlCfg_s.CfgSpec_u.uartCfg_s.hwFlowCtrl_e = FMKSRL_UART_HW_FLOW_CTRL_NONE;
     SrlCfg_s.CfgSpec_u.uartCfg_s.Type_e = FMKSRL_UART_TYPECFG_UART,
     
-    Ret_e = FMKIO_Set_InAnaSigCfg(  FMKIO_INPUT_SIGANA_4,
+    /*Ret_e = FMKIO_Set_InAnaSigCfg(  FMKIO_INPUT_SIGANA_4,
                                     FMKIO_PULL_MODE_DISABLE,
-                                    NULL_FONCTION);
-            
-    
+                                    NULL_FUNCTION);*/
+
+    Ret_e = FMKIO_Set_OutPwmSigCfg( FMKIO_OUTPUT_SIGPWM_1,
+                                    FMKIO_PULL_MODE_DOWN,
+                                    6000,
+                                    NULL_FUNCTION,
+                                    NULL_FUNCTION);
+    Ret_e = FMKIO_Set_OutPwmSigCfg( FMKIO_OUTPUT_SIGPWM_2,
+                                    FMKIO_PULL_MODE_DOWN,
+                                    6000,
+                                    NULL_FUNCTION,
+                                    NULL_FUNCTION);
+    Ret_e = FMKIO_Set_OutPwmSigCfg( FMKIO_OUTPUT_SIGPWM_3,
+                                    FMKIO_PULL_MODE_DOWN,
+                                    6000,
+                                    NULL_FUNCTION,
+                                    NULL_FUNCTION);
+    Ret_e = FMKIO_Set_OutPwmSigCfg( FMKIO_OUTPUT_SIGPWM_4,
+                                    FMKIO_PULL_MODE_DOWN,
+                                    6000,
+                                    NULL_FUNCTION,
+                                    NULL_FUNCTION);
     if(Ret_e == RC_OK)
     {
-        Ret_e = FMKSRL_InitDrv( APPLGC_SERIAL_LINE_APP, 
+        Ret_e = LIBRamp_Init(cfgLinear, &g_rampId_u8);
+        Ret_e = LIBRamp_Init(cfgLinear, &g_rampId2_u8);
+        Ret_e = LIBRamp_Init(cfgLinear, &g_rampId3_u8);
+        Ret_e = LIBRamp_Init(cfgLinear, &g_rampId4_u8);
+    }
+    if(Ret_e == RC_OK)
+    {
+        APPSYS_AddFastTask(APPSYS_MODULE_APP_LGC, s_APPLGC_FastTask);
+    }
+    if(Ret_e == RC_OK)
+    {
+        /*Ret_e = FMKSRL_InitDrv( APPLGC_SERIAL_LINE_APP, 
                                 SrlCfg_s,
                                 s_APPLGC_AppEvntCallback,
-                                (t_cbFMKSRL_TransmitMsgEvent *)NULL_FONCTION);
+                                (t_cbFMKSRL_TransmitMsgEvent *)NULL_FUNCTION);*/
     }
 
     return Ret_e;
@@ -397,7 +440,10 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     
-    
+    (void)FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_1, (t_uint16)500);
+    (void)FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_2, (t_uint16)500);
+    (void)FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_3, (t_uint16)500);
+    (void)FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_4, (t_uint16)500);
     return Ret_e;
 }
 /*********************************
@@ -406,14 +452,30 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uint16 anaValue_u16;
+    static t_uint8 anaValue_u8 = 0;
     char msgbuffer[20];
     static t_uint32 saveTime_u32 = 0;
+    static t_bool isSaveTimeUpdtate_b = False;
     t_uint32 currentTime_u32; 
 
     FMKCPU_Get_Tick(&currentTime_u32);
+
+    if(g_isFastTaskEEnable_b == False)
+    {
+        if(isSaveTimeUpdtate_b == False)
+        {
+            isSaveTimeUpdtate_b = True;
+            FMKCPU_Get_Tick(&saveTime_u32);
+        }
+
+        FMKCPU_Get_Tick(&currentTime_u32);
+        if((currentTime_u32 - saveTime_u32) > 2000)
+        {
+            APPSYS_SetFastTaskState(APPSYS_MODULE_APP_LGC, APPSYS_FAST_TASK_ENABLE);
+        }
+    }
     
-    if((currentTime_u32 - saveTime_u32) > 1000)
+    /*if((currentTime_u32 - saveTime_u32) > 1000)
     {
         saveTime_u32 = currentTime_u32;
         Ret_e = FMKIO_Get_InAnaSigValue(FMKIO_INPUT_SIGANA_4, &anaValue_u16);
@@ -432,7 +494,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
                                 strlen(msgbuffer), 
                                 0,                            
                                 False);
-    }
+    }*/
     /*t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)
@@ -466,6 +528,66 @@ static t_eReturnCode s_APPLGC_Operational(void)
     return Ret_e;
 }
 
+static void s_APPLGC_FastTask(void)
+{
+    t_float32 computeDc_f32;
+    t_eCyclicModState fmkioState_e;
+    static t_uint8 s_state_u8 = 0;
+
+    FMKIO_GetState(&fmkioState_e);
+    g_isFastTaskEEnable_b = True;
+    if(fmkioState_e == STATE_CYCLIC_OPE
+    && g_isFastTaskEEnable_b == True)
+    {
+        switch(s_state_u8)
+        {
+            case 0:
+            {
+                (void)LIBRamp_Compute(g_rampId_u8, 26000.0f, &computeDc_f32);
+                (void)LIBRamp_Compute(g_rampId2_u8, 26000.0f, &computeDc_f32);
+                (void)LIBRamp_Compute(g_rampId3_u8, 26000.0f, &computeDc_f32);
+                (void)LIBRamp_Compute(g_rampId4_u8, 26000.0f, &computeDc_f32);
+
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_1, (t_uint16)computeDc_f32);
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_2, (t_uint16)computeDc_f32);
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_3, (t_uint16)computeDc_f32);
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_4, (t_uint16)computeDc_f32);
+
+                if((t_uint16)computeDc_f32 >= (t_uint16)26000.0)
+                {
+                    APPSYS_SetFastTaskState(APPSYS_MODULE_APP_LGC, APPSYS_FAST_TASK_DISABLE);
+                    s_state_u8 = 1;
+                    g_isFastTaskEEnable_b = False;
+                }
+                break;
+            }
+            case 1:
+            {
+                (void)LIBRamp_Compute(g_rampId_u8,  6000.0f, &computeDc_f32);
+                (void)LIBRamp_Compute(g_rampId2_u8, 6000.0f, &computeDc_f32);
+                (void)LIBRamp_Compute(g_rampId3_u8, 6000.0f, &computeDc_f32);
+                (void)LIBRamp_Compute(g_rampId4_u8, 6000.0f, &computeDc_f32);
+
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_1, (t_uint16)computeDc_f32);
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_2, (t_uint16)computeDc_f32);
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_3, (t_uint16)computeDc_f32);
+                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_4, (t_uint16)computeDc_f32);
+
+                if((t_uint16)computeDc_f32 <= (t_uint16)6000.0)
+                {
+                    APPSYS_SetFastTaskState(APPSYS_MODULE_APP_LGC, APPSYS_FAST_TASK_DISABLE);
+                    s_state_u8 = 0;
+                    g_isFastTaskEEnable_b = False;
+                }
+                break;
+            }
+        }
+        
+    }
+    
+
+
+}
 /*********************************
  * s_APPLGC_GetSnsValues
  *********************************/

@@ -29,13 +29,17 @@
     #include "3_APP/APP_CTRL/APP_ACT/Src/APP_ACT.h"
     #include "3_APP/APP_CTRL/APP_SDM/Src/APP_SDM.h"
     #include "3_APP/APP_CTRL/APP_SNS/Src/APP_SNS.h"
+    #include "3_APP/APP_CTRL/APP_UDS/Src/APPUDS.h"
     #include "3_APP/APP_LGC/Src/APP_LGC.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
 
     #define APPSYS_SYSTEM_CORE_SPEED FMKCPU_CORE_CLOCK_SPEED_128MHZ
-    #define APPSYS_ELAPSED_TIME_CYCLIC ((t_uint8)40) /**< Elapsed time (in ms) between cyclic function call*/
+
+    #define APPSYS_ELAPSED_TIME_CYCLIC ((t_uint8)40)     /**< Elapsed time (in ms) between cyclic function call*/
+    #define APPSYS_ITLINE_FASTTASK FMKTIM_INTERRUPT_LINE_EVNT_1 /**< Timer Line use for FastTask */
+    #define APPSYS_ELASPED_TIME_FASTTASK ((t_uint32)5)  /**< Fast Task every 5 ms */
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -122,6 +126,7 @@
         {APPSNS_Init,    APPSNS_Cyclic,     APPSNS_GetState,   APPSNS_SetState},
         {APPACT_Init,    APPACT_Cyclic,     APPACT_GetState,   APPACT_SetState},
         {APPLGC_Init,    APPLGC_Cyclic,     APPLGC_GetState,   APPLGC_SetState},
+        {APPUDS_Init,    APPUDS_Cyclic,     APPUDS_GetState,   APPUDS_SetState},
     };
 
     //********************************************************************************

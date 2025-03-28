@@ -189,7 +189,7 @@
             [FMKHRT_HW_OPE_TIM_OP] = {
                 .HwOpePoll_pcb = HAL_HRTIM_SimpleOnePulseStart,
                 .HwOpeIT_pcb   = HAL_HRTIM_SimpleOnePulseStart_IT,
-                .HwOpeDMA_pcb  = (t_cbFMKHRT_HwOpeDMA *)NULL_FONCTION,
+                .HwOpeDMA_pcb  = (t_cbFMKHRT_HwOpeDMA *)NULL_FUNCTION,
             },
             [FMKHRT_HW_OPE_TIM_WFC] = {
                 .HwOpePoll_pcb = FMKHRT_HAL_HRTIM_WaveformStart,
@@ -222,7 +222,7 @@
             [FMKHRT_HW_OPE_TIM_OP] = {
                 .HwOpePoll_pcb = HAL_HRTIM_SimpleOnePulseStop,
                 .HwOpeIT_pcb   = HAL_HRTIM_SimpleOnePulseStop_IT,
-                .HwOpeDMA_pcb  = (t_cbFMKHRT_HwOpeDMA *)NULL_FONCTION,
+                .HwOpeDMA_pcb  = (t_cbFMKHRT_HwOpeDMA *)NULL_FUNCTION,
             },
             [FMKHRT_HW_OPE_TIM_WFC] = {
                 .HwOpePoll_pcb = FMKHRT_HAL_HRTIM_WaveformStop,

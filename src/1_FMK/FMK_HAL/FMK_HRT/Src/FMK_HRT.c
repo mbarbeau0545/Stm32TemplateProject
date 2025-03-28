@@ -699,6 +699,7 @@ t_eReturnCode FMKHRT_SetPwmLineWaveform(t_eFMKHRT_HighResLine f_HRLine_e,
             if(f_PwmOpe_s.dutyCycle_u16 > FMKHRT_PWM_MAX_DUTY_CYLCE)
             {
                 Ret_e = RC_ERROR_PARAM_INVALID;
+                ASSERT((t_uint16)f_PwmOpe_s.dutyCycle_u16);
             }
             else 
             {
@@ -1424,7 +1425,7 @@ static void s_FMKHRT_BspCallbackMngmnt( HRTIM_HandleTypeDef * f_bspItsc_ps,
                                                                         slvInfo_ps->HwOpeMode_e,
                                                                         FMKHRT_CHNLST_DISACTIVATED);
                                     if((Ret_e == RC_OK)
-                                    && (slvInfo_ps->chnlInfo_as[idxChnl_u8].evntCallback_pcb != NULL_FONCTION))
+                                    && (slvInfo_ps->chnlInfo_as[idxChnl_u8].evntCallback_pcb != NULL_FUNCTION))
                                     {
                                         slvInfo_ps->chnlInfo_as[idxChnl_u8].
                                                                 evntCallback_pcb(   c_FMkHrt_ChnlLineMapp_ae[HrTimIstc_e][slvTim_e][idxChnl_u8],

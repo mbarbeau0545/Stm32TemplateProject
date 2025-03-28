@@ -53,9 +53,12 @@ typedef struct
 // *                      Variables
 // ********************************************************************
 static t_eCyclicModState g_ModuleState_ae[APPSYS_MODULE_NB];
+static t_cbAPPSYS_FastTask * g_ModFastTask_apcb[APPSYS_MODULE_NB];
 static t_eCyclicModState g_AppSysModuleState_e = STATE_CYCLIC_PREOPE;
 static t_uint32 g_CyclicDuration_u32 = (t_uint32)0;
-
+static t_uint32 g_fastTaskDuration_u32 = (t_uint32)0;
+static t_uint16 g_mskFastTaskCall_u16 = (t_uint16)0; /**< to know the people to call */
+static t_bool g_isFastTaskON_b = (t_bool)False;
 static t_bool g_lockAssert_b = (t_bool)False;
 static t_sAPPSYS_AssertInfo g_AssertInfo_s;
 //********************************************************************************
@@ -79,6 +82,13 @@ static t_eReturnCode s_APPSYS_Operational();
 *
 */
 static void s_APPSYS_Set_ModulesCyclic();
+/**
+*
+*	@brief  Call driver cyclic function
+    @note 15 * 4 compute Ramp & Compute Freq = 5 ms
+*
+*/
+static void s_APPSYS_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
@@ -104,6 +114,7 @@ void APPSYS_Init(void)
     {
         for(modIndex_u8 = (t_uint8)0 ; (modIndex_u8 < APPSYS_MODULE_NB) ; modIndex_u8++)
         {
+            g_ModFastTask_apcb[modIndex_u8] = NULL_FUNCTION;
             Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].Init_pcb();
 
             if(Ret_e != RC_OK)
@@ -111,6 +122,12 @@ void APPSYS_Init(void)
                 ASSERT((t_uint16)modIndex_u8);
             }
         }
+    }
+    if(Ret_e == RC_OK)
+    {
+        Ret_e = FMKTIM_Set_EvntTimerCfg(APPSYS_ITLINE_FASTTASK,
+                                        APPSYS_ELASPED_TIME_FASTTASK,
+                                        s_APPSYS_FastTask);
     }
 
     g_AssertInfo_s.debugInfo_u16 = (t_uint16)0;
@@ -134,8 +151,14 @@ void APPSYS_Cyclic(void)
         case STATE_CYCLIC_PREOPE:
         {/* In Preope Mode AppSys called every cycle and wait every module are ready for Ope Mode*/
             Ret_e = s_APPSYS_PreOperational();
-            if(Ret_e < RC_OK)
+            //---------Update Module State------------//
+            if(Ret_e == RC_OK)
             {
+                g_AppSysModuleState_e = STATE_CYCLIC_OPE; 
+            }
+            else if(Ret_e < RC_OK)
+            {
+                ASSERT((t_uint16)Ret_e);
                 g_AppSysModuleState_e = STATE_CYCLIC_ERROR;
             }
             break;
@@ -161,6 +184,73 @@ void APPSYS_Cyclic(void)
 
     return;
 }
+
+/*********************************
+ * APPSYS_AssertionTrap
+ *********************************/
+void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
+    const char * f_file_str, 
+    t_uint32 f_line_u32)
+{
+
+    if(g_lockAssert_b == (t_bool)False)
+    {
+        g_AssertInfo_s.debugInfo_u16 = f_Info_u16;
+        strncpy(g_AssertInfo_s.file_ac, f_file_str, APPSYS_FILE_NAME_LEN - 1);
+        g_AssertInfo_s.file_ac[APPSYS_FILE_NAME_LEN - 1] = '\0';  // Assurer la terminaison
+        g_AssertInfo_s.line_u32 = f_line_u32;
+    }
+    return;
+}
+
+/*********************************
+* APPSYS_AddFastTask
+*********************************/
+void APPSYS_AddFastTask(t_eAppSys_ModuleList f_ModuleId_e, t_cbAPPSYS_FastTask * f_moduleFastTask_pcb)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    if((f_ModuleId_e < APPSYS_MODULE_NB)
+    && (f_moduleFastTask_pcb != NULL_FUNCTION))
+    {
+        g_ModFastTask_apcb[(t_uint8)(f_ModuleId_e)] = f_moduleFastTask_pcb;
+        //--- update fast task to call ----//
+        SETBIT_16B(g_mskFastTaskCall_u16, (t_uint8)f_ModuleId_e);
+    }
+
+    return;
+}
+
+/*********************************
+ * APPSYS_SetFastTaskState
+ *********************************/
+t_eReturnCode APPSYS_SetFastTaskState(t_eAppSys_ModuleList f_ModuleId_e,  t_eAPPSYS_FastTaskState f_state_e)
+{
+    t_eReturnCode Ret_e = RC_OK;
+
+    if((f_ModuleId_e >= APPSYS_MODULE_NB)
+    || (f_state_e > APPSYS_FAST_TASK_ENABLE))
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)0);
+    }
+    if(Ret_e == RC_OK)
+    {
+        if(f_state_e == APPSYS_FAST_TASK_ENABLE)
+        {
+            SETBIT_16B(g_mskFastTaskCall_u16, (t_uint8)f_ModuleId_e);
+        }
+        else if(f_state_e == APPSYS_FAST_TASK_DISABLE)
+        {
+            RESETBIT_16B(g_mskFastTaskCall_u16, (t_uint8)f_ModuleId_e);
+        }
+        else 
+        {
+            Ret_e = RC_WARNING_NO_OPERATION;
+        }
+    }
+
+    return Ret_e;
+}
 //********************************************************************************
 //                      Local functions - Implementation
 //********************************************************************************
@@ -174,7 +264,7 @@ static void s_APPSYS_Set_ModulesCyclic(void)
 
     for(modIndex_u8 = (t_uint8)0 ; (modIndex_u8 < (t_uint8)APPSYS_MODULE_NB) && (Ret_e >= RC_OK) ; modIndex_u8++)
     {
-        if(c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb != NULL_FONCTION)
+        if(c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb != NULL_FUNCTION)
         {
             Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb();  
         }
@@ -219,8 +309,12 @@ static t_eReturnCode s_APPSYS_PreOperational(void)
                 Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].SetState_pcb(STATE_CYCLIC_PREOPE);
             }
         }
-        //---------Update Module State------------//
-        g_AppSysModuleState_e = STATE_CYCLIC_OPE;
+        Ret_e = RC_OK;
+        
+    }
+    else 
+    {
+        Ret_e = RC_WARNING_PENDING;
     }
     return Ret_e;
 }
@@ -268,25 +362,79 @@ static t_eReturnCode s_APPSYS_Operational(void)
             
         }
     }
+    //---- fast task managment ----//
+    if((g_mskFastTaskCall_u16 != (t_uint16)0)
+    && (g_isFastTaskON_b == (t_bool)False))
+    {
+        Ret_e = FMKTIM_Set_EvntLineState(   APPSYS_ITLINE_FASTTASK,
+                                            FMKTIM_EVNT_OPE_START_TIMER);
+        if(Ret_e == RC_OK)
+        {
+            g_isFastTaskON_b = (t_bool)True;
+        }
+    }
     
     return Ret_e;
 }
 
 /*********************************
- * APPSYS_AssertionTrap
+ * s_APPSYS_FastTask
  *********************************/
-void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
-                            const char * f_file_str, 
-                            t_uint32 f_line_u32)
+static void s_APPSYS_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8)
 {
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint16 idxModule_u16;
+    t_uint32 startTime_u32;
+    t_uint32 endTime_u32;
 
-    if(g_lockAssert_b == (t_bool)False)
+    if((f_InterruptType_e == FMKTIM_INTERRUPT_LINE_TYPE_EVNT)
+    && (f_InterruptLine_u8 == APPSYS_ITLINE_FASTTASK))
     {
-        g_AssertInfo_s.debugInfo_u16 = f_Info_u16;
-        strncpy(g_AssertInfo_s.file_ac, f_file_str, APPSYS_FILE_NAME_LEN - 1);
-        g_AssertInfo_s.file_ac[APPSYS_FILE_NAME_LEN - 1] = '\0';  // Assurer la terminaison
-        g_AssertInfo_s.line_u32 = f_line_u32;
+        // no fast task to call, shut down timer for now 
+        if(g_mskFastTaskCall_u16 == (t_uint16)0)
+        {
+            Ret_e = FMKTIM_Set_EvntLineState( APPSYS_ITLINE_FASTTASK,
+                                            FMKTIM_EVNT_OPE_STOP_TIMER);
+            if(Ret_e != RC_OK)
+            {
+                ASSERT((t_uint16)Ret_e);
+            }
+            else 
+            {
+                g_isFastTaskON_b = False;
+            }
+        }
+        else 
+        {
+            FMKCPU_Get_Tick(&startTime_u32);
+            for(idxModule_u16 = (t_uint16)0 ; idxModule_u16 < APPSYS_MODULE_NB ; idxModule_u16++)
+            {
+                if(GETBIT(g_mskFastTaskCall_u16, idxModule_u16) == BIT_IS_SET_16B)
+                {
+                    g_ModFastTask_apcb[idxModule_u16]();
+                }
+            }
+            FMKCPU_Get_Tick(&endTime_u32);
+
+            g_fastTaskDuration_u32 = (endTime_u32 - startTime_u32);
+
+            if(g_fastTaskDuration_u32 > APPSYS_ELASPED_TIME_FASTTASK)
+            {
+                APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APPSYS_FASTTASK_TIMEOUT,
+                                        APPSDM_DIAG_ITEM_REPORT_FAIL,
+                                        Mu16ExtractByte1from32(g_fastTaskDuration_u32),
+                                        Mu16ExtractByte0from32(g_fastTaskDuration_u32));
+            }
+            else 
+            {
+                APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APPSYS_FASTTASK_TIMEOUT,
+                                        APPSDM_DIAG_ITEM_REPORT_PASS,
+                                        (t_uint16)0,
+                                        (t_uint16)0);
+            } 
+        }
     }
+
     return;
 }
 //************************************************************************************

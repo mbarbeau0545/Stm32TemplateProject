@@ -96,7 +96,7 @@ t_eReturnCode APPACT_Init(void)
     for(; (s_LLDRV_u8 < APPACT_DRIVER_NB) && (Ret_e == RC_OK) ; s_LLDRV_u8++)
     {
         if(g_ActDrvState_ae[s_LLDRV_u8] == APPACT_DRIVER_STATE_ENABLE
-        && c_AppAct_SysDrv_apf[s_LLDRV_u8].Init_pcb != (t_cbAppAct_DrvInit *)NULL_FONCTION)
+        && c_AppAct_SysDrv_apf[s_LLDRV_u8].Init_pcb != (t_cbAppAct_DrvInit *)NULL_FUNCTION)
         {
             Ret_e = (c_AppAct_SysDrv_apf[s_LLDRV_u8].Init_pcb)();
             
@@ -287,7 +287,7 @@ static t_eReturnCode s_APPACT_ConfigurationState(void)
     for (; (s_LLACT_u8 < APPACT_ACTUATOR_NB) && (Ret_e == RC_OK) ; s_LLACT_u8++)  
     {
         if(g_actState_ae[s_LLACT_u8] == APPACT_ACTUATOR_STATE_ENABLE
-        && c_AppAct_SysAct_apf[s_LLACT_u8].SetCfg_pcb != (t_cbAppAct_SetActCfg *)NULL_FONCTION)
+        && c_AppAct_SysAct_apf[s_LLACT_u8].SetCfg_pcb != (t_cbAppAct_SetActCfg *)NULL_FUNCTION)
         {
              Ret_e = (c_AppAct_SysAct_apf[s_LLACT_u8].SetCfg_pcb)();                 
         }
@@ -313,7 +313,7 @@ static t_eReturnCode s_APPACT_Operational(void)
     {
         if(g_ActDrvState_ae[LLI_u8] == APPACT_DRIVER_STATE_ENABLE)
         {
-            if(c_AppAct_SysDrv_apf[LLI_u8].Cyclic_pcb != (t_cbAppAct_DrvCyclic *)NULL_FONCTION)
+            if(c_AppAct_SysDrv_apf[LLI_u8].Cyclic_pcb != (t_cbAppAct_DrvCyclic *)NULL_FUNCTION)
             {
                 Ret_e = (c_AppAct_SysDrv_apf[LLI_u8].Cyclic_pcb)();
             }

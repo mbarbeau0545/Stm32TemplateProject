@@ -571,7 +571,7 @@ t_eReturnCode FMKTIM_Init(void)
                 {
                     chnlInfo_ps = (t_sFMKTIM_ChnlInfo *)(&timerInfo_ps->Channel_as[chnlIndex_u8]);
 
-                    chnlInfo_ps->chnl_cb = NULL_FONCTION;
+                    chnlInfo_ps->chnl_cb = NULL_FUNCTION;
                     SETBIT_16B(chnlInfo_ps->ErrState_u16, FMKTIM_ERRSTATE_OK);
                     chnlInfo_ps->IsChnlConfigure_b =  (t_bool)False;
                     chnlInfo_ps->RunMode_e = FMKTIM_LINE_RUNMODE_POLLING;
@@ -820,7 +820,7 @@ t_eReturnCode FMKTIM_Set_ICLineCfg(t_eFMKTIM_InterruptLineIO f_InterruptLine_e,
     t_eFMKTIM_Timer timer_e;
     t_eFMKTIM_InterruptChnl chnl_e;
 
-    if(f_ITChannel_cb == (t_cbFMKTIM_InterruptLine *)NULL_FONCTION)
+    if(f_ITChannel_cb == (t_cbFMKTIM_InterruptLine *)NULL_FUNCTION)
     {
         Ret_e = RC_ERROR_PTR_NULL;
         ASSERT((t_uint16)Ret_e);
@@ -866,7 +866,7 @@ t_eReturnCode FMKTIM_Set_EvntTimerCfg(   t_eFMKTIM_InterruptLineEvnt f_EvntITLin
         Ret_e = RC_ERROR_PARAM_INVALID;
         ASSERT((t_uint16)Ret_e);
     }
-    if (f_ITChannel_cb == (t_cbFMKTIM_InterruptLine *)NULL_FONCTION)
+    if (f_ITChannel_cb == (t_cbFMKTIM_InterruptLine *)NULL_FUNCTION)
     {
         Ret_e = RC_ERROR_PTR_NULL;
         ASSERT((t_uint16)Ret_e);
@@ -902,7 +902,7 @@ t_eReturnCode FMKTIM_Set_EvntTimerCfg(   t_eFMKTIM_InterruptLineEvnt f_EvntITLin
         Ret_e = RC_ERROR_PARAM_INVALID;
         ASSERT((t_uint16)Ret_e);
     }
-    if (f_ITChannel_cb == (t_cbFMKTIM_InterruptLine *)NULL_FONCTION)
+    if (f_ITChannel_cb == (t_cbFMKTIM_InterruptLine *)NULL_FUNCTION)
     {
         Ret_e = RC_ERROR_PTR_NULL;
         ASSERT((t_uint16)Ret_e);
@@ -1523,7 +1523,8 @@ static t_eReturnCode s_FMKTIM_RqstLineValidityOpe(  t_eFMKTIM_InterruptLineType 
         Ret_e = RC_ERROR_PARAM_INVALID;
         ASSERT((t_uint16)Ret_e);
     }
-    if(g_FmkTim_ModState_e != STATE_CYCLIC_OPE)
+    if(g_FmkTim_ModState_e != STATE_CYCLIC_OPE
+    && g_FmkTim_ModState_e != STATE_CYCLIC_PREOPE)
     {
         Ret_e = RC_WARNING_BUSY;
         ASSERT((t_uint16)Ret_e);
@@ -2239,7 +2240,7 @@ static void s_FMKTIM_BspRqst_InterruptMngmt(TIM_HandleTypeDef *f_timerIstce_ps, 
                                                                     FMKTIM_CHNLST_DISACTIVATED);
 
                                 if((Ret_e == RC_OK) 
-                                && (timerInfo_ps->Channel_as[LLI_u8].chnl_cb != NULL_FONCTION))
+                                && (timerInfo_ps->Channel_as[LLI_u8].chnl_cb != NULL_FUNCTION))
                                 {
                                     timerInfo_ps->Channel_as[LLI_u8].
                                         chnl_cb(c_FmkTim_ChnlItLineMapp[Calltimer_e][LLI_u8].type_e,
@@ -2265,7 +2266,7 @@ static void s_FMKTIM_BspRqst_InterruptMngmt(TIM_HandleTypeDef *f_timerIstce_ps, 
             }
             case FMKTIM_HWTIM_CFG_EVNT:
             {
-                if(timerInfo_ps->Channel_as[FMKTIM_CHANNEL_1].chnl_cb != NULL_FONCTION)
+                if(timerInfo_ps->Channel_as[FMKTIM_CHANNEL_1].chnl_cb != NULL_FUNCTION)
                 {
                     timerInfo_ps->Channel_as[FMKTIM_CHANNEL_1].
                         chnl_cb(c_FmkTim_ChnlItLineMapp[Calltimer_e][FMKTIM_CHANNEL_1].type_e,
@@ -2309,7 +2310,7 @@ static void s_FMKTIM_BspRqst_InterruptMngmt(TIM_HandleTypeDef *f_timerIstce_ps, 
                         break;
                 }
                 if( (Ret_e == RC_OK) 
-                && (timerInfo_ps->Channel_as[LLI_u8].chnl_cb != NULL_FONCTION))
+                && (timerInfo_ps->Channel_as[LLI_u8].chnl_cb != NULL_FUNCTION))
                 {
                     timerInfo_ps->Channel_as[ITChnl_e].
                         chnl_cb(c_FmkTim_ChnlItLineMapp[Calltimer_e][ITChnl_e].type_e,

@@ -16,7 +16,7 @@
     #define false	      ((t_uint8)0)
     #define True          ((t_uint8)1)
     #define False         ((t_uint8)0)
-    #define NULL_FONCTION ((void *)0)
+    #define NULL_FUNCTION ((void *)0)
 
     #ifndef NULL
         #define NULL ((void *)0)

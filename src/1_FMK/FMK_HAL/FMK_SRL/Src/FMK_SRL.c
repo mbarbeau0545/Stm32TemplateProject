@@ -846,7 +846,7 @@ t_eReturnCode FMKSRL_Init(void)
         srlInfo_ps->RxInfo_s.bspRxOpe_e = FMKSRL_BSP_RX_OPE_NB;
         srlInfo_ps->RxInfo_s.OpeMode_e = FMKSRL_OPE_RX_NB;
         srlInfo_ps->RxInfo_s.RqstCyclic_b = (t_bool)False;
-        srlInfo_ps->RxInfo_s.RxUserCb_pcb = (t_cbFMKSRL_RcvMsgEvent *)(NULL_FONCTION);
+        srlInfo_ps->RxInfo_s.RxUserCb_pcb = (t_cbFMKSRL_RcvMsgEvent *)(NULL_FUNCTION);
         srlInfo_ps->RxInfo_s.infoMode_u16 = (t_uint16)0;
         srlInfo_ps->RxInfo_s.Buffer_s.buffferSize_u16 = (t_uint16)0;
         srlInfo_ps->RxInfo_s.Buffer_s.bytesPending_u16 = (t_uint16)0;
@@ -1004,7 +1004,7 @@ t_eReturnCode FMKSRL_InitDrv(   t_eFMKSRL_SerialLine f_SrlLine_e,
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
-    if(  (f_rcvMsgEvnt_pcb == (t_cbFMKSRL_RcvMsgEvent *)NULL_FONCTION))
+    if(  (f_rcvMsgEvnt_pcb == (t_cbFMKSRL_RcvMsgEvent *)NULL_FUNCTION))
     {
         Ret_e = RC_ERROR_PTR_NULL;
     }
@@ -1353,7 +1353,7 @@ static t_eReturnCode s_FMKSRL_PerformDiagnostic(t_sFMKSRL_SerialInfo * f_srlInfo
     t_eReturnCode Ret_e = RC_OK;
     t_eFMKSRL_LineHealth srlLineStatus_e;
 
-    if(f_srlInfo_ps == (t_sFMKSRL_SerialInfo *)NULL_FONCTION)
+    if(f_srlInfo_ps == (t_sFMKSRL_SerialInfo *)NULL_FUNCTION)
     {
         Ret_e = RC_ERROR_PTR_NULL;
     }
@@ -2132,19 +2132,19 @@ static t_eReturnCode s_FMKSRL_AbortMngmt(t_sFMKSRL_SerialInfo * f_srlInfo_ps,
         {
             case FMKSRL_LINE_RUNMODE_POLL:
             {
-                if( (c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortPoll_pcb != NULL_FONCTION)
+                if( (c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortPoll_pcb != NULL_FUNCTION)
                 && f_Ope_e == FMKSRL_OPE_ABORT_RECEPTION)
                 {
                     c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e]
                         .bspAbortPoll_pcb(&f_srlInfo_ps->bspHandle_u);
                 }
-                else if( (c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortPoll_pcb != NULL_FONCTION)
+                else if( (c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortPoll_pcb != NULL_FUNCTION)
                 &&       (f_Ope_e == FMKSRL_OPE_ABORT_TRANSMISSION))
                 {
                     c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e]
                         .bspAbortPoll_pcb(&f_srlInfo_ps->bspHandle_u);
                 }
-                else if ( (c_FmkSrl_AbortBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortPoll_pcb != NULL_FONCTION)
+                else if ( (c_FmkSrl_AbortBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortPoll_pcb != NULL_FUNCTION)
                 &&       (f_Ope_e == FMKSRL_OPE_ABORT_BOTH))
                 {
                     c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e]
@@ -2158,19 +2158,19 @@ static t_eReturnCode s_FMKSRL_AbortMngmt(t_sFMKSRL_SerialInfo * f_srlInfo_ps,
             }
             case FMKSRL_LINE_RUNMODE_IT:
             {
-                if( (c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortIT_pcb != NULL_FONCTION)
+                if( (c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortIT_pcb != NULL_FUNCTION)
                 && f_Ope_e == FMKSRL_OPE_ABORT_RECEPTION)
                 {
                     c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e]
                         .bspAbortIT_pcb(&f_srlInfo_ps->bspHandle_u);
                 }
-                else if( (c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortIT_pcb != NULL_FONCTION)
+                else if( (c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortIT_pcb != NULL_FUNCTION)
                 &&       (f_Ope_e == FMKSRL_OPE_ABORT_TRANSMISSION))
                 {
                     c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e]
                         .bspAbortIT_pcb(&f_srlInfo_ps->bspHandle_u);
                 }
-                else if ( (c_FmkSrl_AbortBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortIT_pcb != NULL_FONCTION)
+                else if ( (c_FmkSrl_AbortBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortIT_pcb != NULL_FUNCTION)
                 &&       (f_Ope_e == FMKSRL_OPE_ABORT_BOTH))
                 {
                     c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e]
@@ -2184,19 +2184,19 @@ static t_eReturnCode s_FMKSRL_AbortMngmt(t_sFMKSRL_SerialInfo * f_srlInfo_ps,
             }
             case FMKSRL_LINE_RUNMODE_DMA:
             {
-                if( (c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortDMA_pcb != NULL_FONCTION)
+                if( (c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortDMA_pcb != NULL_FUNCTION)
                 && f_Ope_e == FMKSRL_OPE_ABORT_RECEPTION)
                 {
                     c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e]
                         .bspAbortDMA_pcb(&f_srlInfo_ps->bspHandle_u);
                 }
-                else if( (c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortDMA_pcb != NULL_FONCTION)
+                else if( (c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortDMA_pcb != NULL_FUNCTION)
                 &&       (f_Ope_e == FMKSRL_OPE_ABORT_TRANSMISSION))
                 {
                     c_FmkSrl_AbortTxBspFunc_apf[f_srlInfo_ps->SoftType_e]
                         .bspAbortDMA_pcb(&f_srlInfo_ps->bspHandle_u);
                 }
-                else if ( (c_FmkSrl_AbortBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortDMA_pcb != NULL_FONCTION)
+                else if ( (c_FmkSrl_AbortBspFunc_apf[f_srlInfo_ps->SoftType_e].bspAbortDMA_pcb != NULL_FUNCTION)
                 &&       (f_Ope_e == FMKSRL_OPE_ABORT_BOTH))
                 {
                     c_FmkSrl_AbortRxBspFunc_apf[f_srlInfo_ps->SoftType_e]
@@ -2838,7 +2838,7 @@ static void s_FMKSRL_BspTxEventCbMngmt(   t_uFMKSRL_HardwareHandle * f_Handle_pu
                         //--------- Callback user with error if he wants it ---------//
                         if( (Ret_e != RC_OK)
                         &&  (srlInfo_ps->TxInfo_s.NotifyUser_b == (t_bool)True)
-                        &&  (srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FONCTION))
+                        &&  (srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FUNCTION))
                         {
                             srlInfo_ps->TxInfo_s.TxUserCb_pcb(False, FMKSRL_CB_INFO_TRANSMIT_ERR);
                         }
@@ -2847,7 +2847,7 @@ static void s_FMKSRL_BspTxEventCbMngmt(   t_uFMKSRL_HardwareHandle * f_Handle_pu
                     {
                         //--------- End Transmission, callback user Mngmt ---------//
                         if( (srlInfo_ps->TxInfo_s.NotifyUser_b == (t_bool)True)
-                        &&  (srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FONCTION))
+                        &&  (srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FUNCTION))
                         {
                             srlInfo_ps->TxInfo_s.TxUserCb_pcb(True, srlInfo_ps->Health_u16);
                         }
@@ -2860,7 +2860,7 @@ static void s_FMKSRL_BspTxEventCbMngmt(   t_uFMKSRL_HardwareHandle * f_Handle_pu
                             //--------- Callback user with error if he wants it ---------//
                             if(  (Ret_e != RC_OK)
                             &&  (srlInfo_ps->TxInfo_s.NotifyUser_b == (t_bool)True)
-                            &&  (srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FONCTION))
+                            &&  (srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FUNCTION))
                             {
                                 srlInfo_ps->TxInfo_s.TxUserCb_pcb(False, FMKSRL_CB_INFO_TRANSMIT_ERR);
                             }
@@ -2930,7 +2930,7 @@ static void s_FMKSRL_BspErrorEventCbMngmt(  t_uFMKSRL_HardwareHandle * f_Handle_
                 {
                     //--------- call user with error ---------//
                     if(srlInfo_ps->TxInfo_s.NotifyUser_b == (t_bool)True
-                    && srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FONCTION)
+                    && srlInfo_ps->TxInfo_s.TxUserCb_pcb != (t_cbFMKSRL_TransmitMsgEvent *)NULL_FUNCTION)
                     {
                         srlInfo_ps->TxInfo_s.TxUserCb_pcb(false, FMKSRL_CB_INFO_TRANSMIT_ERR);
                     }

@@ -587,7 +587,7 @@
         <mxCell id="k4UNFfZTHzOHJDjHMfMJ-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="k4UNFfZTHzOHJDjHMfMJ-1" target="QHdL02aO99-6-xSzfIHb-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="k4UNFfZTHzOHJDjHMfMJ-1" value="Ret_e = s_FMKHRT_GetSlaveTimerInfoFromLine(&amp;amp;HrTim_e, NULL_FONCTION, NULL_FONCTION)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
+        <mxCell id="k4UNFfZTHzOHJDjHMfMJ-1" value="Ret_e = s_FMKHRT_GetSlaveTimerInfoFromLine(&amp;amp;HrTim_e, NULL_FUNCTION, NULL_FUNCTION)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="174" y="-880" width="478.5" height="40" as="geometry" />
         </mxCell>
       </root>

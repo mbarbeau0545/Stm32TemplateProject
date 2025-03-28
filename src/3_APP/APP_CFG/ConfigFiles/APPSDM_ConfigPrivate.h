@@ -79,7 +79,8 @@
     */
         {(t_uint16)0,                  (t_bool)True,                 (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // FMK_CFG_ERROR
         {(t_uint16)1000,               (t_bool)True,                 (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // FMK_OPE_ERROR
-        {(t_uint16)500,                (t_bool)True,                 (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // APPSYS_CYCLIC_TIMEOUT
+        {(t_uint16)500,                (t_bool)False,                (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // APPSYS_CYCLIC_TIMEOUT
+        {(t_uint16)500,                (t_bool)False,                (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // APPSYS_FASTTASK_TIMEOUT
     };
 
     /* CAUTION : Automatic generated code section for Variable: End */

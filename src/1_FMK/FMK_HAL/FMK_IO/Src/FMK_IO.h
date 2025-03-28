@@ -247,7 +247,7 @@
     *
     *	@param[in]      f_signal_e     : the input analog signal, value from @ref t_eFMKIO_InAnaSig
     *	@param[in]      f_pull_e        : the input pull mode, value from @ref t_eFMKIO_PullMode
-    *	@param[in]      f_sigErr_cb     : callbback function that will be called if an error occured,NULL_FONCTION if not used
+    *	@param[in]      f_sigErr_cb     : callbback function that will be called if an error occured,NULL_FUNCTION if not used
     *	 
     *   @retval RC_OK                             @ref RC_OK
     *   @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
@@ -293,7 +293,7 @@
     *	@param[in]      f_debouncDelay_u32  : time in which interrupt will be ignore due to indertemine state
     *	@param[in]      f_trigger_e         : time in ms to ignore fluctuation from signal after a interruption happened
     *	@param[in]      f_Evnt_cb           : Function to call when the edge is detected by hardware
-    *	@param[in]      f_sigErr_cb         : callbback function that will be called if an error occured, NULL_FONCTION if not used
+    *	@param[in]      f_sigErr_cb         : callbback function that will be called if an error occured, NULL_FUNCTION if not used
     *	 
     *   @retval RC_OK                             @ref RC_OK
     *   @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
@@ -362,7 +362,7 @@
     *	@param[in]      f_signal_e             : the input analog signal, a value from @ref t_eFMKIO_OutPwmSig
     *	@param[in]      f_pull_e               : the input pull mode, value from @ref t_eFMKIO_PullMode
     *	@param[in]      f_frequency_u32        : the PWM frequency 
-    *	@param[in]      f_sigErr_cb             : callbback function that will be called if an error occured, NULL_FONCTION if not used
+    *	@param[in]      f_sigErr_cb             : callbback function that will be called if an error occured, NULL_FUNCTION if not used
     *	 
     *   @retval RC_OK                             @ref RC_OK
     *   @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID

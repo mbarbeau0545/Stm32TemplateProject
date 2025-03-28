@@ -76,7 +76,7 @@ t_bool g_rqstDiagMngmt_b = (t_bool)False;
 t_uint8 g_diagItemCnt_u8 = (t_uint8)0;
 
 /**<  */
-t_cbAPPSDM_DiagEventBroadcast * g_UserCallback_pcb = (t_cbAPPSDM_DiagEventBroadcast *)NULL_FONCTION;
+t_cbAPPSDM_DiagEventBroadcast * g_UserCallback_pcb = (t_cbAPPSDM_DiagEventBroadcast *)NULL_FUNCTION;
 
 t_uint8 g_freeItemIdx_u8 = (t_uint8)0;
 
@@ -388,11 +388,11 @@ t_eReturnCode APPSDM_AddCallbackEvnt(t_cbAPPSDM_DiagEventBroadcast * f_evntCallb
 {
     t_eReturnCode Ret_e = RC_OK;
 
-    if(f_evntCallback_pcb == (t_cbAPPSDM_DiagEventBroadcast *)NULL_FONCTION)
+    if(f_evntCallback_pcb == (t_cbAPPSDM_DiagEventBroadcast *)NULL_FUNCTION)
     {
         Ret_e = RC_ERROR_PTR_NULL;
     }
-    if(g_UserCallback_pcb != (t_cbAPPSDM_DiagEventBroadcast *)NULL_FONCTION)
+    if(g_UserCallback_pcb != (t_cbAPPSDM_DiagEventBroadcast *)NULL_FUNCTION)
     {
         Ret_e = RC_ERROR_ALREADY_CONFIGURED;
     }
@@ -508,7 +508,7 @@ static t_eReturnCode s_APPSDM_DiagnosticMngmt(  t_sAPPSDM_DiagItemInfo * f_itemI
 
                 if(((currentTime_u32 - f_itemInfo_ps->reportTime_u32) > 
                         (t_uint32)APPSDM_BROADCAST_TIMEOUT)
-                && (g_UserCallback_pcb != (t_cbAPPSDM_DiagEventBroadcast *)NULL_FONCTION)
+                && (g_UserCallback_pcb != (t_cbAPPSDM_DiagEventBroadcast *)NULL_FUNCTION)
                 && (f_itemCfg_ps->notifyUser_b == (t_bool)True))
                 {
                     g_UserCallback_pcb( f_itemInfo_ps->itemId_e,
@@ -534,7 +534,7 @@ static t_eReturnCode s_APPSDM_DiagnosticMngmt(  t_sAPPSDM_DiagItemInfo * f_itemI
                                             APPSDM_DIAG_STRAT_INHIBIT_OFF);
 
                 //----- Call User -----//
-                if((g_UserCallback_pcb != (t_cbAPPSDM_DiagEventBroadcast *)NULL_FONCTION)
+                if((g_UserCallback_pcb != (t_cbAPPSDM_DiagEventBroadcast *)NULL_FUNCTION)
                 && (f_itemCfg_ps->notifyUser_b == (t_bool)True))
                 {
                     g_UserCallback_pcb( f_itemInfo_ps->itemId_e,

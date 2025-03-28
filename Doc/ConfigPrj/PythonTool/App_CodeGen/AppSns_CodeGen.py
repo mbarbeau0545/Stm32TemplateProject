@@ -153,14 +153,14 @@ class AppSns_CodeGen():
                     var_drv += f"(t_cbAppSns_DrvInit *){drv_cfg[0]}_Init,"
                     var_drv += " " * ((SPACE_VARIABLE * 2) - len(f"(t_cbAppSns_DrvInit *){VAR_DRV_SNS_FUNC_RT}_{drv_cfg[0]}_Init,"))
                 else: 
-                    var_drv += f"(t_cbAppSns_DrvInit *)NULL_FONCTION,"
-                    var_drv += " " * ((SPACE_VARIABLE * 2) - len(f"(t_cbAppSns_DrvInit *)NULL_FONCTION,")) \
+                    var_drv += f"(t_cbAppSns_DrvInit *)NULL_FUNCTION,"
+                    var_drv += " " * ((SPACE_VARIABLE * 2) - len(f"(t_cbAppSns_DrvInit *)NULL_FUNCTION,")) \
                 
                 if "Yes" in str(drv_cfg[2]):
                     var_drv += f"(t_cbAppSns_DrvCyclic *){drv_cfg[0]}_Cyclic" + "},"
                     
                 else: 
-                    var_drv += f"(t_cbAppSns_DrvInit *)NULL_FONCTION" + "},"
+                    var_drv += f"(t_cbAppSns_DrvInit *)NULL_FUNCTION" + "},"
         
                 var_drv += f"  // {ENUM_APPSNS_DRV_RT}_{str(drv_cfg[0]).upper()}\n"
                 # make DRV state

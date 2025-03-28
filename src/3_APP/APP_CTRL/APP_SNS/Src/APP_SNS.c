@@ -237,9 +237,9 @@ t_eReturnCode APPSNS_Init(void)
     // check sensors cfg
     for(idxSns_u8 = (t_uint8)0 ; (idxSns_u8 < APPSNS_SENSOR_NB) && (Ret_e == RC_OK) ; idxSns_u8++)
     {   
-        if(c_AppSns_SysSns_apf[idxSns_u8].GetValue_pcb == (t_cbAppSns_GetSigValue *)NULL_FONCTION
-        || c_AppSns_SysSns_apf[idxSns_u8].SetCfg_pcb == (t_cbAppSns_SetSnsCfg *)NULL_FONCTION
-        || c_AppSns_SysSns_apf[idxSns_u8].FormatValSI_pcb == (t_cbAppSns_FormatValSI *)NULL_FONCTION
+        if(c_AppSns_SysSns_apf[idxSns_u8].GetValue_pcb == (t_cbAppSns_GetSigValue *)NULL_FUNCTION
+        || c_AppSns_SysSns_apf[idxSns_u8].SetCfg_pcb == (t_cbAppSns_SetSnsCfg *)NULL_FUNCTION
+        || c_AppSns_SysSns_apf[idxSns_u8].FormatValSI_pcb == (t_cbAppSns_FormatValSI *)NULL_FUNCTION
         || c_AppSns_SysSns_apf[idxSns_u8].measTyp_e > APPSNS_MEASTYPE_NB)
         {
             Ret_e = RC_ERROR_PARAM_INVALID;
@@ -248,7 +248,7 @@ t_eReturnCode APPSNS_Init(void)
     //---- driver init -----//
     for(LLDRV_u8 = (t_uint8)0; (LLDRV_u8 < APPSNS_DRIVER_NB) && (Ret_e == RC_OK) ; LLDRV_u8++)
     {
-        if(c_AppSns_SysDrv_apf[LLDRV_u8].Init_pcb != (t_cbAppSns_DrvInit *)NULL_FONCTION)
+        if(c_AppSns_SysDrv_apf[LLDRV_u8].Init_pcb != (t_cbAppSns_DrvInit *)NULL_FUNCTION)
         {
             Ret_e = (c_AppSns_SysDrv_apf[LLDRV_u8].Init_pcb)();
         }
@@ -383,7 +383,7 @@ static t_eReturnCode s_AppSns_ConfigurationState(void)
     // sensors configuration call
     for(; (s_LLSNS_u8 < APPSNS_SENSOR_NB) && (Ret_e == RC_OK) ; s_LLSNS_u8++)
     {
-        if(c_AppSns_SysSns_apf[s_LLSNS_u8].SetCfg_pcb != (t_cbAppSns_SetSnsCfg *)NULL_FONCTION)
+        if(c_AppSns_SysSns_apf[s_LLSNS_u8].SetCfg_pcb != (t_cbAppSns_SetSnsCfg *)NULL_FUNCTION)
         {
             Ret_e = (c_AppSns_SysSns_apf[s_LLSNS_u8].SetCfg_pcb)();
         }
@@ -410,7 +410,7 @@ static t_eReturnCode s_APPSNS_Operational(void)
 
     for(LLI_u8 = (t_uint8)0 ; (LLI_u8 < APPSNS_DRIVER_NB) && (Ret_e == RC_OK); LLI_u8++)
     {
-        if(c_AppSns_SysDrv_apf[LLI_u8].Cyclic_pcb != (t_cbAppSns_DrvCyclic *)NULL_FONCTION)
+        if(c_AppSns_SysDrv_apf[LLI_u8].Cyclic_pcb != (t_cbAppSns_DrvCyclic *)NULL_FUNCTION)
         {
             Ret_e = (c_AppSns_SysDrv_apf[LLI_u8].Cyclic_pcb)();
         }

@@ -32,16 +32,6 @@
     /* CAUTION : Automatic generated code section for Enum: Start */
 
     /* CAUTION : Automatic generated code section for Enum: End */
-    /**< Enum for harware channel polarity */
-    typedef enum
-    {
-        FMKTIM_LINEPOLARITY_LOW = 0x0U,         /**< Reference to harware channel polarity low */
-        FMKTIM_LINEPOLARITY_HIGH,               /**< Reference to harware channel polarity high */
-
-        FMKTIM_LINEPOLARITY_NB                  /**< Number of hardxware channel polarity */
-    } t_eFMKTIM_ChnlPolarity;
-
-
     /**< Enum for channel run mode */
     typedef enum 
     {
@@ -77,6 +67,17 @@
         FMKTIM_ERRSTATE_UNKNOWN,                     /**< unknown error detected */
 
     } t_eFMKTIM_ChnlErrorState;
+
+    /**
+    * @brief Slave Timer Channel Polarity.
+    */
+   typedef enum 
+   {
+       FMKTIM_LINE_POLARITY_LOW = 0x00,    /**<  The Output is active on Low level*/
+       FMKTIM_LINE_POLARITY_HIGH,          /**<  The Output is active on High level*/
+       
+       FMKTIM_LINE_POLARITY_NB
+   } t_eFMKTIM_LinePolarity;
 
     /**
      * @brief Enum to set bit for changing PWM Signal
@@ -323,6 +324,7 @@
     */
     t_eReturnCode FMKTIM_Set_PWMLineCfg(t_eFMKTIM_InterruptLineIO f_InterruptLine_e,
                                         t_uint32 f_pwmFreq_u32,
+                                        t_eFMKTIM_LinePolarity f_linePolarity_e,
                                         t_cbFMKTIM_InterruptLine * f_PwmPulseFinished_pcb);
     /**
     *

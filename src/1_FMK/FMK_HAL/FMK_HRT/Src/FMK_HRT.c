@@ -359,7 +359,7 @@ static t_eReturnCode s_FMKHRT_GetPrescalerRatio(t_eFMKHRT_FreqMulDiv f_CpuFreqMu
 *  @retval RC_ERROR_WRONG_STATE              @ref RC_ERROR_WRONG_STATE
 *  @retval RC_ERROR_WRONG_RESULT             @ref RC_ERROR_WRONG_RESULT
 */
-static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_ChnlPolarity f_Polarity_e,
+static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_LinePolarity f_Polarity_e,
                                                 t_uint32 * f_bspPolarity_pu32);
 /**
 *
@@ -535,7 +535,7 @@ t_eReturnCode FMKHRT_ConfigurePwmLine(  t_eFMKHRT_HighResLine f_HRLine_e,
     t_eFMKHRT_HighResSlvTim hrSlvTim_e;
     t_eFMKHRT_HrTimChannel hrChnl_e;
     t_sFMKHRT_TimSlaveInfo * slvInfo_ps;
-    t_uFMHRT_HwModeCfg hwModeCfg_s;
+    t_uFMHRT_HwModeCfg hwModeCfg_u;
 
     if(f_HRLine_e >= FMKHRT_HR_LINE_NB)
     {
@@ -575,26 +575,26 @@ t_eReturnCode FMKHRT_ConfigurePwmLine(  t_eFMKHRT_HighResLine f_HRLine_e,
                 slvInfo_ps->isConfigured_b = (t_bool)True;
             }
         }
-    }
-    //----- Configure Channel In Pwm Mode ----//
-    if(Ret_e == RC_OK)
-    {  
-        hwModeCfg_s.pwmCfg_s.deadTime_u32  = f_PwmCfg_s.deadTime_u32;
-        hwModeCfg_s.pwmCfg_s.frequency_u32 = f_PwmCfg_s.frequency_u32;
-        hwModeCfg_s.pwmCfg_s.polarity_e  = f_PwmCfg_s.polarity_e;
+        //----- Configure Channel In Pwm Mode ----//
+        if(Ret_e == RC_OK)
+        {  
+            hwModeCfg_u.pwmCfg_s.deadTime_u32  = f_PwmCfg_s.deadTime_u32;
+            hwModeCfg_u.pwmCfg_s.polarity_e  = f_PwmCfg_s.polarity_e;
+            hwModeCfg_u.pwmCfg_s.frequency_u32 = f_PwmCfg_s.frequency_u32; // not used
 
-        Ret_e = s_FMKHRT_ConfigureSlaveChannel( (&g_HrTimInfo_as[hrTimIstc_e]),
-                                                hrSlvTim_e,
-                                                hrChnl_e,
-                                                FMKHRT_HW_MODE_PWM,
-                                                (&hwModeCfg_s));
-        if(Ret_e == RC_OK)    
-        {
-            slvInfo_ps->chnlInfo_as[hrChnl_e].isConfigured_b = (t_bool)True;
-            slvInfo_ps->chnlInfo_as[hrChnl_e].evntCallback_pcb = 
-                                        (t_cbFMKHRT_HrLineEvnt *)(f_pulseEvntCb_pcb);
-            slvInfo_ps->HwOpeMode_e = FMKHRT_HW_OPE_TIM_WFC;
-            slvInfo_ps->runMode_e = FMKHRT_RUN_MODE_POLL;
+            Ret_e = s_FMKHRT_ConfigureSlaveChannel( (&g_HrTimInfo_as[hrTimIstc_e]),
+                                                    hrSlvTim_e,
+                                                    hrChnl_e,
+                                                    FMKHRT_HW_MODE_PWM,
+                                                    (&hwModeCfg_u));
+            if(Ret_e == RC_OK)    
+            {
+                slvInfo_ps->chnlInfo_as[hrChnl_e].isConfigured_b = (t_bool)True;
+                slvInfo_ps->chnlInfo_as[hrChnl_e].evntCallback_pcb = 
+                                            (t_cbFMKHRT_HrLineEvnt *)(f_pulseEvntCb_pcb);
+                slvInfo_ps->HwOpeMode_e = FMKHRT_HW_OPE_TIM_WFC;
+                slvInfo_ps->runMode_e = FMKHRT_RUN_MODE_POLL;
+            }
         }
     }
 
@@ -995,6 +995,15 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveTimer(  t_sFMKHRT_HrTimInfo * f_HrTi
         //---- Get ARR register ----//
         if(Ret_e == RC_OK)
         {
+            if(f_rqstOutputFrequency_u32 > slvInfo_ps->maxFreqAccept_u32)
+            {
+                f_rqstOutputFrequency_u32 = slvInfo_ps->maxFreqAccept_u32;
+            }
+            else if(f_rqstOutputFrequency_u32 < slvInfo_ps->minFreqAccept_u32)
+            {
+                f_rqstOutputFrequency_u32 = slvInfo_ps->minFreqAccept_u32;
+            }
+
             Ret_e = s_FMKHRT_GetBspPeriod(  slvInfo_ps->timFreqMHz_u16, 
                                             f_rqstOutputFrequency_u32,
                                             (&bspPeriod_u32));
@@ -1100,7 +1109,7 @@ static t_eReturnCode s_FMKHRT_ConfigureSlaveChannel(t_sFMKHRT_HrTimInfo * f_HrTi
     }
     if(Ret_e == RC_OK)
     {
-        Ret_e = s_FMKHRT_GetBspChannel(f_hrSlvTim_e, f_chnl_e,  (&bspChannel_u32));
+        Ret_e = s_FMKHRT_GetBspChannel(f_hrSlvTim_e, f_chnl_e, (&bspChannel_u32));
     }
     if(Ret_e == RC_OK)
     {
@@ -1595,16 +1604,24 @@ static t_eReturnCode s_FMKHRT_GetBspPeriod( t_uint16 f_TimFreqMHz_16,
     }
     if(Ret_e == RC_OK)
     {
-        bspPeriod_u32 = (t_uint32)(((t_uint32)f_TimFreqMHz_16 * CST_MHZ_TO_HZ) 
-                                        / (t_uint32)f_RqstOutFreq_u32);
-        
-        if(bspPeriod_u32 > CST_MAX_UINT_16BIT)
+        if(f_RqstOutFreq_u32 > (t_uint32)0)
         {
-            *f_bspPeriod_pu32 = (t_uint32)CST_MAX_UINT_16BIT;
+            bspPeriod_u32 = (t_uint32)(((t_uint32)f_TimFreqMHz_16 * CST_MHZ_TO_HZ) 
+                                            / (t_uint32)f_RqstOutFreq_u32);
+            
+            if(bspPeriod_u32 > CST_MAX_UINT_16BIT)
+            {
+                *f_bspPeriod_pu32 = (t_uint32)CST_MAX_UINT_16BIT;
+            }
+            else 
+            {
+                *f_bspPeriod_pu32 = bspPeriod_u32;
+            }
         }
         else 
         {
-            *f_bspPeriod_pu32 = bspPeriod_u32;
+            Ret_e = RC_ERROR_PARAM_INVALID;
+            ASSERT((t_uint16)(f_RqstOutFreq_u32));
         }
     }
 
@@ -1726,12 +1743,12 @@ static t_eReturnCode s_FMKHRT_GetEnumTimeIdxFromBsp(    t_uint32 f_bspTimIdx_u32
 /*********************************
  * s_FMKHRT_GetBspPolarity
  *********************************/
-static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_ChnlPolarity f_Polarity_e,
+static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_LinePolarity f_Polarity_e,
                                                 t_uint32 * f_bspPolarity_pu32)
 {
     t_eReturnCode Ret_e = RC_OK;
 
-    if(f_Polarity_e >= FMKHRT_CHNL_POLARITY_NB)
+    if(f_Polarity_e >= FMKHRT_LINE_POLARITY_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
         ASSERT((t_uint16)Ret_e);
@@ -1743,11 +1760,11 @@ static t_eReturnCode s_FMKHRT_GetBspPolarity(   t_eFMKHRT_ChnlPolarity f_Polarit
     }
     if(Ret_e == RC_OK)
     {
-        if(f_Polarity_e == FMKHRT_CHNL_POLARITY_LOW)
+        if(f_Polarity_e == FMKHRT_LINE_POLARITY_LOW)
         {
             *f_bspPolarity_pu32 = HRTIM_OUTPUTPOLARITY_LOW;
         }
-        else if(f_Polarity_e == FMKHRT_CHNL_POLARITY_HIGH)
+        else if(f_Polarity_e == FMKHRT_LINE_POLARITY_HIGH)
         {
             *f_bspPolarity_pu32 = HRTIM_OUTPUTPOLARITY_HIGH;
         }

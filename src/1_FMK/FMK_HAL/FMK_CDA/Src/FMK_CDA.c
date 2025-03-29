@@ -492,7 +492,7 @@ t_eReturnCode FMKCDA_Get_AdcError(t_eFMKCDA_Adc f_adc_e, t_uint16 * f_chnlErrInf
     if(f_chnlErrInfo_pu16 == (t_uint16 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
-        ASSERT((t_uint16)f_chnlErrInfo_pu16);
+        ASSERT((t_uint16)(*f_chnlErrInfo_pu16));
     }
     if(Ret_e == RC_OK)
     {

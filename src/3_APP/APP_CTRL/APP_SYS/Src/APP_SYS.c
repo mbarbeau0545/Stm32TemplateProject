@@ -206,18 +206,21 @@ void APPSYS_AssertionTrap(  t_uint16 f_Info_u16,
 /*********************************
 * APPSYS_AddFastTask
 *********************************/
-void APPSYS_AddFastTask(t_eAppSys_ModuleList f_ModuleId_e, t_cbAPPSYS_FastTask * f_moduleFastTask_pcb)
+t_eReturnCode APPSYS_AddFastTask(t_eAppSys_ModuleList f_ModuleId_e, t_cbAPPSYS_FastTask * f_moduleFastTask_pcb)
 {
     t_eReturnCode Ret_e = RC_OK;
     if((f_ModuleId_e < APPSYS_MODULE_NB)
     && (f_moduleFastTask_pcb != NULL_FUNCTION))
     {
         g_ModFastTask_apcb[(t_uint8)(f_ModuleId_e)] = f_moduleFastTask_pcb;
-        //--- update fast task to call ----//
-        SETBIT_16B(g_mskFastTaskCall_u16, (t_uint8)f_ModuleId_e);
+    }
+    else 
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)(f_ModuleId_e));
     }
 
-    return;
+    return Ret_e;
 }
 
 /*********************************

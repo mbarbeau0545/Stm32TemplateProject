@@ -46,11 +46,11 @@
     */
     typedef enum 
     {
-        FMKHRT_CHNL_POLARITY_LOW = 0x00,    /**<  The Output is active on Low level*/
-        FMKHRT_CHNL_POLARITY_HIGH,          /**<  The Output is active on High level*/
+        FMKHRT_LINE_POLARITY_LOW = 0x00,    /**<  The Output is active on Low level*/
+        FMKHRT_LINE_POLARITY_HIGH,          /**<  The Output is active on High level*/
         
-        FMKHRT_CHNL_POLARITY_NB
-    } t_eFMKHRT_ChnlPolarity;
+        FMKHRT_LINE_POLARITY_NB
+    } t_eFMKHRT_LinePolarity;
 
     /**
     * @brief Enum for callback user evnt
@@ -68,7 +68,7 @@
     typedef struct 
     {
         t_uint32 frequency_u32;                 /**< Frequency of the desire PWM */
-        t_eFMKHRT_ChnlPolarity polarity_e;      /**< Polarity of the PWM */
+        t_eFMKHRT_LinePolarity polarity_e;      /**< Polarity of the PWM */
         t_uint32 deadTime_u32;                  /**< Dead Time between transition from Low State to High State */
     } t_sFMKHRT_PwmCfg;
 

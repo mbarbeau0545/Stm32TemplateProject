@@ -238,7 +238,8 @@ static t_eReturnCode s_FMKTIM_Set_BspTimerInit( t_sFMKTIM_TimerInfo * f_timer_ps
     */
 static t_eReturnCode s_FMKTIM_Set_PwmChannelCfg(t_sFMKTIM_TimerInfo * f_timerInfo_ps,
                                                 t_eFMKTIM_InterruptChnl f_channel_e, 
-                                                t_uint32 f_pwmFreq_u32);
+                                                t_uint32 f_pwmFreq_u32,
+                                                t_eFMKTIM_LinePolarity f_linePolarity_e);
 /**
 *
 *	@brief      Configure a timer channel in Encoder configuration.\n
@@ -666,15 +667,17 @@ t_eReturnCode FMKTIM_SetState(t_eCyclicModState f_State_e)
 /*********************************
  * FMKTIM_Set_PWMMLineCfg
  *********************************/
-t_eReturnCode FMKTIM_Set_PWMLineCfg(    t_eFMKTIM_InterruptLineIO f_InterruptLine_e,
-                                        t_uint32 f_pwmFreq_u32,
-                                        t_cbFMKTIM_InterruptLine * f_PwmPulseFinished_pcb)
+t_eReturnCode FMKTIM_Set_PWMLineCfg(t_eFMKTIM_InterruptLineIO f_InterruptLine_e,
+                                    t_uint32 f_pwmFreq_u32,
+                                    t_eFMKTIM_LinePolarity f_linePolarity_e,
+                                    t_cbFMKTIM_InterruptLine * f_PwmPulseFinished_pcb)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_eFMKTIM_Timer timer_e;
     t_eFMKTIM_InterruptChnl chnl_e;
 
-    if (f_InterruptLine_e >= FMKTIM_INTERRUPT_LINE_IO_NB)
+    if((f_InterruptLine_e >= FMKTIM_INTERRUPT_LINE_IO_NB)
+    || (f_linePolarity_e >= FMKTIM_LINE_POLARITY_NB))
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
         ASSERT((t_uint16)Ret_e);
@@ -697,7 +700,8 @@ t_eReturnCode FMKTIM_Set_PWMLineCfg(    t_eFMKTIM_InterruptLineIO f_InterruptLin
         {
             Ret_e = s_FMKTIM_Set_PwmChannelCfg( (&g_TimerInfo_as[timer_e]), 
                                                 chnl_e,
-                                                f_pwmFreq_u32);
+                                                f_pwmFreq_u32,
+                                                f_linePolarity_e);
         }
 
         if(Ret_e == RC_OK)
@@ -954,13 +958,20 @@ t_eReturnCode FMKTIM_Set_PwmLineValue(   t_eFMKTIM_InterruptLineIO f_Itline_e,
     {
         bspIsct_ps = (TIM_TypeDef *)(timerInfo_ps->bspTimer_s.Instance); 
         // See if bit change frequency is SET
-        if((GETBIT(f_maskUpdate_u8, FMKTIM_BIT_PWM_FREQUENCY) == BIT_IS_SET_8B)
-        && (f_PwmOpe_s.frequency_u32 != (t_uint32)0))
+        if(GETBIT(f_maskUpdate_u8, FMKTIM_BIT_PWM_FREQUENCY) == BIT_IS_SET_8B)
         {
-            //----- an event is going to be made -----//
-            Ret_e = s_FMKTIM_UpdateTimerFrequency(timerInfo_ps, chnl_e, f_PwmOpe_s.frequency_u32);
-            //----- don't change channel state ----//
-            chnlState_e = timerInfo_ps->Channel_as[chnl_e].State_e;
+            if(f_PwmOpe_s.frequency_u32 == (t_uint32)0)
+            {
+                Ret_e = RC_ERROR_PARAM_INVALID;
+                ASSERT((t_uint16)(f_maskUpdate_u8));
+            }
+            else 
+            {
+                //----- an event is going to be made -----//
+                Ret_e = s_FMKTIM_UpdateTimerFrequency(timerInfo_ps, chnl_e, f_PwmOpe_s.frequency_u32);
+                //----- don't change channel state ----//
+                chnlState_e = timerInfo_ps->Channel_as[chnl_e].State_e;
+            }
         }
         if(GETBIT(f_maskUpdate_u8, FMKTIM_BIT_PWM_DUTYCYCLE) == BIT_IS_SET_8B)
         {
@@ -1559,7 +1570,8 @@ static t_eReturnCode s_FMKTIM_RqstLineValidityOpe(  t_eFMKTIM_InterruptLineType 
  *********************************/
 static t_eReturnCode s_FMKTIM_Set_PwmChannelCfg(t_sFMKTIM_TimerInfo * f_timerInfo_ps,
                                                 t_eFMKTIM_InterruptChnl f_channel_e, 
-                                                t_uint32 f_pwmFreq_u32)
+                                                t_uint32 f_pwmFreq_u32,
+                                                t_eFMKTIM_LinePolarity f_linePolarity_e)
 {
     /********************************
      *   Some useful information for PWM generation
@@ -1603,7 +1615,14 @@ static t_eReturnCode s_FMKTIM_Set_PwmChannelCfg(t_sFMKTIM_TimerInfo * f_timerInf
 
             if(bspChannelState_e == HAL_TIM_CHANNEL_STATE_READY)
             {
-                BspOcInit_s.OCMode = TIM_OCMODE_PWM1;       // Mode PWM1
+                if(f_linePolarity_e == FMKTIM_LINE_POLARITY_HIGH)
+                {
+                    BspOcInit_s.OCMode = TIM_OCMODE_PWM1;       // Mode PWM1
+                }
+                else 
+                {
+                    BspOcInit_s.OCMode = TIM_OCMODE_PWM2;
+                }
                 BspOcInit_s.Pulse = 0;                     // Initial Duty Cycle à 0%
                 BspOcInit_s.OCFastMode = TIM_OCFAST_DISABLE;    // Mode rapide désactivé
                 BspOcInit_s.OCPolarity = TIM_OCPOLARITY_HIGH;  // Polarité normale (actif haut)

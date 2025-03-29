@@ -20,6 +20,7 @@
     // ********************************************************************
     #include "TypeCommon.h"
     #include "FMK_HAL/FMK_TIM/Src/FMK_TIM.h"
+    #include "Library/Ramp/Src/LIBRamp.h"
     #include "FMK_CFG/FMKCFG_ConfigFiles/FMKIO_ConfigPublic.h"
     // ********************************************************************
     // *                      Defines
@@ -33,7 +34,9 @@
     /* CAUTION : Automatic generated code section for Enum: Start */
 
     /* CAUTION : Automatic generated code section for Enum: End */
-    /**< Enum for signal hardware pull mode  */
+    /**
+    * @brief Enum for signal hardware pull mode
+    */
     typedef enum 
     {
         FMKIO_PULL_MODE_DISABLE = 0x0U,     /**< There is no pull resisstance attached to the signal */
@@ -43,7 +46,9 @@
         FMKIO_PULL_MODE_NB              /**< Number of pull mode available */
     } t_eFMKIO_PullMode;
 
-    /**< Enum for signal hardware speed mode  */
+    /**
+    * @brief Enum for signal hardware speed mode
+    */
     typedef enum
     {
         FMKIO_SPD_MODE_LOW = 0x0U,         /**< The signal is checked not frequently by hardware */
@@ -53,7 +58,9 @@
         FMKIO_SPD_MODE_NB,              /**< Number of signal speed mode available */
     } t_eFMKIO_SpdMode; 
 
-    /**< Enum for Signal event trigger capture  */
+    /**
+    * @brief Enum for Signal event trigger capture
+    */
     typedef enum
     {
         FMKIO_STC_RISING_EDGE = 0x0U,      /**< The signal is captured on rising edge */
@@ -63,7 +70,14 @@
         FMKIO_STC_NB,                   /**< Number of signal trigger mode */
     } t_eFMKIO_SigTrigCptr;
 
-    /**< Enum for input signal frequency value */
+    typedef enum 
+    {
+        FMKIO_SIGPWM_POLARITY_HIGH = 0x00,  /**<  The Output is active on Low level*/
+        FMKIO_SIGPWM_POLARITY_LOW,          /**<  The Output is active on High level*/
+    } t_eFMKIO_SigPwmPolarity;
+    /**
+    * @brief  Enum for input signal frequency value
+    */
     typedef enum
     {
         FMKIO_FREQ_MEAS_FREQ = 0x0U,        /**< Freqency signal is a freqency in Hz */
@@ -73,14 +87,9 @@
         FMKIO_FREQ_MEAS_NB,             /**< Number of frequency value available */
     } t_eFMKIO_FreqMeas;
 
-    typedef enum 
-    {
-        FMKIO_ECDR_MEAS_LAST,       /**< Get the last Raw Value from Position or Direction Buffer*/
-        FMKIO_ECDR_MEAS_MEAN,       /**< Get the Mean Value from Position or Direction Buffer */
-        FMKIO_ECDR_MEAS_NB,
-    } t_eFMKIO_EcdrMeas;
-
-    /**< Enum for signal type manage in this module */
+    /**
+    * @brief  Enum for signal type manage in this module
+    */
     typedef enum 
     {
         FMKIO_SIGTYPE_INPUT_DIG = 0x0U,        /**< Signal are digital input */
@@ -94,7 +103,9 @@
         FMKIO_SIGTYPE_NB,            /**< Number of signal type available*/
     } t_eFMKIO_SigType;
 
-    /**< Enum for signal digital state */
+    /**
+    * @brief  Enum for signal digital state
+    */
     typedef enum 
     {
         FMKIO_DIG_VALUE_LOW = 0x0U,        /**< Signal digital state set to low, logic level 0 */
@@ -103,7 +114,19 @@
         FMKIO_DIG_VALUE_NB              /**< Number of digital state */
     } t_eFMKIO_DigValue;
     
-    /**< Enum for Encoder Mode  */
+    /**
+    * @brief  Enum for encoder value type
+    */
+   typedef enum 
+   {
+       FMKIO_ECDR_MEAS_LAST,       /**< Get the last Raw Value from Position or Direction Buffer*/
+       FMKIO_ECDR_MEAS_MEAN,       /**< Get the Mean Value from Position or Direction Buffer */
+       FMKIO_ECDR_MEAS_NB,
+   } t_eFMKIO_EcdrMeas;
+
+    /**
+    * @brief  Enum for Encoder Mode
+    */
     typedef enum 
     {
         FMKIO_ENCODER_START_POS = 0x00, /**< Start the Encoder Position to reveice Information */
@@ -113,6 +136,9 @@
         FMKIO_ENCODER_START_NB,
     } t_eFMKIO_EcdrStartOpe;
 
+    /**
+    * @brief  Enum for Encoder Direction
+    */
     typedef enum 
     {
         FMKIO_ENCODER_DIR_FORWARD = 0x00,
@@ -127,6 +153,35 @@
         FMKIO_ANALOG_OL_DETECTED = 0x1U,
     };
 
+    /**
+    * @brief  Enum for Pwm Control type 
+    */
+    typedef enum 
+    {
+        FMKIO_PWM_CTRL_TYPE_UNUSED = 0x00,      /**< Pwm Control Not Used */
+        FMKIO_PWM_CTRL_TYPE_DC,                 /**< Pwm Control will be applied on DutyCycle */
+        FMKIO_PWM_CTRL_TYPE_FREQ,               /**< Pwm Control will be applied on Frequency */
+    } t_eFMKIO_PwmCtrlType;
+    //-----------------------------STRUCT TYPES---------------------------//
+    /**
+    * @brief  Structure for the Pwm signal form
+    */
+   typedef struct 
+    {
+        t_uint32 frequency_u32;                 /**< Start frequency of the Pwm */
+        t_eFMKIO_SpdMode spdMode_e;             /**< Output Speed Mode (advise -> high) */
+        t_eFMKIO_PullMode pullMode_e;           /**< Output pull mode (Gnd or  Vcc and output is off) */
+        t_eFMKIO_SigPwmPolarity polarity_e;     /**< Polarity of the Pwm */
+        t_uint32 deadTime_u32;                  /**< For the output with Hrtim, you can use a deadtime in ms, between each period [NOT TESTED] */
+    } t_sFMKIO_PwmWaveformCfg;
+    /**
+    * @brief  Structure for the configuration of Ramping/ Regulation of the signal
+    */
+    typedef struct 
+    {
+        t_sLIBRamp_RampCfg * rampCfg_ps;        /**< Ramp signal configuration, put NULL if not used */
+        t_eFMKIO_PwmCtrlType ctrlType_e;
+    } t_sFMKIO_PwmControlPrm;
     //-----------------------------TYPEDEF TYPES---------------------------//
     /**
     *
@@ -360,9 +415,10 @@
     *
     *
     *	@param[in]      f_signal_e             : the input analog signal, a value from @ref t_eFMKIO_OutPwmSig
-    *	@param[in]      f_pull_e               : the input pull mode, value from @ref t_eFMKIO_PullMode
-    *	@param[in]      f_frequency_u32        : the PWM frequency 
-    *	@param[in]      f_sigErr_cb             : callbback function that will be called if an error occured, NULL_FUNCTION if not used
+    *	@param[in]      f_sigPwmCfg_s          : the output waveform configuration
+    *	@param[in]      f_sigCtrlPrm_s        : the output control parameter check LIBRAMP_Init for more information
+    *	@param[in]      f_pulseEvnt_pcb        : Callback function to know when the signal make the number of pulses wanted, if not use put 'NULL'
+    *	@param[in]      f_sigErr_cb            : callbback function that will be called if an error occured, NULL_FUNCTION if not used,if not use put 'NULL'
     *	 
     *   @retval RC_OK                             @ref RC_OK
     *   @retval RC_ERROR_PARAM_INVALID            @ref RC_ERROR_PARAM_INVALID
@@ -370,8 +426,8 @@
     *
     */
     t_eReturnCode FMKIO_Set_OutPwmSigCfg(   t_eFMKIO_OutPwmSig       f_signal_e, 
-                                            t_eFMKIO_PullMode        f_pull_e,
-                                            t_uint32                 f_frequency_u32,
+                                            t_sFMKIO_PwmWaveformCfg  f_sigPwmCfg_s,
+                                            t_sFMKIO_PwmControlPrm   f_sigCtrlPrm_s,
                                             t_cbFMKIO_PulseEvent    * f_pulseEvnt_pcb,
                                             t_cbFMKIO_SigErrorMngmt * f_sigErr_cb);
     /**
@@ -588,6 +644,7 @@
     *
     */
     t_eReturnCode FMKIO_Set_OutPwmSigPulses(t_eFMKIO_OutPwmSig f_signal_e, 
+                                            t_uint32 f_frequency_f32,
                                             t_uint16 f_dutyCycle_u16,
                                             t_uint16 f_pulses_u16);
         /**

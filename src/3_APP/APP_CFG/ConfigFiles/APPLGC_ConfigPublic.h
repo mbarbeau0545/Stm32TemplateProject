@@ -72,28 +72,6 @@
     } t_eAPPLGC_AgentList;
     /* CAUTION : Automatic generated code section for Enum: End */
     
-    /**
-    * @brief Enum for requested Mode for Gantry Agent 
-    */
-    enum 
-    {
-        APPLGC_APP_RQST_GTR_PRODUCTION = 0x00,
-        APPLGC_APP_RQST_GTR_PAUSE,
-        APPLGC_APP_RQST_GTR_FAILURE,
-
-        APPLGC_APP_RQST_GTR_NB
-    };
-
-    /**
-    * @brief Enum for requested Mode for Agent Gantry in Production Mode 
-    */
-    enum
-    {
-        APPLGC_APP_RQST_GTRY_PROD_SEO = 0x00,
-        APPLGC_APP_RQST_GTRY_PROD_MVMT,
-
-        APPLGC_APP_RQST_GTRY_PROD_NB
-    };
     /* CAUTION : Automatic generated code section for Structure: Start */
 
     /* CAUTION : Automatic generated code section for Structure: End */

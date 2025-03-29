@@ -1,5 +1,5 @@
 /**
- * @file        .h
+ * @file        LIBRamp.h
  * @brief       Memomry access control for DMA & user access\n.
  * @note        TemplateDetailsDescription.\n
  *
@@ -8,24 +8,24 @@
  * @version     1.0
  */
   
- #ifndef APPUDS_H_INCLUDED
- #define APPUDS_H_INCLUDED
+ #ifndef SOFTWARE_VERSION_H_INCLUDED
+ #define SOFTWARE_VERSION_H_INCLUDED
  
     // ********************************************************************
     // *                      Includes
     // ********************************************************************
     #include "TypeCommon.h"
-    #include "FMK_HAL/FMK_SRL/Src/FMK_SRL.h"
-    #include "Library/CRC/CRC.h"
+    #include "FMK_CFG/FMKCFG_ConfigFiles/FMKCPU_ConfigPublic.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-    #define APPUDS_SERIAL_LINE FMKSRL_SERIAL_LINE_2
+    #define MCU_UID_WORD_1 (*(t_uint32 *)0x1FFF7590)
+    #define MCU_UID_WORD_2 (*(t_uint32 *)0x1FFF7594)
+    #define MCU_UID_WORD_3 (*(t_uint32 *)0x1FFF7598)
 
-    #define APPUDS_CRC32B_POLYNOME_USED (CRC32B_POLYNOME_ETH_ZIP_PNG)
-    #define APPUDS_CRC32B_STARTVALUE    (CRC32B_STARTVALUE_ETH_ZIP_PNG)
-    #define APPUDS_CRC8B_POLYNOME_USED  (CRC8B_POLYNOME_STD)
-    #define APPUDS_CRC8B_STARTVALUE     (CRC8B_STARTVALUE_STD)
+    #define MCU_UID_LEN    ((t_uint8)3)
+
+    #define SOFTWARE_VERSION ((t_uint32)10)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -48,39 +48,7 @@
     // ********************************************************************
     // *                      Variables
     // ********************************************************************
-    /**
-     *	@brief
-    *	@note   
-    *
-    */
-    t_eReturnCode APPUDS_Init(void);
-    /**
-     *	@brief
-    *	@note   
-    *
-    *
-    */
-    t_eReturnCode APPUDS_Cyclic(void);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *
-    */
-    t_eReturnCode APPUDS_GetState(t_eCyclicModState *f_State_pe);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *
-    */
-    t_eReturnCode APPUDS_SetState(t_eCyclicModState f_State_e);
+
      //********************************************************************************
      //                      Public functions - Prototyupes
      //********************************************************************************

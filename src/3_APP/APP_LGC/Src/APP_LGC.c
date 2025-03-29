@@ -348,6 +348,78 @@ t_eReturnCode APPLGC_GetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_S
 
     return Ret_e;
 }
+
+/*********************************
+ * APPLGC_GetServiceInfo
+ *********************************/
+t_eReturnCode APPLGC_GetActValue(t_eAPPACT_Actuators f_actuators_e, t_sint32 * f_actValue_ps32)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint8 idxSrv_u8;
+    t_uint8 idxActSrv_u8;
+    t_eAPPACT_Actuators actLabel_e;
+    t_bool findActVal_b = False;
+
+    if(f_actuators_e >= APPACT_ACTUATOR_NB)
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)f_actuators_e);
+    }
+    if(f_actValue_ps32 == (t_sint32 *)NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)0);
+    }
+    if(Ret_e == RC_OK)
+    {
+        for(idxSrv_u8 = (t_uint8)0 ; (idxSrv_u8 < APPLGC_SRV_NB) && (Ret_e == RC_OK) ; idxSrv_u8++)
+        {
+            //----- Loop on every Actuators For this Service -----//
+            for(idxActSrv_u8 = (t_uint8)0 ; idxActSrv_u8 < c_AppLGc_SrvActuatorsMax_ua8[idxSrv_u8] ; idxActSrv_u8++)
+            {
+                actLabel_e = c_AppLGc_SrvDepedencies_pae[idxSrv_u8][idxActSrv_u8];
+
+                if(actLabel_e == f_actuators_e)
+                {
+                    *f_actValue_ps32 = (t_sint32)g_srvFuncInfo_as[idxSrv_u8].actVal_pau[idxActSrv_u8].setPoint_s32;
+                    findActVal_b = True;
+                    break;
+                }
+            }
+            if(findActVal_b == (t_bool)True)
+            {
+                break;
+            }
+        }
+    }
+
+    return Ret_e;
+}
+
+/*********************************
+ * APPLGC_GetSnsValue
+ *********************************/
+t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_Sensors f_sensors_e, t_sint32 * f_snsValue_ps32)
+{
+    t_eReturnCode Ret_e = RC_OK;
+
+    if(f_sensors_e >= APPSNS_SENSOR_NB)
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)f_sensors_e);
+    }
+    if(f_snsValue_ps32 == (t_sint32 *)NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)0);
+    }
+    if(Ret_e == RC_OK)
+    {
+        *f_snsValue_ps32 = (t_sint32)g_snsValues_af32[f_sensors_e];
+    }
+
+    return Ret_e;
+}
 //********************************************************************************
 //                      Local functions - Implementation
 //********************************************************************************
@@ -482,67 +554,6 @@ static t_eReturnCode s_APPLGC_Operational(void)
         Ret_e = s_APPLGC_SetActValues();
     }*/
     return Ret_e;
-}
-
-static void s_APPLGC_FastTask(void)
-{
-    t_float32 computeDc_f32;
-    t_eCyclicModState fmkioState_e;
-    static t_uint8 s_state_u8 = 0;
-
-    FMKIO_GetState(&fmkioState_e);
-    g_isFastTaskEEnable_b = True;
-    if(fmkioState_e == STATE_CYCLIC_OPE
-    && g_isFastTaskEEnable_b == True)
-    {
-        switch(s_state_u8)
-        {
-            case 0:
-            {
-                (void)LIBRamp_Compute(g_rampId_u8, 26000.0f, &computeDc_f32);
-                (void)LIBRamp_Compute(g_rampId2_u8, 26000.0f, &computeDc_f32);
-                (void)LIBRamp_Compute(g_rampId3_u8, 26000.0f, &computeDc_f32);
-                (void)LIBRamp_Compute(g_rampId4_u8, 26000.0f, &computeDc_f32);
-
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_1, (t_uint16)computeDc_f32);
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_2, (t_uint16)computeDc_f32);
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_3, (t_uint16)computeDc_f32);
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_4, (t_uint16)computeDc_f32);
-
-                if((t_uint16)computeDc_f32 >= (t_uint16)26000.0)
-                {
-                    APPSYS_SetFastTaskState(APPSYS_MODULE_APP_LGC, APPSYS_FAST_TASK_DISABLE);
-                    s_state_u8 = 1;
-                    g_isFastTaskEEnable_b = False;
-                }
-                break;
-            }
-            case 1:
-            {
-                (void)LIBRamp_Compute(g_rampId_u8,  6000.0f, &computeDc_f32);
-                (void)LIBRamp_Compute(g_rampId2_u8, 6000.0f, &computeDc_f32);
-                (void)LIBRamp_Compute(g_rampId3_u8, 6000.0f, &computeDc_f32);
-                (void)LIBRamp_Compute(g_rampId4_u8, 6000.0f, &computeDc_f32);
-
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_1, (t_uint16)computeDc_f32);
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_2, (t_uint16)computeDc_f32);
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_3, (t_uint16)computeDc_f32);
-                (void)FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_4, (t_uint16)computeDc_f32);
-
-                if((t_uint16)computeDc_f32 <= (t_uint16)6000.0)
-                {
-                    APPSYS_SetFastTaskState(APPSYS_MODULE_APP_LGC, APPSYS_FAST_TASK_DISABLE);
-                    s_state_u8 = 0;
-                    g_isFastTaskEEnable_b = False;
-                }
-                break;
-            }
-        }
-        
-    }
-    
-
-
 }
 /*********************************
  * s_APPLGC_GetSnsValues

@@ -8,8 +8,8 @@
  * @version     1.0
  */
   
- #ifndef APPUDS_H_INCLUDED
- #define APPUDS_H_INCLUDED
+ #ifndef APP_UDS_H_INCLUDED
+ #define APP_UDS_H_INCLUDED
  
     // ********************************************************************
     // *                      Includes

@@ -407,7 +407,7 @@ void FMKCPU_Set_Delay(t_uint32 f_delayms_u32)
     t_uint32 timeout_u32 = 1000;  // Timeout de 1000ms (1 seconde), ajustable selon vos besoins
 
     // Récupérer le tick initial
-    FMKCPU_Get_Tick(&startTime_u32);
+    FMKCPU_GetTick(&startTime_u32);
 
     // Si la valeur de startTime est 0, il y a un problème avec l'initialisation du tick
     if (startTime_u32 == (t_uint32)0)
@@ -425,7 +425,7 @@ void FMKCPU_Set_Delay(t_uint32 f_delayms_u32)
         }
 
         // Récupérer le tick actuel
-        FMKCPU_Get_Tick(&currentTime_u32);
+        FMKCPU_GetTick(&currentTime_u32);
 
         // Calcul de la différence en tenant compte de l'overflow
         if (currentTime_u32 >= startTime_u32)
@@ -447,9 +447,9 @@ void FMKCPU_Set_Delay(t_uint32 f_delayms_u32)
 
 
 /*********************************
- * FMKCPU_Get_Tick
+ * FMKCPU_GetTick
  *********************************/
-void FMKCPU_Get_Tick(t_uint32 * f_tickms_pu32)
+void FMKCPU_GetTick(t_uint32 * f_tickms_pu32)
 {
     t_eReturnCode Ret_e = RC_OK;
 

@@ -1866,7 +1866,7 @@ static t_eReturnCode s_FMKIO_Operational(void)
     t_sFMKTIM_ICOpe ICValue_s;
     t_uint8 maskOpe_u8 = (t_uint8)0;
 
-    FMKCPU_Get_Tick(&currentTime_u32);
+    FMKCPU_GetTick(&currentTime_u32);
     if((currentTime_u32 - s_SavedTime_u32) > (t_uint32)FMKIO_TIME_BTWN_DIAG_MS)
     {//perform diag on timer / chnl used
         s_SavedTime_u32 = currentTime_u32;
@@ -2100,7 +2100,7 @@ static void s_FMKIO_FastTask(void)
                 SETBIT_8B(maskPwmActivity_u32, idxSigPwm_u8);
             }
         }
-        else if(g_OutPwmSigInfo_as[idxSigPwm_u8].ctrlType_e == FMKIO_PWM_CTRL_TYPE_DC)
+        else if(pwmSigInfo_ps->ctrlType_e == FMKIO_PWM_CTRL_TYPE_DC)
         {
             Ret_e = LIBRamp_Compute(pwmSigInfo_ps->rampId_u8,
                                     (t_float32)pwmSigInfo_ps->reqDutycycle_u16,
@@ -2621,7 +2621,7 @@ static void s_FMKIO_BspRqst_InterruptMngmt(void)
             if(__HAL_GPIO_EXTI_GET_IT(bspPin_u16) != 0x00u)
             { 
                 //call user function if debouncer counter is passed
-                FMKCPU_Get_Tick(&currentTick_u32);
+                FMKCPU_GetTick(&currentTick_u32);
                 if((currentTick_u32 - g_lastTick_ua32[LLI_u8]) > g_InEvntSigInfo_as[LLI_u8].debcDelay_u32)
                 {
                     g_lastTick_ua32[LLI_u8] = currentTick_u32;

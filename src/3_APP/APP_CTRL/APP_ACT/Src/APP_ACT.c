@@ -19,6 +19,8 @@
 
 #include "./APP_ACT.h"
 #include "APP_CFG/ConfigFiles/APPACT_ConfigPrivate.h"
+#include "APP_CTRL/APP_SYS/Src/APP_SYS.h"
+#include "Library/SafeMem/SafeMem.h"
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
@@ -40,6 +42,12 @@
 
 /* CAUTION : Automatic generated code section : End */
 //-----------------------------TYPEDEF TYPES---------------------------//
+typedef struct 
+{
+    t_eAPPACT_ActuatorState * state_pe;      /**< State of the sensors */
+    t_uAPPACT_SetValue actValues_u;            /**< For Debug Purpose */
+    t_bool isConfigured_b
+} t_sAPPACT_ActInfo;
 // ********************************************************************
 // *                      Prototypes
 // ********************************************************************
@@ -58,6 +66,10 @@ t_eAPPACT_DriverState g_ActDrvState_ae[APPACT_DRIVER_NB] = {
 
 /* CAUTION : Automatic generated code section for Variable: End */
 static t_eCyclicModState g_AppAct_ModState_e = STATE_CYCLIC_CFG;
+/**
+ * @brief Actuators Information Cfg
+ */
+t_sAPPACT_ActInfo g_ActInfo_as[APPACT_ACTUATOR_NB];
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
@@ -92,14 +104,30 @@ t_eReturnCode APPACT_Init(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     static t_uint8 s_LLDRV_u8 = (t_uint8)0;
-    
+    t_uint8 idxAct_u8;
+
+    // check sensors cfg
+    for(idxAct_u8 = (t_uint8)0 ; (idxAct_u8 < APPACT_ACTUATOR_NB) && (Ret_e == RC_OK) ; idxAct_u8++)
+    {   
+        if(c_AppAct_SysAct_apf[idxAct_u8].GetValue_pcb == (t_cbAppAct_GetActValue *)NULL_FUNCTION
+        || c_AppAct_SysAct_apf[idxAct_u8].SetValue_pcb == (t_cbAppAct_SetActValue *)NULL_FUNCTION
+        || c_AppAct_SysAct_apf[idxAct_u8].SetCfg_pcb == (t_cbAppAct_SetActCfg *)NULL_FUNCTION)
+        {
+            Ret_e = RC_ERROR_PARAM_INVALID;
+            ASSERT((t_uint16)idxAct_u8);
+        }
+
+        //---- set default value ----//
+        g_ActInfo_as[idxAct_u8].isConfigured_b = (t_bool)False;
+        (void)SafeMem_memclear((&g_ActInfo_as[idxAct_u8].actValues_u), sizeof(t_uAPPACT_SetValue));
+        g_ActInfo_as[idxAct_u8].state_pe = (&g_ActInfo_as[idxAct_u8]);
+    }
     for(; (s_LLDRV_u8 < APPACT_DRIVER_NB) && (Ret_e == RC_OK) ; s_LLDRV_u8++)
     {
         if(g_ActDrvState_ae[s_LLDRV_u8] == APPACT_DRIVER_STATE_ENABLE
         && c_AppAct_SysDrv_apf[s_LLDRV_u8].Init_pcb != (t_cbAppAct_DrvInit *)NULL_FUNCTION)
         {
             Ret_e = (c_AppAct_SysDrv_apf[s_LLDRV_u8].Init_pcb)();
-            
         }
     }
 
@@ -190,13 +218,19 @@ t_eReturnCode APPACT_Get_ActValue(t_eAPPACT_Actuators f_actuator_e, t_uAPPACT_Ge
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
-    if(f_actValue_pu == (t_uAPPACT_GetValue *)NULL)
+    if(f_actValue_pu == (t_float32 *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
     }
     if(g_AppAct_ModState_e != STATE_CYCLIC_OPE)
     {
-        Ret_e = RC_ERROR_MODULE_NOT_INITIALIZED;
+        Ret_e =   RC_WARNING_BUSY;
+    }
+    if((Ret_e == RC_OK)
+    && (g_ActInfo_as[f_actuator_e].isConfigured_b == (t_bool)False))
+    {
+        Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)f_actuator_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -217,15 +251,34 @@ t_eReturnCode APPACT_Set_ActValue(t_eAPPACT_Actuators f_actuator_e, t_uAPPACT_Se
     if(f_actuator_e > APPACT_ACTUATOR_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)f_actuator_e);
     }
     if(g_AppAct_ModState_e != STATE_CYCLIC_OPE)
     {
-        Ret_e = RC_ERROR_MODULE_NOT_INITIALIZED;
+        Ret_e = RC_WARNING_BUSY;
+    }
+    if((Ret_e == RC_OK)
+    && g_ActInfo_as[f_actuator_e].isConfigured_b == (t_bool)False)
+    {
+        Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)f_actuator_e);
     }
     if(Ret_e == RC_OK)
     {
         // call specFunc 
         Ret_e = (c_AppAct_SysAct_apf[f_actuator_e].SetValue_pcb)(f_actValue_u);
+
+        //----- debug purpose ----//
+        if(Ret_e == RC_OK)
+        {   
+            Ret_e = SafeMem_memcpy( (&f_actValue_u),
+                                    (&g_ActInfo_as[f_actuator_e].actValues_u),
+                                    sizeof(t_uAPPACT_SetValue));
+            if(Ret_e < RC_OK)
+            {
+                ASSERT((t_uint16)Ret_e);
+            }
+        }
     }
 
     return Ret_e;    
@@ -289,11 +342,16 @@ static t_eReturnCode s_APPACT_ConfigurationState(void)
         if(g_actState_ae[s_LLACT_u8] == APPACT_ACTUATOR_STATE_ENABLE
         && c_AppAct_SysAct_apf[s_LLACT_u8].SetCfg_pcb != (t_cbAppAct_SetActCfg *)NULL_FUNCTION)
         {
-             Ret_e = (c_AppAct_SysAct_apf[s_LLACT_u8].SetCfg_pcb)();                 
+            Ret_e = (c_AppAct_SysAct_apf[s_LLACT_u8].SetCfg_pcb)();
+
+            if(Ret_e == RC_OK)
+            {
+                g_ActInfo_as[s_LLACT_u8].isConfigured_b = (t_bool)True;
+            }
         }
     }
 
-    if(Ret_e == RC_OK
+    if(Ret_e >= RC_OK
     && s_LLACT_u8 < APPACT_ACTUATOR_NB)
     {
         Ret_e = RC_WARNING_BUSY;

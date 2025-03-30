@@ -184,7 +184,7 @@
         <mxCell id="IQdZZlQItys5ZnmAAsMM-51" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="450" width="270" height="172.88541666666669" as="geometry" />
         </mxCell>
-        <mxCell id="IQdZZlQItys5ZnmAAsMM-52" value="&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;Struct: t_sAPPSNS_SnsInfo&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;Location : APPSNS_ConfigPrivate&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;fontSize=16;align=left;fontStyle=0" parent="IQdZZlQItys5ZnmAAsMM-51" vertex="1">
+        <mxCell id="IQdZZlQItys5ZnmAAsMM-52" value="&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;Struct: t_sAPPSNS_SnsValueInfo&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(0, 0, 0); text-wrap: nowrap;&quot;&gt;Location : APPSNS_ConfigPrivate&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;fontSize=16;align=left;fontStyle=0" parent="IQdZZlQItys5ZnmAAsMM-51" vertex="1">
           <mxGeometry width="270" height="170" as="geometry" />
         </mxCell>
         <mxCell id="IQdZZlQItys5ZnmAAsMM-53" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 16px; text-align: left; text-wrap: nowrap;&quot;&gt;t_uAPPSNS_RequestedUnity&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;fontStyle=0" parent="IQdZZlQItys5ZnmAAsMM-51" vertex="1">
@@ -415,7 +415,7 @@
         <mxCell id="iI8cEl7H8al2ePRIT6zV-2" value="get value from a signal&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;fontColor=#000000;align=left;" parent="iI8cEl7H8al2ePRIT6zV-1" vertex="1">
           <mxGeometry width="670" height="160" as="geometry" />
         </mxCell>
-        <mxCell id="iI8cEl7H8al2ePRIT6zV-3" value="APPSNS_GetSnsValue(t_eAPPSNS_Sensors f_Sns_e,&amp;nbsp;&lt;span style=&quot;font-size: 12px; text-align: left; text-wrap: nowrap;&quot;&gt;t_sAPPSNS_SnsInfo&lt;/span&gt;&lt;span style=&quot;font-size: 12px; text-align: left; text-wrap: nowrap;&quot;&gt;* f_SnsVal_s)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;fontColor=#000000;fontSize=12;" parent="iI8cEl7H8al2ePRIT6zV-1" vertex="1">
+        <mxCell id="iI8cEl7H8al2ePRIT6zV-3" value="APPSNS_GetSnsValue(t_eAPPSNS_Sensors f_Sns_e,&amp;nbsp;&lt;span style=&quot;font-size: 12px; text-align: left; text-wrap: nowrap;&quot;&gt;t_sAPPSNS_SnsValueInfo&lt;/span&gt;&lt;span style=&quot;font-size: 12px; text-align: left; text-wrap: nowrap;&quot;&gt;* f_SnsVal_s)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;fontColor=#000000;fontSize=12;" parent="iI8cEl7H8al2ePRIT6zV-1" vertex="1">
           <mxGeometry width="670" height="40" as="geometry" />
         </mxCell>
       </root>

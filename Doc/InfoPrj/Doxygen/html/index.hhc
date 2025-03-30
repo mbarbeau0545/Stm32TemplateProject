@@ -66,7 +66,7 @@
       <LI><OBJECT type="text/sitemap"><param name="Name" value="f_isValue_OK"><param name="Local" value="structt__s_a_p_p_a_c_t___value_info.html#afda7eddc72eb248165c068b7792a19b8"><param name="ImageNumber" value="11"></OBJECT>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="rawValue_f32"><param name="Local" value="structt__s_a_p_p_a_c_t___value_info.html#a353c19e35f6422bdea82bec9a371c739"><param name="ImageNumber" value="11"></OBJECT>
       </UL>
-    <LI><OBJECT type="text/sitemap"><param name="Name" value="t_sAPPSNS_SnsInfo"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html"><param name="ImageNumber" value="1"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Name" value="t_sAPPSNS_SnsValueInfo"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html"><param name="ImageNumber" value="1"></OBJECT>
       <UL>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="f_isValue_OK"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html#afda7eddc72eb248165c068b7792a19b8"><param name="ImageNumber" value="11"></OBJECT>
       <LI><OBJECT type="text/sitemap"><param name="Name" value="rawValue_f32"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html#a3a20ea3ffa7408ad668469b111a42c12"><param name="ImageNumber" value="11"></OBJECT>
@@ -1957,7 +1957,7 @@
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_ChannelErrorStatus"><param name="Local" value="_f_m_k___c_p_u_8c.html#a8bac4a0f24cc18cad33c271227576d64"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_PWMChannelDuty"><param name="Local" value="_f_m_k___c_p_u_8c.html#ac6c0207199b882a3f6be463a39b3fa3e"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_RegisterCRRx"><param name="Local" value="_f_m_k___c_p_u_8c.html#ac7093124cc6d134cd331f278fd6dfd04"><param name="ImageNumber" value="11"></OBJECT>
-                <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_Tick"><param name="Local" value="_f_m_k___c_p_u_8c.html#aa843e3e5d0ee3ad4032c859bd3e4e069"><param name="ImageNumber" value="11"></OBJECT>
+                <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_GetTick"><param name="Local" value="_f_m_k___c_p_u_8c.html#aa843e3e5d0ee3ad4032c859bd3e4e069"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_GetState"><param name="Local" value="_f_m_k___c_p_u_8c.html#a349021c95927a51b0abd8f8cb6677ee3"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Init"><param name="Local" value="_f_m_k___c_p_u_8c.html#a6464bce8154aa90e9e3e1317a7f43a76"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_ResetWwdg"><param name="Local" value="_f_m_k___c_p_u_8c.html#ae434d44245887176331de9aa495f401b"><param name="ImageNumber" value="11"></OBJECT>
@@ -2075,7 +2075,7 @@
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_ChannelErrorStatus"><param name="Local" value="_f_m_k___c_p_u_8h.html#a8bac4a0f24cc18cad33c271227576d64"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_PWMChannelDuty"><param name="Local" value="_f_m_k___c_p_u_8h.html#ac6c0207199b882a3f6be463a39b3fa3e"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_RegisterCRRx"><param name="Local" value="_f_m_k___c_p_u_8h.html#ac7093124cc6d134cd331f278fd6dfd04"><param name="ImageNumber" value="11"></OBJECT>
-                <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Get_Tick"><param name="Local" value="_f_m_k___c_p_u_8h.html#aa843e3e5d0ee3ad4032c859bd3e4e069"><param name="ImageNumber" value="11"></OBJECT>
+                <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_GetTick"><param name="Local" value="_f_m_k___c_p_u_8h.html#aa843e3e5d0ee3ad4032c859bd3e4e069"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_GetState"><param name="Local" value="_f_m_k___c_p_u_8h.html#a349021c95927a51b0abd8f8cb6677ee3"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_Init"><param name="Local" value="_f_m_k___c_p_u_8h.html#a6464bce8154aa90e9e3e1317a7f43a76"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_ResetWwdg"><param name="Local" value="_f_m_k___c_p_u_8h.html#ae434d44245887176331de9aa495f401b"><param name="ImageNumber" value="11"></OBJECT>
@@ -2445,7 +2445,7 @@
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="SpeedUnity_e"><param name="Local" value="uniont__u_a_p_p_s_n_s___reqested_unity.html#ac4390ea1225d3ec81d6a3c08d0ece909"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="TempUnity_e"><param name="Local" value="uniont__u_a_p_p_s_n_s___reqested_unity.html#a519b0fddfe0593e5d2c108ef79427d8c"><param name="ImageNumber" value="11"></OBJECT>
                 </UL>
-              <LI><OBJECT type="text/sitemap"><param name="Name" value="t_sAPPSNS_SnsInfo"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html"><param name="ImageNumber" value="1"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="t_sAPPSNS_SnsValueInfo"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html"><param name="ImageNumber" value="1"></OBJECT>
                 <UL>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="f_isValue_OK"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html#afda7eddc72eb248165c068b7792a19b8"><param name="ImageNumber" value="11"></OBJECT>
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="rawValue_f32"><param name="Local" value="structt__s_a_p_p_s_n_s___sns_info.html#a3a20ea3ffa7408ad668469b111a42c12"><param name="ImageNumber" value="11"></OBJECT>

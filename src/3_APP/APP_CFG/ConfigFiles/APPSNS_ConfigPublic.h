@@ -185,7 +185,7 @@
         t_float32 rawValue_f32;      /**< Store the sensor rawValue */
         t_float32 SnsValue_f32;      /**< Store the sensor after conversion */
         t_bool   isValueOK_b;       /**< Store flag value validity */
-    } t_sAPPSNS_SnsInfo;
+    } t_sAPPSNS_SnsValueInfo;
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */

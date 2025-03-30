@@ -1,10 +1,10 @@
 /**
  * @file        LIBRamp.h
- * @brief       Memomry access control for DMA & user access\n.
- * @note        TemplateDetailsDescription.\n
+ * @brief       Ramp signal Managment 
+ * @note        Perform Linear/ Exponential/ S-Curve Ramps
  *
- * @author      xxxxxx
- * @date        jj/mm/yyyy
+ * @author      mba
+ * @date        29/03/25
  * @version     1.0
  */
   

@@ -18,6 +18,7 @@
 // ********************************************************************
 
 #include "./APP_SNS.h"
+#include "APP_CTRL/APP_SYS/Src/APP_SYS.h"
 #include "Constant.h"
 #include "APP_CFG/ConfigFiles/APPSNS_ConfigPrivate.h"
 // ********************************************************************
@@ -41,6 +42,12 @@
 
 /* CAUTION : Automatic generated code section : End */
 //-----------------------------TYPEDEF TYPES---------------------------//
+typedef struct 
+{
+    t_eAPPSNS_SensorState * state_pe;      /**< State of the sensors */
+    t_float32 snsValues_f32;            /**< For Debug Purpose */
+    t_bool isConfigured_b
+} t_sAPPSNS_SnsInfo;
 // ********************************************************************
 // *                      Prototypes
 // ********************************************************************
@@ -59,6 +66,10 @@ t_eAPPSNS_DrvState g_SnsDrvState_ae[APPSNS_DRIVER_NB] = {
 
 /* CAUTION : Automatic generated code section for Variable: End */
 static t_eCyclicModState g_AppSns_ModState_e = STATE_CYCLIC_CFG;
+/**
+ * @brief Sensors Information Cfg
+ */
+t_sAPPSNS_SnsInfo g_SnsInfo_as[APPSNS_SENSOR_NB];
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
@@ -101,7 +112,7 @@ static t_eReturnCode s_APPSNS_Operational(void);
 *
 *
 */
-t_eReturnCode s_APPSNS_ConvertingManagement(t_eAPPSNS_Sensors f_sns_e, t_sAPPSNS_SnsInfo *f_snsInfo_ps);
+t_eReturnCode s_APPSNS_ConvertingManagement(t_eAPPSNS_Sensors f_sns_e, t_sAPPSNS_SnsValueInfo *f_snsInfo_ps);
 /**
 *
 *	@brief  Convert Temperature Management
@@ -243,7 +254,13 @@ t_eReturnCode APPSNS_Init(void)
         || c_AppSns_SysSns_apf[idxSns_u8].measTyp_e > APPSNS_MEASTYPE_NB)
         {
             Ret_e = RC_ERROR_PARAM_INVALID;
+            ASSERT((t_uint16)idxSns_u8);
         }
+
+        //---- set default value ----//
+        g_SnsInfo_as[idxSns_u8].isConfigured_b = (t_bool)False;
+        g_SnsInfo_as[idxSns_u8].snsValues_f32 = (t_float32)0.0f;
+        g_SnsInfo_as[idxSns_u8].state_pe = (&g_SnsDrvState_ae[idxSns_u8]);
     }
     //---- driver init -----//
     for(LLDRV_u8 = (t_uint8)0; (LLDRV_u8 < APPSNS_DRIVER_NB) && (Ret_e == RC_OK) ; LLDRV_u8++)
@@ -334,21 +351,29 @@ t_eReturnCode APPSNS_SetState(t_eCyclicModState f_State_e)
 /*********************************
  * APPSNS_Get_SnsValue
  *********************************/
-t_eReturnCode APPSNS_Get_SnsValue(t_eAPPSNS_Sensors f_Sns_e, t_sAPPSNS_SnsInfo *f_SnsInfo_ps)
+t_eReturnCode APPSNS_Get_SnsValue(t_eAPPSNS_Sensors f_Sns_e, t_sAPPSNS_SnsValueInfo *f_SnsInfo_ps)
 {
     t_eReturnCode Ret_e = RC_OK;
 
     if(g_AppSns_ModState_e != STATE_CYCLIC_OPE)
     {
-        Ret_e = RC_ERROR_MODULE_NOT_INITIALIZED;
+        Ret_e = RC_WARNING_BUSY;
     }
-    if(f_SnsInfo_ps == (t_sAPPSNS_SnsInfo *)NULL)
+    if(f_SnsInfo_ps == (t_sAPPSNS_SnsValueInfo *)NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
+        ASSERT((t_uint16)0);
     }
     if(f_Sns_e > APPSNS_SENSOR_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
+        ASSERT((t_uint16)f_Sns_e);
+    }
+    if((Ret_e == RC_OK)
+    && (g_SnsInfo_as[f_Sns_e].isConfigured_b == (t_bool)False))
+    {
+        Ret_e = RC_ERROR_MISSING_CONFIG;
+        ASSERT((t_uint16)f_Sns_e);
     }
     if(Ret_e == RC_OK)
     {
@@ -361,9 +386,11 @@ t_eReturnCode APPSNS_Get_SnsValue(t_eAPPSNS_Sensors f_Sns_e, t_sAPPSNS_SnsInfo *
         else 
         {
             f_SnsInfo_ps->isValueOK_b = (t_bool)False;
-            f_SnsInfo_ps->rawValue_f32 = (t_sint16)0;
-            f_SnsInfo_ps->SnsValue_f32 = (t_sint16)0;
+            f_SnsInfo_ps->rawValue_f32 = (t_float32)0.0f;
+            f_SnsInfo_ps->SnsValue_f32 = (t_float32)0.0f;
         }
+        //---- for debug purpose ----//
+        g_SnsInfo_as[f_Sns_e].snsValues_f32 = (t_float32)(f_SnsInfo_ps->SnsValue_f32);
     }
 
     return Ret_e;
@@ -386,14 +413,20 @@ static t_eReturnCode s_AppSns_ConfigurationState(void)
         if(c_AppSns_SysSns_apf[s_LLSNS_u8].SetCfg_pcb != (t_cbAppSns_SetSnsCfg *)NULL_FUNCTION)
         {
             Ret_e = (c_AppSns_SysSns_apf[s_LLSNS_u8].SetCfg_pcb)();
+
+            if(Ret_e == RC_OK)
+            {
+                g_SnsInfo_as[s_LLSNS_u8].isConfigured_b = (t_bool)True;
+            }
         }
         else
         {
             Ret_e = RC_ERROR_PTR_NULL;
+            ASSERT((t_uint16)s_LLSNS_u8);
         }
     }
     if(s_LLSNS_u8 < APPSNS_SENSOR_NB
-    && Ret_e == RC_OK) // only if problem has not been captured yet
+    && Ret_e >= RC_OK) // only if problem has not been captured yet
     {// problem or waiting on init or sensors config just waiting for next cycle
         Ret_e = RC_WARNING_BUSY;
     }
@@ -422,7 +455,7 @@ static t_eReturnCode s_APPSNS_Operational(void)
 /*********************************
  * s_APPSNS_ConvertingManagement
  *********************************/
-t_eReturnCode s_APPSNS_ConvertingManagement(t_eAPPSNS_Sensors f_sns_e, t_sAPPSNS_SnsInfo *f_snsInfo_ps)
+t_eReturnCode s_APPSNS_ConvertingManagement(t_eAPPSNS_Sensors f_sns_e, t_sAPPSNS_SnsValueInfo *f_snsInfo_ps)
 {
     t_eReturnCode Ret_e = RC_OK;
 

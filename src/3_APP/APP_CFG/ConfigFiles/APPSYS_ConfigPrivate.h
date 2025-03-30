@@ -29,7 +29,7 @@
     #include "3_APP/APP_CTRL/APP_ACT/Src/APP_ACT.h"
     #include "3_APP/APP_CTRL/APP_SDM/Src/APP_SDM.h"
     #include "3_APP/APP_CTRL/APP_SNS/Src/APP_SNS.h"
-    #include "3_APP/APP_CTRL/APP_UDS/Src/APPUDS.h"
+    #include "3_APP/APP_CTRL/APP_UDS/Src/APP_UDS.h"
     #include "3_APP/APP_LGC/Src/APP_LGC.h"
     // ********************************************************************
     // *                      Defines

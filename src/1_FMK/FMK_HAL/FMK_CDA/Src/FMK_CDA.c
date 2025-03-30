@@ -551,7 +551,7 @@ static t_eReturnCode s_FMKCDA_Operational(void)
     t_uint8 adcIndex_u8 = 0;
     t_sFMKCDA_AdcInfo * adcInfo_ps;
 
-   FMKCPU_Get_Tick(&currentTime_u32);
+   FMKCPU_GetTick(&currentTime_u32);
 
     //------ For every adc in stm32 ------//
     for(adcIndex_u8 = (t_uint8)0 ; adcIndex_u8 < (t_uint8)FMKCDA_ADC_NB ; adcIndex_u8++)
@@ -585,7 +585,7 @@ static t_eReturnCode s_FMKCDA_Operational(void)
             else
             {   
                 //------ Update Current Time ------//
-                FMKCPU_Get_Tick(&currentTime_u32);
+                FMKCPU_GetTick(&currentTime_u32);
                 //------ check last time update to make actions if there is no update from adc
                 // also add 5ms in case interrutpion occured during getting the Tick ------//
                 if(g_AdcBuffer_as[adcIndex_u8].flagOpeRW_b == (t_bool)false)
@@ -1004,7 +1004,7 @@ static t_eReturnCode s_FMKCDA_UpdateChannelValue(t_eFMKCDA_Adc f_Adc_e)
     static t_uint32 lastTime_u32 = 0;
     t_uint32 currentTime_u32= 0;
     
-    FMKCPU_Get_Tick(&currentTime_u32);
+    FMKCPU_GetTick(&currentTime_u32);
 
     //------ update calibration point for this adc if needed ------//
     if((currentTime_u32 - lastTime_u32) > (t_uint32)FMKCDA_CYCLIC_CALIB
@@ -1092,7 +1092,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
             {
                 g_AdcBuffer_as[IT_Adc_e].savedVal_ua16[LLI_u8] = (t_uint16)g_AdcBuffer_as[IT_Adc_e].rawValue_au32[LLI_u8];
             }
-            FMKCPU_Get_Tick(&g_AdcBuffer_as[IT_Adc_e].lastUpate_u32);
+            FMKCPU_GetTick(&g_AdcBuffer_as[IT_Adc_e].lastUpate_u32);
             g_AdcBuffer_as[IT_Adc_e].flagOpeRW_b = False;
         }
         //------ update last time the value has been changed and reset bit present error ------//
@@ -1128,7 +1128,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
     if (IT_Adc_e < FMKCDA_ADC_NB)
     {
         //------ update last time the value has been changed ------// 
-        FMKCPU_Get_Tick(&g_AdcBuffer_as[IT_Adc_e].lastUpate_u32);
+        FMKCPU_GetTick(&g_AdcBuffer_as[IT_Adc_e].lastUpate_u32);
     }
     return;
 }

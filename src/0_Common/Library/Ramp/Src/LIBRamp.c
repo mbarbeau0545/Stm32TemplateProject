@@ -1,10 +1,10 @@
 /**
- * @file        LibRamp.c
- * @brief       Framework Memory Access Control module.
- * @note        TemplateDetailsDescription.\n
+ * @file        LIBRamp.h
+ * @brief       Ramp signal Managment 
+ * @note        Perform Linear/ Exponential/ S-Curve Ramps
  *
  * @author      mba
- * @date        15/09/2024
+ * @date        29/03/25
  * @version     1.0
  */
 // ********************************************************************

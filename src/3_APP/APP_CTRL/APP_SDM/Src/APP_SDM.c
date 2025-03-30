@@ -285,7 +285,7 @@ t_eReturnCode APPSDM_ReportDiagEvnt(    t_eAPPSDM_DiagnosticItem f_item_e,
                 itemInfo_ps->debugInfo2_u16 = f_debugInfo2_u16;
                 itemInfo_ps->itemId_e = f_item_e;
                 itemInfo_ps->reportstate_e = f_reportState_e;
-                FMKCPU_Get_Tick(&itemInfo_ps->reportTime_u32);
+                FMKCPU_GetTick(&itemInfo_ps->reportTime_u32);
                 
                 //---- check if actions has to be set now or later -----//
                 if(c_AppSdm_DiagItemCfg_as[f_item_e].debuncValueMs_u16 == (t_uint16)0)
@@ -487,7 +487,7 @@ static t_eReturnCode s_APPSDM_DiagnosticMngmt(  t_sAPPSDM_DiagItemInfo * f_itemI
     }
     if(Ret_e == RC_OK)
     {
-        FMKCPU_Get_Tick(&currentTime_u32);
+        FMKCPU_GetTick(&currentTime_u32);
         //----- Diagnostic is still Repertory as ON -----//
         if(f_itemInfo_ps->reportstate_e == APPSDM_DIAG_ITEM_REPORT_FAIL)
         {

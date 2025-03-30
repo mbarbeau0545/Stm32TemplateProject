@@ -80,19 +80,12 @@ static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
 * @brief Flag to Reset Service State
 */
 static t_bool  g_resetSrvState_b = (t_bool)False; 
-static t_bool g_isFastTaskEEnable_b = False;
-static t_uint8 g_rampId_u8;
-static t_uint8 g_rampId2_u8;
-static t_uint8 g_rampId3_u8;
-static t_uint8 g_rampId4_u8;
+
 /* CAUTION : Automatic generated code section for Variable: Start */
 /* CAUTION : Automatic generated code section for Variable: End */
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
-static void s_APPLGC_AppEvntCallback(   t_uint8 * f_rxData_pu8, 
-                                        t_uint16 f_dataSize_u16, 
-                                        t_eFMKSRL_RxCallbackInfo f_InfoCb_e);
 /**
 *
 *	@brief
@@ -172,13 +165,6 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
                                         t_eAPPSDM_DiagnosticReport f_reportState_e,
                                         t_uint16 f_debugInfo1_u16,
                                         t_uint16 f_debugInfo2_u16);
-
-static void s_APPLGC_Callback(t_eFMKIO_OutPwmSig f_signal_e);
-/*static void s_APPLGC_Callback_1(t_eFMKIO_OutPwmSig f_signal_e);
-static void s_APPLGC_Callback_2(t_eFMKIO_OutPwmSig f_signal_e);
-static void s_APPLGC_Callback_3(t_eFMKIO_OutPwmSig f_signal_e);
-static void s_APPLGC_Callback_4(t_eFMKIO_OutPwmSig f_signal_e);*/
-static void s_APPLGC_FastTask(void);
 
 
 //****************************************************************************
@@ -429,25 +415,7 @@ t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_Sensors f_sensors_e, t_sint32 * f_sns
  *********************************/
 static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
-    t_eReturnCode Ret_e = RC_OK;
-    t_sFMKSRL_DrvSerialCfg SrlCfg_s;
-    t_sLIBRamp_RampCfg CfgSRamp = {
-        .rampMode_e = LIBRAMP_MODE_SIGMOIDALE,
-        .startValue_f32 = 0.0,
-        .totalSteps_u32 = 500,
-        .rampInfo_u.sigmoidaleCfg_s.kFactor_f32 = 1.5f,
-        .rampInfo_u.sigmoidaleCfg_s.slopSpeed_f32 = (t_float32)(5.0 * 1000.0),
-    };
-    t_sFMKIO_PwmControlPrm pwmCtrl;
-    pwmCtrl.ctrlType_e = FMKIO_PWM_CTRL_TYPE_DC;
-    pwmCtrl.rampCfg_ps = (&CfgSRamp);
-    t_sFMKIO_PwmWaveformCfg pwmCfg_s = {
-        .deadTime_u32 = 0,
-        .frequency_u32 = 200,
-        .polarity_e = FMKIO_SIGPWM_POLARITY_HIGH,
-        .pullMode_e = FMKIO_PULL_MODE_UP,
-        .spdMode_e = FMKIO_SPD_MODE_HIGH,
-    };
+
     /*SrlCfg_s.runMode_e = FMKSRL_LINE_RUNMODE_DMA;
     SrlCfg_s.hwProtType_e = FMKSRL_HW_PROTOCOL_UART;
 
@@ -464,11 +432,6 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
                                     FMKIO_PULL_MODE_DISABLE,
                                     NULL_FUNCTION);*/
 
-    Ret_e = FMKIO_Set_OutPwmSigCfg( FMKIO_OUTPUT_SIGPWM_13,
-                                    pwmCfg_s,
-                                    pwmCtrl,
-                                    NULL_FUNCTION,
-                                    NULL_FUNCTION);
 
     /*Ret_e = FMKSRL_InitDrv( APPLGC_SERIAL_LINE_APP, 
                             SrlCfg_s,
@@ -476,7 +439,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
                             (t_cbFMKSRL_TransmitMsgEvent *)NULL_FUNCTION);*/
     
 
-    return Ret_e;
+    return RC_OK;
 }
 
 /*********************************
@@ -485,7 +448,6 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    Ret_e = FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_13, 200 ,500, 400);
 
     return Ret_e;
 }
@@ -495,34 +457,6 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uint32 currentTime_u32;
-    static t_uint32 s_saveTime_32 = 0;
-    static t_uint16 s_state_u8 = 0;
-    FMKCPU_Get_Tick(&currentTime_u32);
-
-    if((currentTime_u32 - s_saveTime_32) > 5000)
-    {
-        s_saveTime_32 = currentTime_u32;
-
-        if(s_state_u8 == 0)
-        {
-            Ret_e = FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_13, 200 ,200, 800);
-
-            if(Ret_e == RC_OK)
-            {
-                s_state_u8 = 1;
-            }
-        }
-        else
-        {
-            Ret_e = FMKIO_Set_OutPwmSigPulses(FMKIO_OUTPUT_SIGPWM_13, 200 ,500, 2000);
-
-            if(Ret_e == RC_OK)
-            {
-                s_state_u8 = 0;
-            }
-        }
-    }
     /*t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)
@@ -561,7 +495,7 @@ static t_eReturnCode s_APPLGC_Operational(void)
 static t_eReturnCode s_APPLGC_GetSnsValues(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_sAPPSNS_SnsInfo snsInfo_s;
+    t_sAPPSNS_SnsValueInfo snsInfo_s;
     t_uint8 idxSns_u8 = (t_uint8)0;
 
     for(idxSns_u8 = (t_uint8)0 ; (idxSns_u8 < APPSNS_SENSOR_NB) && (Ret_e == RC_OK) ; idxSns_u8++)

@@ -332,7 +332,7 @@ static t_eReturnCode s_APPSYS_Operational(void)
     static t_uint32 s_previousCnt_u32 = 0;
     t_uint32 elapsedTime_u32 =  0;
 
-    FMKCPU_Get_Tick(&currentCnt_u32);
+    FMKCPU_GetTick(&currentCnt_u32);
 
     //Ret_e = FMKCPU_ResetWwdg();
     
@@ -345,19 +345,19 @@ static t_eReturnCode s_APPSYS_Operational(void)
             s_previousCnt_u32 = currentCnt_u32;
             s_APPSYS_Set_ModulesCyclic();
 
-            FMKCPU_Get_Tick(&currentCnt_u32); 
+            FMKCPU_GetTick(&currentCnt_u32); 
             g_CyclicDuration_u32 = (t_uint32)(currentCnt_u32 - s_previousCnt_u32);
 
             if(g_CyclicDuration_u32 > APPSYS_ELAPSED_TIME_CYCLIC)
             {
-               Ret_e = APPSDM_ReportDiagEvnt(   APPSDM_DIAG_ITEM_APPSYS_CYCLIC_TIMEOUT,
+               Ret_e = APPSDM_ReportDiagEvnt(   APPSDM_DIAG_ITEM_APP_CYCLIC_TIMEOUT,
                                                 APPSDM_DIAG_ITEM_REPORT_FAIL,
                                                 Mu16ExtractByte1from32(g_CyclicDuration_u32),
                                                 Mu16ExtractByte0from32(g_CyclicDuration_u32));
             }
             else
             {
-                Ret_e = APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APPSYS_CYCLIC_TIMEOUT,
+                Ret_e = APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APP_CYCLIC_TIMEOUT,
                                                 APPSDM_DIAG_ITEM_REPORT_PASS,
                                                 (t_uint16)0,
                                                 (t_uint16)0);
@@ -409,7 +409,7 @@ static void s_APPSYS_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
         }
         else 
         {
-            FMKCPU_Get_Tick(&startTime_u32);
+            FMKCPU_GetTick(&startTime_u32);
             for(idxModule_u16 = (t_uint16)0 ; idxModule_u16 < APPSYS_MODULE_NB ; idxModule_u16++)
             {
                 if(GETBIT(g_mskFastTaskCall_u16, idxModule_u16) == BIT_IS_SET_16B)
@@ -417,20 +417,20 @@ static void s_APPSYS_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
                     g_ModFastTask_apcb[idxModule_u16]();
                 }
             }
-            FMKCPU_Get_Tick(&endTime_u32);
+            FMKCPU_GetTick(&endTime_u32);
 
             g_fastTaskDuration_u32 = (endTime_u32 - startTime_u32);
 
             if(g_fastTaskDuration_u32 > APPSYS_ELASPED_TIME_FASTTASK)
             {
-                APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APPSYS_FASTTASK_TIMEOUT,
+                APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APP_FASTTASK_TIMEOUT,
                                         APPSDM_DIAG_ITEM_REPORT_FAIL,
                                         Mu16ExtractByte1from32(g_fastTaskDuration_u32),
                                         Mu16ExtractByte0from32(g_fastTaskDuration_u32));
             }
             else 
             {
-                APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APPSYS_FASTTASK_TIMEOUT,
+                APPSDM_ReportDiagEvnt(  APPSDM_DIAG_ITEM_APP_FASTTASK_TIMEOUT,
                                         APPSDM_DIAG_ITEM_REPORT_PASS,
                                         (t_uint16)0,
                                         (t_uint16)0);

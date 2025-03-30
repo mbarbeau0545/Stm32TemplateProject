@@ -1425,7 +1425,7 @@ static t_eReturnCode s_FMKTIM_Operational(void)
     static t_uint32 SavedTime_u32 = 0;
     t_uint32 currentTime_u32 = 0;
 
-    FMKCPU_Get_Tick(&currentTime_u32);
+    FMKCPU_GetTick(&currentTime_u32);
 
     if((currentTime_u32 - SavedTime_u32) > (t_uint32)FMKTIM_TIME_BTWN_DIAG_MS)
     {//perform diag on timer / chnl used

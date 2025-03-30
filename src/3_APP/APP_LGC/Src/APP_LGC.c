@@ -75,12 +75,15 @@ static t_sAPPLGC_ServiceInfo g_srvFuncInfo_as[APPLGC_SRV_NB];
 /**
 * @brief Container for Sensors Values
 */
-static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
+//static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
+static t_float32 g_snsValues_af32[2];
+
 /**
 * @brief Flag to Reset Service State
 */
 static t_bool  g_resetSrvState_b = (t_bool)False; 
 
+t_sSafeMem_BlockInfo g_SecBlockSnsValue_as[2];
 /* CAUTION : Automatic generated code section for Variable: Start */
 /* CAUTION : Automatic generated code section for Variable: End */
 //********************************************************************************
@@ -409,13 +412,30 @@ t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_Sensors f_sensors_e, t_sint32 * f_sns
 //********************************************************************************
 //                      Local functions - Implementation
 //********************************************************************************
-
+static void s_APPLGC_Callback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
 /*********************************
  * s_APPLGC_ConfigurationState
  *********************************/
 static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
 
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint8 idxSns_u8;
+
+    for(idxSns_u8 = 0 ; idxSns_u8 < 2 ; idxSns_u8++)
+    {
+        Ret_e = SafeMem_SecureBlockInit(&g_SecBlockSnsValue_as[idxSns_u8],
+                                        &g_snsValues_af32[idxSns_u8],
+                                        sizeof(t_float32),
+                                        4);
+    }
+    if(Ret_e == RC_OK)
+    {
+        Ret_e = FMKTIM_Set_EvntTimerCfg(FMKTIM_INTERRUPT_LINE_EVNT_2,
+                                        1,
+                                        s_APPLGC_Callback);
+    }
+    
     /*SrlCfg_s.runMode_e = FMKSRL_LINE_RUNMODE_DMA;
     SrlCfg_s.hwProtType_e = FMKSRL_HW_PROTOCOL_UART;
 
@@ -448,8 +468,25 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-
+    Ret_e = FMKTIM_Set_EvntLineState(FMKTIM_INTERRUPT_LINE_EVNT_2,
+                                    FMKTIM_EVNT_OPE_START_TIMER);
     return Ret_e;
+}
+
+static void s_APPLGC_Callback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    t_uint8 idxSns_u8;
+    static t_float32 value_f32 = 0.0f;
+
+    for(idxSns_u8 = 0 ; idxSns_u8 < 2 ; idxSns_u8++)
+    {
+        Ret_e = SafeMem_SecureBlockWrite(   &g_SecBlockSnsValue_as[idxSns_u8],
+                                            &value_f32);
+        value_f32 += (t_float32)1.0f;
+    }
+
+    return;
 }
 /*********************************
  * s_APPLGC_Operational
@@ -457,6 +494,14 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
 static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
+    t_uint8 idxSns_u8;
+    t_float32 value_af32[2];
+
+    for(idxSns_u8 = 0 ; idxSns_u8 < 2 ; idxSns_u8++)
+    {
+        Ret_e = SafeMem_SecureBlockRead(   &g_SecBlockSnsValue_as[idxSns_u8],
+                                            &value_af32[idxSns_u8]);
+    }
     /*t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)

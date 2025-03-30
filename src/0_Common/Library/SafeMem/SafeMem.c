@@ -21,7 +21,7 @@
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
-
+#define SAFEMEM_MAX_ATTEMPT_OPE ((t_uint8)10)
 // ********************************************************************
 // *                      Types
 // ********************************************************************
@@ -58,6 +58,131 @@
 //********************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
+//**************************
+// SafeMem_SecureBlockInit
+//***************************
+t_eReturnCode SafeMem_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps, 
+                                        const void * f_SecureArea_pv,
+                                        const t_uint16 f_sizeSecArea_u16,
+                                        t_uint8 f_maxAttemptOpe_u8)
+{
+    t_eReturnCode Ret_e = RC_OK;
+
+    if((f_secBlockInfo_ps == (t_sSafeMem_BlockInfo *)NULL)
+    || (f_SecureArea_pv == (const void *)NULL))
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+    }
+    if(Ret_e == RC_OK)
+    {
+        if(f_maxAttemptOpe_u8 > SAFEMEM_MAX_ATTEMPT_OPE)
+        {
+            f_maxAttemptOpe_u8 = SAFEMEM_MAX_ATTEMPT_OPE;
+        }
+        //---- Initialisation de la structure ----//
+        f_secBlockInfo_ps->flag_s.isCorrupted_b = (t_bool)False;
+        f_secBlockInfo_ps->flag_s.isRead_b      = (t_bool)False;
+        f_secBlockInfo_ps->flag_s.isWrite_b     = (t_bool)False; 
+        f_secBlockInfo_ps->maxAttemptOpe_u8     = f_maxAttemptOpe_u8;
+        f_secBlockInfo_ps->blockArea_pv         = (void *)f_SecureArea_pv;
+        f_secBlockInfo_ps->sizeBlock_u16        = f_sizeSecArea_u16;
+        f_secBlockInfo_ps->isConfigured_b       = (t_bool)True;
+    }
+
+    return Ret_e;
+}
+
+//**************************
+// SafeMem_SecureBlockRead
+//***************************
+t_eReturnCode SafeMem_SecureBlockRead( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+                                         void * f_dataContainer_pv)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    t_sSafeMem_FlagBlock * flag_ps;
+    t_uint8 cntAttemptOpe_u8 = 0;
+
+    if(f_secBlockInfo_ps == NULL)
+    {
+        Ret_e = RC_ERROR_PARAM_INVALID;
+    }
+    if(Ret_e == RC_OK)
+    {
+        flag_ps = (t_sSafeMem_FlagBlock *)(&f_secBlockInfo_ps->flag_s);
+
+        //---- Vérifie si une écriture est en cours ----//
+        if(flag_ps->isWrite_b == (t_bool)True)
+        {
+            Ret_e =  RC_WARNING_BUSY;
+        }
+        else 
+        {       
+            //---- Boucle de tentative de lecture ----//
+            while(cntAttemptOpe_u8 < f_secBlockInfo_ps->maxAttemptOpe_u8
+            &&   (cntAttemptOpe_u8 < SAFEMEM_MAX_ATTEMPT_OPE))
+            {    
+                //---- Met à jour le flag de lecture ----//
+                flag_ps->isRead_b = (t_bool)True;
+                Ret_e = SafeMem_memcpy( f_dataContainer_pv, 
+                                        f_secBlockInfo_ps->blockArea_pv,
+                                        f_secBlockInfo_ps->sizeBlock_u16);
+                //---- Réinitialise le flag de lecture ----//
+                flag_ps->isRead_b = (t_bool)False;
+                
+                //----- Vérifie si le flag de corruption a été activé ou si l'opération a échoué ----//
+                if((flag_ps->isCorrupted_b == (t_bool)True) 
+                || (Ret_e != RC_OK))
+                {
+                    //---- Remise à zéro du flag de corruption et incrémentation du compteur de tentatives ----//
+                    flag_ps->isCorrupted_b = (t_bool)False;
+                    cntAttemptOpe_u8++;
+                    continue;
+                }
+                // Si la copie s'est déroulée correctement, on sort de la boucle
+                break;
+            }
+            
+            if(cntAttemptOpe_u8 >= f_secBlockInfo_ps->maxAttemptOpe_u8)
+            {
+                Ret_e = RC_WARNING_BUSY;
+            }
+        }
+    }
+    
+    return Ret_e;
+}
+
+//**************************
+// SafeMem_SecureBlockWrite
+//***************************
+t_eReturnCode SafeMem_SecureBlockWrite( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+                                          void * f_dataContainer_pv)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    t_sSafeMem_FlagBlock * flag_ps;
+
+    if(f_secBlockInfo_ps == NULL)
+    {
+        return RC_ERROR_PARAM_INVALID;
+    }
+    
+    flag_ps = &f_secBlockInfo_ps->flag_s;
+
+    //---- Si une lecture est en cours, on marque le bloc comme corrompu ----//
+    if(flag_ps->isRead_b == (t_bool)True)
+    {
+        flag_ps->isCorrupted_b = (t_bool)True;
+    }
+
+    //---- Met à jour le flag d'écriture ----//
+    flag_ps->isWrite_b = (t_bool)True;
+    Ret_e = SafeMem_memcpy( f_secBlockInfo_ps->blockArea_pv,
+                            f_dataContainer_pv, 
+                            f_secBlockInfo_ps->sizeBlock_u16);
+    flag_ps->isWrite_b = (t_bool)False;
+    
+    return Ret_e;
+}
 //**********************
 // SafeMem_memcpy
 //**********************

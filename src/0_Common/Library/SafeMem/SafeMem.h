@@ -39,7 +39,27 @@
     /* CAUTION : Automatic generated code section for Structure: Start */
 
     /* CAUTION : Automatic generated code section for Structure: End */
-
+    /**
+     * @brief Strcture for flag to R/W block
+     */
+    typedef struct
+    {
+        t_bool isRead_b;
+        t_bool isWrite_b;
+        t_bool isCorrupted_b;
+    } t_sSafeMem_FlagBlock;
+    
+    /**
+     * @brief Block Info
+     */
+    typedef struct
+    {
+        t_uint8 maxAttemptOpe_u8;           /**< Container for the max operation when read/write ope failed */
+        t_uint16 sizeBlock_u16;             /**< Size of the secure Area Block*/
+        void * blockArea_pv;                /**< Pointor to the secure area block */
+        t_sSafeMem_FlagBlock flag_s;        /**< Flag Info */
+        t_bool isConfigured_b;
+    } t_sSafeMem_BlockInfo;
     // ********************************************************************
     // *                      Prototypes
     // ********************************************************************
@@ -53,6 +73,35 @@
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************
+    /**
+     * @brief Performs a secure memory Init.
+     * @param[in] f_secBlockInfo_ps Structure that contains information for the scure block.
+     * @param[in] f_SecureArea_pv Pointer to the source buffer.
+     * @param[in] f_sizeSecArea_u16 Size of the data to copy (in bytes).
+     * @param[in] f_maxAttemptOpe_u8 the max operation when read/write ope failed, max is SAFEMEM_MAX_ATTEMPT_OPE
+     * @return t_eReturnCode Return code indicating success or failure.
+     */
+    t_eReturnCode SafeMem_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps, 
+                                            const void * f_SecureArea_pv,
+                                            const t_uint16 f_sizeSecArea_u16,
+                                            t_uint8 f_maxAttemptOpe_u8);
+    
+    /**
+     * @brief Performs a secure memory Read of a secure block.
+     * @param[in] f_secBlockInfo_ps Structure that contains information for the scure block.
+     * @param[in] f_dataContainer_pv Pointer to the reception buffer.
+     * @return t_eReturnCode Return code indicating success or failure.
+     */
+    t_eReturnCode SafeMem_SecureBlockRead(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+                                            void * f_dataContainer_pv);
+    /**
+     * @brief Performs a secure memory Read of a secure block.
+     * @param[in] f_secBlockInfo_ps Structure that contains information for the scure block.
+     * @param[in] f_dataContainer_pv Pointer to the reception buffer.
+     * @return t_eReturnCode Return code indicating success or failure.
+     */
+    t_eReturnCode SafeMem_SecureBlockWrite( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+                                            void * f_dataContainer_pv);
     /**
      * @brief Performs a secure memory copy.
      * @param[in] f_destination_pv Pointer to the destination buffer.

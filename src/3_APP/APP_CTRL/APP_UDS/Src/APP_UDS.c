@@ -546,6 +546,7 @@ static t_eReturnCode s_APPUDS_AuthentificationMngmt(void)
                 && (g_RxBuffer_ua8[1] == APPUDS_ID_CLIENT_INFO_OK)
                 && (g_RxBuffer_ua8[2] == APPUDS_ID_AKNOWLEDGMENT_OK))
                 {
+                    #warning('verify checksum of msg after showing Pajdak')
                     s_FsmAuthState_e = APPUDS_FSM_AUTH_CHECK_CLIENT; // Fsm return default :OK
                     Ret_e = RC_OK; // client connect state for FSM above
                 }

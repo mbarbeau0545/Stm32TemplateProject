@@ -189,8 +189,9 @@ void APPSYS_Cyclic(void)
  * APPSYS_AssertionTrap
  *********************************/
 void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
-    const char * f_file_str, 
-    t_uint32 f_line_u32)
+                            const char * f_file_str, 
+                            t_uint32 f_line_u32,
+                            t_uint32 f_captureTime_u32)
 {
 
     if(g_lockAssert_b == (t_bool)False)

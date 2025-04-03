@@ -23,7 +23,11 @@
     // *                      Defines
     // ********************************************************************
     
-    #define ASSERT(info) APPSYS_AssertionTrap(info, SHORTEN_PATH(__FILE__), __LINE__)
+    #define ASSERT(info) do { \
+        t_uint32 _tick; \
+        FMKCPU_GetTick(&_tick); \
+        APPSYS_AssertionTrap(info, SHORTEN_PATH(__FILE__), __LINE__, _tick); \
+    } while(0)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -83,8 +87,9 @@
     *
     */
     void APPSYS_AssertionTrap(  t_uint16 f_Info_u16, 
-                                const char *f_file_str, 
-                                t_uint32 f_line_u32);
+                                const char * f_file_str, 
+                                t_uint32 f_line_u32,
+                                t_uint32 f_captureTime_u32);
     /**
     *
     *	@brief  Add a Fast Task to be call every APPSYS_ELASPED_TIME_FASTTASK

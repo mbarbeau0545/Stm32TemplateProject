@@ -11,7 +11,7 @@
 #                                       IMPORT
 #------------------------------------------------------------------------------
 from .APP_PATH import *
-import os
+import os, json
 import shutil
 from PyCodeGene import LoadConfig_FromExcel as LCFE, TARGET_T_END_LINE,TARGET_T_ENUM_END_LINE, \
                                                     TARGET_T_ENUM_START_LINE,TARGET_T_START_LINE,TARGET_T_VARIABLE_START_LINE,\
@@ -53,7 +53,7 @@ class AppAct_CodeGen():
     code_gen = LCFE()
 
     @classmethod
-    def code_generation(cls, f_software_cfg) -> None:
+    def code_generation(cls, f_software_cfg, f_udscfg_path, f_is_uds_ope) -> None:
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<Start code generation for AppAct Module>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -71,6 +71,8 @@ class AppAct_CodeGen():
         var_act = ""
         var_drv = ""
         var_unities = ""
+        uds_act_data = {}
+        uds_act_data["ACTUATORS"] = {}
         #-----------------------------------------------------------------
         #-----------------------------make all enum-----------------------
         #-----------------------------------------------------------------
@@ -100,7 +102,7 @@ class AppAct_CodeGen():
                     + "    const t_sAPPACT_SysActFunc c_AppAct_SysAct_apf[APPACT_ACTUATOR_NB] = {\n"
         var_act_state += "/**< Variable for Actuators Drivers State*/\n" \
                         + "t_eAPPACT_ActuatorState g_actState_ae[APPACT_ACTUATOR_NB] = {\n"
-        for act_cfg in actuators_cfg_a:
+        for idx, act_cfg in enumerate(actuators_cfg_a):
             # make var sensors
             if(str(act_cfg[0]) != EMPTY_CELL):
                 var_act += "        {" \
@@ -123,8 +125,27 @@ class AppAct_CodeGen():
                 else:
                     print(f"\t- Header/Source file for {act_cfg[0]} already existing, no operation")
 
+                # uds cfg 
+                if f_is_uds_ope:
+                    uds_act_data["ACTUATORS"][str(act_cfg[0]).upper()] = {
+                            'id' : f'{idx}',
+                            'default_state' : f'{str(act_cfg[1]).upper()}',
+                            'description' : f'{act_cfg[2]}'
+                    }
+
         var_act_state += "};\n\n"
         var_act += "    };\n\n"
+
+        if f_is_uds_ope:
+            with open(f_udscfg_path, "r", encoding="utf-8") as json_file:
+                try:
+                    existing_data = json.load(json_file)
+                except json.JSONDecodeError:
+                    existing_data = {}
+            with open(f_udscfg_path, "w", encoding="utf-8") as json_file:
+                existing_data.update(uds_act_data)
+                json.dump(existing_data, json_file, indent=4, ensure_ascii=False)
+
 
         #-----------------------------------------------------------------
         #------------------------make drivers-----------------------------
@@ -201,6 +222,8 @@ class AppAct_CodeGen():
             "GetValue" :  ["(t_uAPPACT_GetValue *f_value_pu)", "t_cbAppAct_GetActValue" ],
             "SetValue" : ["(t_uAPPACT_SetValue f_value_u)", "t_cbAppAct_SetActValue"]
             }
+        if not os.path.isdir(ACT_SPEC_FOLDER_FULLPATH):
+            os.makedirs(ACT_SPEC_FOLDER_FULLPATH)
         distination_file_h = os.path.join(ACT_SPEC_FOLDER_FULLPATH, f"{VAR_APPACT_SPEC}_{f_act_name}.h")
         distination_file_c = os.path.join(ACT_SPEC_FOLDER_FULLPATH, f"{VAR_APPACT_SPEC}_{f_act_name}.c")
         # copy both files with new name

@@ -1,0 +1,35 @@
+{
+    "SENSORS": {},
+    "ACTUATORS": {},
+    "DIAGNOSTIC": {
+        "FMK_CFG_ERROR": {
+            "id": "0",
+            "debug_Info_1": "Enum Module from t_eAppSys_ModuleList",
+            "debug_Info_2": "Line module "
+        },
+        "FMK_OPE_ERROR": {
+            "id": "1",
+            "debug_Info_1": "Enum Module from t_eAppSys_ModuleList",
+            "debug_Info_2": "Line module "
+        },
+        "APP_CYCLIC_TIMEOUT": {
+            "id": "2",
+            "debug_Info_1": "Time out Difference Strong Bit",
+            "debug_Info_2": "Time out Difference Low Bit"
+        },
+        "APP_FASTTASK_TIMEOUT": {
+            "id": "3",
+            "debug_Info_1": "Time out Difference Strong Bit",
+            "debug_Info_2": "Time out Difference Low Bit"
+        },
+        "UDS_COM_ERROR": {
+            "id": "4",
+            "debug_Info_1": "Info Errror",
+            "debug_Info_2": "None"
+        }
+    },
+    "LOGIC": {
+        "SERVICE": {},
+        "AGENTS": {}
+    }
+}

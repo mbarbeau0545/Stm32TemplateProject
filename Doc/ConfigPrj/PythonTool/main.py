@@ -10,7 +10,8 @@
 #------------------------------------------------------------------------------
 #                                       IMPORT
 #------------------------------------------------------------------------------
-import sys,os
+import sys,os, json
+from PyCodeGene import LoadConfig_FromExcel as LCFE
 
 from FMK_CodeGen.FMKCPU_CodeGen import FMKCPU_CodeGen as FMKCPU
 from FMK_CodeGen.FMKTIM_CodeGen import FMKTIM_CodeGen as FMKTIM
@@ -61,10 +62,32 @@ def main()-> None:
     FMKCDA.code_genration(hardware_cfg_path)
     FMKSRL.code_genration(hardware_cfg_path)
     FMKIO.code_generation(hardware_cfg_path)
-    APPSNS.code_generation(software_cfg_path)
-    APPACT.code_generation(software_cfg_path)
-    APPSDM.code_generation(software_cfg_path)
-    APPLGC.code_generation(software_cfg_path)
+
+    #--- create Json file for Uds Configuration with the version ---# 
+    code_gen = LCFE()
+    code_gen.load_excel_file(software_cfg_path)
+    gnrl_info = code_gen.get_array_from_excel('GeneralInfoSoftware')[1:][0]
+    print(gnrl_info)
+    soft_version = str(f'V{gnrl_info[0]}Pr{gnrl_info[1]}')
+    soft_udscfg_path = f"Doc\\ConfigPrj\\UdsCfg\\UdsInfo_{soft_version}.json"
+    #--- check if the version already exist, if it exists, we erase it, if it doesn't we create it ----#
+    filled_uds_file = True
+
+    if os.path.isfile(soft_udscfg_path):
+        response = input(f"File 'UdsInfo_{soft_version}.json' already exists. Do you want to erase it ? (Y/N): ").strip().lower()
+        if response.lower() == 'n':
+            filled_uds_file = False
+            print('The file will no be modified')
+
+    if filled_uds_file:
+        with open(soft_udscfg_path, 'w') as file:
+                    json.dump({}, file, indent=4)
+                    print(f"Uds Config for {soft_version} has been created.")
+    
+    APPSNS.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
+    APPACT.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
+    APPSDM.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
+    APPLGC.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
 
     print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     print("<<<<<<<<<<<<<<<<<Successfuly made code generation for project>>>>>>>>>>>>>>>>>")

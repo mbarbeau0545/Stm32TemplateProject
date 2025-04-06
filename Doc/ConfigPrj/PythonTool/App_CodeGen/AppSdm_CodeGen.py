@@ -11,7 +11,7 @@
 #                                       IMPORT
 #------------------------------------------------------------------------------
 from .APP_PATH import *
-import os
+import os, json
 import shutil
 from .AppLgc_CodeGen import APPLGC_ENUM_SRV
 from PyCodeGene import LoadConfig_FromExcel as LCFE, TARGET_T_END_LINE,TARGET_T_ENUM_END_LINE, \
@@ -49,7 +49,7 @@ class AppSdm_CodeGen():
     code_gen = LCFE()
 
     @classmethod
-    def code_generation(cls, f_software_cfg) -> None:
+    def code_generation(cls, f_software_cfg, f_udscfg_path, f_is_uds_ope) -> None:
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<Start code generation for AppAct Module>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -66,6 +66,8 @@ class AppSdm_CodeGen():
 
         decl_strat_func = ""
         impl_strat_func = ""
+        uds_sdm_data = {}
+        uds_sdm_data["DIAGNOSTIC"] = {}
         #-----------------------------------------------------------------
         #-----------------------------make all enum-----------------------
         #-----------------------------------------------------------------
@@ -100,11 +102,27 @@ class AppSdm_CodeGen():
             var_item_info += '},'\
                             + " " * ((SPACE_VARIABLE) - len(f"{APPSDM_ENM_DIAG_STRAT}_{str(item_info[5])}"))\
                             + f'// {item_info[1]}\n'
+            
+            if f_is_uds_ope:
+                    uds_sdm_data["DIAGNOSTIC"][str(item_info[1])] = {
+                            'id' : f'{idx}',
+                            'debug_Info_1' : f'{str(item_info[6])}',
+                            'debug_Info_2' : f'{str(item_info[7])}'
+                    }
         
         enum_item += f'\n        {APPSDM_ENUM_ROOT_DIAG_ITEM}_NB,\n'
         enum_item += '    } t_eAPPSDM_DiagnosticItem;\n'
         var_item_info += '    };\n\n'
         
+        if f_is_uds_ope:
+            with open(f_udscfg_path, "r", encoding="utf-8") as json_file:
+                try:
+                    existing_data = json.load(json_file)
+                except json.JSONDecodeError:
+                    existing_data = {}
+            with open(f_udscfg_path, "w", encoding="utf-8") as json_file:
+                existing_data.update(uds_sdm_data)
+                json.dump(existing_data, json_file, indent=4, ensure_ascii=False)
     
         #-----------------------------------------------------------------
         #------------------------make Strategy-----------------------------

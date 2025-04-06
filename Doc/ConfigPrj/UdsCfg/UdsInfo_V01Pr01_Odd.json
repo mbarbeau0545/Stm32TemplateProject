@@ -1,0 +1,91 @@
+{
+    "SENSORS": {
+        "OILTEMP": {
+            "id": "0",
+            "Unity": "TEMPERATURE",
+            "default_state": "ENABLE",
+            "description": "C'est un capteur de temperature"
+        },
+        "ENCODER_AV_D": {
+            "id": "1",
+            "Unity": "ANGLE",
+            "default_state": "ENABLE",
+            "description": "C'est un capteur d'angle motor"
+        },
+        "ENCODERSPEED": {
+            "id": "2",
+            "Unity": "SPEED",
+            "default_state": "ENABLE",
+            "description": "C'est un  cpateur de vitesse motro"
+        }
+    },
+    "ACTUATORS": {
+        "MOTOR_X": {
+            "id": "0",
+            "default_state": "ENABLE",
+            "description": "C'est un moteur pour l'axe X"
+        },
+        "MOTOR_Y": {
+            "id": "1",
+            "default_state": "ENABLE",
+            "description": "C'est un moteur pour l'axe Y"
+        }
+    },
+    "DIAGNOSTIC": {
+        "FMK_CFG_ERROR": {
+            "id": "0",
+            "debug_Info_1": "Enum Module from t_eAppSys_ModuleList",
+            "debug_Info_2": "Line module "
+        },
+        "FMK_OPE_ERROR": {
+            "id": "1",
+            "debug_Info_1": "Enum Module from t_eAppSys_ModuleList",
+            "debug_Info_2": "Line module "
+        },
+        "APP_CYCLIC_TIMEOUT": {
+            "id": "2",
+            "debug_Info_1": "Time out Difference Strong Bit",
+            "debug_Info_2": "Time out Difference Low Bit"
+        },
+        "APP_FASTTASK_TIMEOUT": {
+            "id": "3",
+            "debug_Info_1": "Time out Difference Strong Bit",
+            "debug_Info_2": "Time out Difference Low Bit"
+        },
+        "UDS_COM_ERROR": {
+            "id": "4",
+            "debug_Info_1": "Info Errror",
+            "debug_Info_2": "None"
+        }
+    },
+    "LOGIC": {
+        "SERVICE": {
+            "MOVE_AVANT": {
+                "id": "0",
+                "description": "Mouvement Avant "
+            },
+            "MOVE_ARRIERE": {
+                "id": "1",
+                "description": "Mouvement Avant "
+            },
+            "MOVE_GTR_X": {
+                "id": "2",
+                "description": "Mouvement Avant "
+            }
+        },
+        "AGENTS": {
+            "GANTRY": {
+                "id": "0",
+                "description": "Gère la gestion du gantry"
+            },
+            "NAVIGATION": {
+                "id": "1",
+                "description": "Gère la gestion de la nabigation"
+            },
+            "COM": {
+                "id": "2",
+                "description": "Gère la com"
+            }
+        }
+    }
+}

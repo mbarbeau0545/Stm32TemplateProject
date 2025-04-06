@@ -11,7 +11,7 @@
 #                                       IMPORT
 #------------------------------------------------------------------------------
 from .APP_PATH import *
-import os
+import os, json
 import shutil
 from PyCodeGene import LoadConfig_FromExcel as LCFE, TARGET_T_END_LINE,TARGET_T_ENUM_END_LINE, \
                                                     TARGET_T_ENUM_START_LINE,TARGET_T_VARIABLE_START_LINE,\
@@ -45,7 +45,7 @@ class AppLgc_CodeGen():
     code_gen = LCFE()
 
     @classmethod
-    def code_generation(cls, f_software_cfg) -> None:
+    def code_generation(cls, f_software_cfg, f_udscfg_path, f_is_uds_ope) -> None:
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<Start code generation for AppAct Module>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -67,6 +67,10 @@ class AppLgc_CodeGen():
         var_depencies = ""
         var_srv_dependencies = ""
         var_depencies_value = ""
+        uds_lgc_data = {}
+        uds_lgc_data["LOGIC"] = {}
+        uds_lgc_data["LOGIC"]["SERVICE"] = {}
+        uds_lgc_data["LOGIC"]["AGENTS"] = {}
         #-----------------------------------------------------------------
         #-----------------------------make all enum-----------------------
         #-----------------------------------------------------------------
@@ -77,9 +81,9 @@ class AppLgc_CodeGen():
         var_agent += "    /**\n" + "    * @brief Agent Configuration Function\n" + "    */\n"\
                     + f'    const t_sAPPLGC_AgentFunc c_AppLGc_AgentFunc_apf[{APPLGC_ENUM_AGENT}_NB] =' + '{\n'
         
-        for idx, agent_info in enumerate(agent_cfg_a):
+        for idx_agt, agent_info in enumerate(agent_cfg_a):
             if str(agent_info[0]) != 'None':
-                if idx == 0:
+                if idx_agt == 0:
                     enum_agent += f'        {APPLGC_ENUM_AGENT}_{str(agent_info[0]).upper()} = 0x00,'
                 else:
                     enum_agent += f'        {APPLGC_ENUM_AGENT}_{str(agent_info[0]).upper()},'
@@ -93,7 +97,11 @@ class AppLgc_CodeGen():
                             + f'{agent_info[0]}_Cyclic'\
                             + '},' + f'// {APPLGC_ENUM_AGENT}_{str(agent_info[0]).upper()}\n'
 
-    
+                if f_is_uds_ope:
+                    uds_lgc_data["LOGIC"]["AGENTS"][str(agent_info[0]).upper()] = {
+                            'id' : f'{idx_agt}',
+                            'description' : f'{agent_info[-1]}'
+                    }
 
 
         
@@ -113,9 +121,9 @@ class AppLgc_CodeGen():
         
         var_max_act_value  += "    /**\n" + "    * @brief Service Max Actuators values \n" + "    */\n"\
                                 + f'    const t_uint8 c_AppLGc_SrvActuatorsMax_ua8[{APPLGC_ENUM_SRV}_NB] =' + ' {\n'
-        for idx, service_cfg in enumerate(service_cfg_a):
+        for idx_srv, service_cfg in enumerate(service_cfg_a):
             if str(service_cfg[0]) != 'None':
-                if idx == 0:
+                if idx_srv == 0:
                     enum_srv += f'        {APPLGC_ENUM_SRV}_{str(service_cfg[0]).upper()} = 0x00,\n'
                 else:
                     enum_srv += f'        {APPLGC_ENUM_SRV}_{str(service_cfg[0]).upper()},\n'
@@ -131,9 +139,9 @@ class AppLgc_CodeGen():
                         + f'static t_uAPPACT_SetValue g_ActContainer{service_cfg[0]}_au[APPLGC_{str(service_cfg[0]).upper()}_ACT_NB];\n\n'
             
                 var_srv_dependencies += f'        (t_eAPPACT_Actuators *)(&c_AppLgc_ActService{service_cfg[0]}Mapp_ae),\n'
-                for idx, actuator in enumerate(service_cfg[1:]):
+                for idx_act, actuator in enumerate(service_cfg[1:]):
                     if str(actuator) != 'None':
-                        if idx == 0:
+                        if idx_act == 0:
                             enm_dependencies += f'        APPLGC_ACT_{str(actuator).upper()} = 0x00,\n'
                         else:
                             enm_dependencies += f'        APPLGC_ACT_{str(actuator).upper()},\n'
@@ -147,10 +155,26 @@ class AppLgc_CodeGen():
 
                 var_act_srv_asso += f'    g_srvFuncInfo_as[{APPLGC_ENUM_SRV}_{str(service_cfg[0]).upper()}].actVal_pau = (t_uAPPACT_SetValue *)(&g_ActContainer{service_cfg[0]}_au);\n'
 
+                if f_is_uds_ope:
+                    uds_lgc_data["LOGIC"]["SERVICE"][str(service_cfg[0]).upper()] = {
+                            'id' : f'{idx_srv}',
+                            'description' : f'{service_cfg[-1]}'
+                    }
+
         var_max_act_value += '    };\n\n'
         var_srv_dependencies += '    };\n\n'
         enum_srv += f'\n        {APPLGC_ENUM_SRV}_NB,\n'
         enum_srv += '    } t_eAPPLGC_SrvList;\n'
+
+        if f_is_uds_ope:
+            with open(f_udscfg_path, "r", encoding="utf-8") as json_file:
+                try:
+                    existing_data = json.load(json_file)
+                except json.JSONDecodeError:
+                    existing_data = {}
+            with open(f_udscfg_path, "w", encoding="utf-8") as json_file:
+                existing_data.update(uds_lgc_data)
+                json.dump(existing_data, json_file, indent=4, ensure_ascii=False)
 
         #-----------------------------------------------------------------
         #------------------------make drivers-----------------------------

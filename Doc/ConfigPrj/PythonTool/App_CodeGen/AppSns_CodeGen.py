@@ -11,7 +11,7 @@
 #                                       IMPORT
 #------------------------------------------------------------------------------
 import shutil
-import os
+import os, json
 
 from .APP_PATH import *
 from PyCodeGene import LoadConfig_FromExcel as LCFE, TARGET_T_END_LINE,TARGET_T_ENUM_END_LINE, \
@@ -53,7 +53,7 @@ class AppSns_CodeGen():
     code_gen = LCFE()
 
     @classmethod
-    def code_generation(cls, f_software_cfg) -> None:
+    def code_generation(cls, f_software_cfg, f_udscfg_path, f_is_uds_ope) -> None:
         
         # Load needed excel arrays
         cls.code_gen.load_excel_file(f_software_cfg)
@@ -70,6 +70,8 @@ class AppSns_CodeGen():
         var_sns = ""
         var_drv = ""
         var_unities = ""
+        uds_sns_data = {}
+        uds_sns_data["SENSORS"] = {}
         #-----------------------------------------------------------------
         #-----------------------------make all enum-----------------------
         #-----------------------------------------------------------------
@@ -105,8 +107,8 @@ class AppSns_CodeGen():
                         + "t_eAPPSNS_SensorState g_snsState_ae[APPSNS_SENSOR_NB] = {\n"
         var_unities += "    /**< Variable for Sensors Unity Management */\n" \
                     + "    const t_eAPPSNS_SnsMeasType c_AppSns_SnsMeasType_ae[APPSNS_SENSOR_NB] = {\n"
-        for sns_cfg in sensors_cfg_a:
-            print(sns_cfg[1])
+        for idx, sns_cfg in enumerate(sensors_cfg_a):
+            
             if str(sns_cfg[0]) != EMPTY_CELL:
                 # make var sensors
                 var_sns += "        {" \
@@ -135,9 +137,29 @@ class AppSns_CodeGen():
                 else:
                     print(f"Header/Source file for {sns_cfg[0]} already existing")
 
+                # uds cfg 
+                if f_is_uds_ope:
+                    uds_sns_data["SENSORS"][str(sns_cfg[0]).upper()] = {
+                            'id' : f'{idx}',
+                            'Unity' : f'{str(sns_cfg[1]).upper()}',
+                            'default_state' : f'{str(sns_cfg[2]).upper()}',
+                            'description' : f'{sns_cfg[3]}'
+                    }
+
+
         var_unities += "    };\n\n"
         var_sns_state += "};\n\n"
         var_sns += "    };\n\n"
+
+        if f_is_uds_ope:
+            with open(f_udscfg_path, "r", encoding="utf-8") as json_file:
+                try:
+                    existing_data = json.load(json_file)
+                except json.JSONDecodeError:
+                    existing_data = {}
+            with open(f_udscfg_path, "w", encoding="utf-8") as json_file:
+                existing_data.update(uds_sns_data)
+                json.dump(existing_data, json_file, indent=4, ensure_ascii=False)
 
         #-----------------------------------------------------------------
         #------------------------make drivers-----------------------------
@@ -213,6 +235,10 @@ class AppSns_CodeGen():
         suffix_func = {"SetCfg" : ["(void)", "t_cbAppSns_SetSnsCfg"], 
                        "GetSigValue" :  ["(t_float32 *f_rawSigValue_pf32, t_bool * f_isValue_OK)", "t_cbAppSns_GetSigValue" ],
                        "FormatValue" : ["(t_float32  f_rawValue_f32, t_float32 * f_SnsValue_f32)", "t_cbAppSns_FormatValSI" ]}
+        
+        if not os.path.isdir(SNS_SPEC_FOLDER_FULLPATH):
+            os.makedirs(SNS_SPEC_FOLDER_FULLPATH)
+
         distination_file_h = os.path.join(SNS_SPEC_FOLDER_FULLPATH, f"{VAR_APPSNS_SPEC}_{f_sns_name}.h")
         distination_file_c = os.path.join(SNS_SPEC_FOLDER_FULLPATH, f"{VAR_APPSNS_SPEC}_{f_sns_name}.c")
         # copy both files with new name

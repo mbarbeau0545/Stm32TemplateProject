@@ -1,10 +1,10 @@
 /*********************************************************************
- * @file        APP_PRM.h
- * @brief       Module To Manage Parameters
+ * @file        APPSPM.h
+ * @brief       System Paramters Managment.
  * @note        TemplateDetailsDescription.\n
  *
- * @author      mba
- * @date        03/04/2025
+ * @author      xxxxxx
+ * @date        jj/mm/yyyy
  * @version     1.0
  */
   

@@ -198,7 +198,7 @@ class AppSns_CodeGen():
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("\t- For configPublic file")
         cls.code_gen.change_target_balise(TARGET_T_ENUM_START_LINE,TARGET_T_ENUM_END_LINE)
-        print("\t\tt Write enum sns, drv, unity")
+        print("\t\t Write enum sns, drv, unity")
         cls.code_gen._write_into_file(enum_unity, APPSNS_CONFIGPUBLIC_PATH)
         cls.code_gen._write_into_file(enum_drv, APPSNS_CONFIGPUBLIC_PATH)
         cls.code_gen._write_into_file(enum_sns, APPSNS_CONFIGPUBLIC_PATH)

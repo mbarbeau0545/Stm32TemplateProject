@@ -1,6 +1,6 @@
 /*********************************************************************
- * @file        APPRM_ConfigPrivate.h
- * @brief       Template_BriefDescription.
+ * @file        APPSPM_ConfigPrivate.h
+ * @brief       System Paramters Managment.
  * @note        TemplateDetailsDescription.\n
  *
  * @author      xxxxxx
@@ -8,8 +8,8 @@
  * @version     1.0
  */
   
-#ifndef APPPRM_CONFIGPRIVATE_H_INCLUDED
-#define APPPRM_CONFIGPRIVATE_H_INCLUDED
+#ifndef APPSPM_CONFIGPRIVATE_H_INCLUDED
+#define APPSPM_CONFIGPRIVATE_H_INCLUDED
 
 
 
@@ -18,7 +18,7 @@
     // ********************************************************************
     // *                      Includes
     // ********************************************************************
-    #include "./APPPRM_ConfigPublic.h"
+    #include "./APPSPM_ConfigPublic.h"
 
     // ********************************************************************
     // *                      Defines
@@ -37,6 +37,17 @@
 
 	/* CAUTION : Automatic generated code section for Structure: End */
 	//-----------------------------STRUCT TYPES---------------------------//
+    /**
+     * @brief Item Parameter Information
+     */
+    typedef struct 
+    {
+        t_uint8 itemId_u8;
+        t_uint8 version_u8;
+        t_uint16 minItemVal_u16;
+        t_uint16 maxItemVal_u16;
+        t_uint16 DefaultItemVal_u16;
+    } t_sAPPSPM_ItemPrmInfo;
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */
@@ -49,7 +60,15 @@
     // ********************************************************************
     // *                      Variables
     // ********************************************************************
-    
+    /* CAUTION : Automatic generated code section for Variable: Start */
+    /**< Variable for System Parameter Inforamtion*/
+    const t_sAPPSPM_ItemPrmInfo c_AppSpm_ItemPrmInfo_as[APPSPM_PRM_NB] ={
+    //itemId_u8                     version_u8                   minItemVal_u16                maxItemVal_u16                 DefaultItemVal_u16
+    {(t_uint8)0,                    (t_uint8)1,                    (t_uint16)0,                   (t_uint16)65535,               (t_uint16)0,},
+    {(t_uint8)1,                    (t_uint8)1,                    (t_uint16)0,                   (t_uint16)65535,               (t_uint16)0,},
+    {(t_uint8)2,                    (t_uint8)1,                    (t_uint16)0,                   (t_uint16)65535,               (t_uint16)0,},
+    };
+    /* CAUTION : Automatic generated code section for Variable: End */
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************

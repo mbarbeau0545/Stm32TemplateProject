@@ -23,6 +23,7 @@ from FMK_CodeGen.FMKHRT_CodeGen  import FMKHRT_CodeGen as FMKHRT
 from App_CodeGen.AppSns_CodeGen import AppSns_CodeGen as APPSNS
 from App_CodeGen.AppAct_CodeGen import AppAct_CodeGen as APPACT
 from App_CodeGen.AppSdm_CodeGen import AppSdm_CodeGen as APPSDM
+from App_CodeGen.AppSpm_CodeGen import AppSpm_CodeGen as APPSPM
 from App_CodeGen.AppLgc_CodeGen import AppLgc_CodeGen as APPLGC
 #------------------------------------------------------------------------------
 #                                       CONSTANT
@@ -87,6 +88,7 @@ def main()-> None:
     APPSNS.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
     APPACT.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
     APPSDM.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
+    APPSPM.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
     APPLGC.code_generation(software_cfg_path, soft_udscfg_path, filled_uds_file)
 
     print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")

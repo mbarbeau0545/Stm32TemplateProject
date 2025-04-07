@@ -142,7 +142,6 @@ HAL_StatusTypeDef FMKHRT_HAL_HRTIM_SimpleBaseStop_DMA(  HRTIM_HandleTypeDef *f_b
     UNUSED(f_srcAddress_u32);
     UNUSED(f_destAddress_u32);
     UNUSED(f_size_u32);
-    
     return HAL_HRTIM_SimpleBaseStop_DMA(f_bspIstc_ps, f_timerIdx_u32);
 }
 

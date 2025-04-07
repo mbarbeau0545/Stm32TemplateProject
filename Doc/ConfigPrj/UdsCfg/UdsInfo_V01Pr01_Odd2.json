@@ -31,23 +31,23 @@
     "PARAMETERS": {
         "MOTOR_X_KP": {
             "id": "0",
+            "default": "0",
             "min": "0",
             "max": "65535",
-            "default": "0",
             "machine": 0
         },
         "MOTOR_X_KI": {
             "id": "1",
+            "default": "0",
             "min": "0",
             "max": "65535",
-            "default": "0",
             "machine": 0
         },
         "MOTOR_X_KD": {
             "id": "2",
+            "default": "0",
             "min": "0",
             "max": "65535",
-            "default": "0",
             "machine": 0
         }
     },

@@ -1,6 +1,6 @@
 /*********************************************************************
- * @file        APPPRM_ConfigPublic.h
- * @brief       Template_BriefDescription.
+ * @file        APPSPM_ConfigPrivate.h
+ * @brief       System Paramters Managment.
  * @note        TemplateDetailsDescription.\n
  *
  * @author      xxxxxx
@@ -8,8 +8,9 @@
  * @version     1.0
  */
   
-#ifndef APPPRM_CONFIGPUBLIC_H_INCLUDED
-#define APPPRM_CONFIGPUBLIC_H_INCLUDED
+  
+#ifndef APPSPM_CONFIGPUBLIC_H_INCLUDED
+#define APPSPM_CONFIGPUBLIC_H_INCLUDED
 
 
 
@@ -27,18 +28,32 @@
     // ********************************************************************
     // *                      Types
     // ********************************************************************
-	/* CAUTION : Automatic generated code section for Enum: Start */
+    /* CAUTION : Automatic generated code section for Enum: Start */
+    /**
+    * @brief Enum for listong every parameter.
+    */
+    typedef enum
+    {
+        APPSPM_PRM_MOTOR_X_KP = 0x0,
+        APPSPM_PRM_MOTOR_X_KI,
+        APPSPM_PRM_MOTOR_X_KD,
+    
+        APPSPM_PRM_NB,
+    } t_eAPPSPM_ItemPrm;
 
-	/* CAUTION : Automatic generated code section for Enum: End */
+    /* CAUTION : Automatic generated code section for Enum: End */
+
 	//-----------------------------ENUM TYPES-----------------------------//
 
 	/* CAUTION : Automatic generated code section for Structure: Start */
 
 	/* CAUTION : Automatic generated code section for Structure: End */
+
 	//-----------------------------STRUCT TYPES---------------------------//
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */
+
 	//-----------------------------TYPEDEF TYPES---------------------------//
 
     

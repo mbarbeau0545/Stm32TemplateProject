@@ -75,7 +75,7 @@ class AppSpm_CodeGen():
                                                                 [])
         
         var_prm += "    /**< Variable for System Parameter Inforamtion*/\n" \
-                    + f"    const t_sAPPSPM_ItemPrmInfo c_AppSpm_ItemPrmInfo_as[{APPSPM_ENUM_ROOT_PARAM}_NB] =" + "{\n"
+                    + f"    const t_sAPPSPM_ItemPrmCfg c_AppSpm_ItemPrmInfo_as[{APPSPM_ENUM_ROOT_PARAM}_NB] =" + "{\n"
         var_prm += '    //itemId_u8                     version_u8                   minItemVal_u16                maxItemVal_u16                 DefaultItemVal_u16\n'
         for item_cfg in item_prm_a:
             var_prm += '    {' + f'(t_uint8){item_cfg[0]},'\
@@ -86,7 +86,7 @@ class AppSpm_CodeGen():
                     + " " * ((SPACE_VARIABLE) - len(f"(t_uint16){item_cfg[3]}"))\
                     + f'(t_uint16){item_cfg[4]},'\
                     + " " * ((SPACE_VARIABLE) - len(f"(t_uint16){item_cfg[4]}"))\
-                    + f'(t_uint16){item_cfg[5]},' + '},\n'
+                    + f'(t_uint16){item_cfg[5]}' + '},\n'
             if f_is_uds_ope:
                 uds_item_prm["PARAMETERS"][str(item_cfg[1]).upper()] = {
                         'id' : f'{item_cfg[0]}',

@@ -1,6 +1,6 @@
 /*********************************************************************
  * @file        APPSPM_ConfigPrivate.h
- * @brief       System Paramters Managment.
+ * @brief       System Parameters Managment.
  * @note        TemplateDetailsDescription.\n
  *
  * @author      xxxxxx
@@ -47,7 +47,7 @@
         t_uint16 minItemVal_u16;
         t_uint16 maxItemVal_u16;
         t_uint16 DefaultItemVal_u16;
-    } t_sAPPSPM_ItemPrmInfo;
+    } t_sAPPSPM_ItemPrmCfg;
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */
@@ -62,7 +62,7 @@
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Variable: Start */
     /**< Variable for System Parameter Inforamtion*/
-    const t_sAPPSPM_ItemPrmInfo c_AppSpm_ItemPrmInfo_as[APPSPM_PRM_NB] ={
+    const t_sAPPSPM_ItemPrmCfg c_AppSpm_ItemPrmInfo_as[APPSPM_PRM_NB] ={
     //itemId_u8                     version_u8                   minItemVal_u16                maxItemVal_u16                 DefaultItemVal_u16
     {(t_uint8)0,                    (t_uint8)1,                    (t_uint16)0,                   (t_uint16)65535,               (t_uint16)0,},
     {(t_uint8)1,                    (t_uint8)1,                    (t_uint16)0,                   (t_uint16)65535,               (t_uint16)0,},

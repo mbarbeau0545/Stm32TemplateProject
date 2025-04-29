@@ -59,12 +59,13 @@ static t_cbAPPSYS_FastTask * g_ModFastTask_apcb[APPSYS_MODULE_NB];
 static t_eCyclicModState g_AppSysModuleState_e = STATE_CYCLIC_PREOPE;
 static t_uint32 g_CyclicDuration_u32 = (t_uint32)0;
 static t_uint32 g_fastTaskDuration_u32 = (t_uint32)0;
-static t_sSafeMem_BlockInfo g_safeBlock_isFastTaskOn_s;
-static t_sSafeMem_BlockInfo g_safeBlock_mskfastTask_s;
+static t_sSafeMem_BlockInfo g_sfbk_isFastTaskOn_s;
+static t_sSafeMem_BlockInfo g_sfbk_mskfastTask_s;
 static t_bool g_isFastTaskON_b = (t_bool)False;
 static t_uint16 g_mskFastTaskCall_u16 = (t_uint16)0; /**< to know the people to call */
 static t_bool g_lockAssert_b = (t_bool)False;
 static t_sAPPSYS_AssertInfo g_AssertInfo_s;
+
 //********************************************************************************
 //                      Local functions - Prototypes
 //********************************************************************************
@@ -246,7 +247,7 @@ t_eReturnCode APPSYS_SetFastTaskState(t_eAppSys_ModuleList f_ModuleId_e,  t_eAPP
     t_eReturnCode Ret_e = RC_OK;
     t_uint16 mskfastTaskCall_u16;
 
-    Ret_e = SafeMem_SecureBlockRead(&g_safeBlock_mskfastTask_s, &mskfastTaskCall_u16);
+    Ret_e = SMB_Read(&g_sfbk_mskfastTask_s, &mskfastTaskCall_u16);
 
 
     if((f_ModuleId_e >= APPSYS_MODULE_NB)
@@ -271,7 +272,7 @@ t_eReturnCode APPSYS_SetFastTaskState(t_eAppSys_ModuleList f_ModuleId_e,  t_eAPP
         }
         if(Ret_e == RC_OK)
         {
-            Ret_e = SafeMem_SecureBlockWrite(&g_safeBlock_mskfastTask_s, &mskfastTaskCall_u16);
+            Ret_e = SMB_Write(&g_sfbk_mskfastTask_s, &mskfastTaskCall_u16);
         }
     }
 
@@ -292,11 +293,16 @@ static void s_APPSYS_Set_ModulesCyclic(void)
     {
         if(c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb != NULL_FUNCTION)
         {
-            Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb();  
+            Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].Cyclic_pcb();
         }
         if(Ret_e < RC_OK)
         {
             ASSERT((t_uint32)modIndex_u8);
+        }
+        //---- update mod State ----//
+        if(c_AppSys_ModuleFunc_apf[modIndex_u8].GetState_pcb != NULL_FUNCTION)
+        {
+            (void)c_AppSys_ModuleFunc_apf[modIndex_u8].GetState_pcb(&g_ModuleState_ae[modIndex_u8]);
         }
     }
 
@@ -313,13 +319,13 @@ static t_eReturnCode s_APPSYS_ResAlloc(void)
 {
     t_eReturnCode Ret_e;
 
-    Ret_e = SafeMem_SecureBlockInit(&g_safeBlock_isFastTaskOn_s,
+    Ret_e = SafeMem_SecureBlockInit(&g_sfbk_isFastTaskOn_s,
                                     &g_isFastTaskON_b,
                                     sizeof(g_isFastTaskON_b),
                                     APPSYS_SAFE_BLOCK_MAX_ATTEMPT);
     if(Ret_e == RC_OK)
     {
-        Ret_e = SafeMem_SecureBlockInit(&g_safeBlock_mskfastTask_s,
+        Ret_e = SafeMem_SecureBlockInit(&g_sfbk_mskfastTask_s,
                                         &g_mskFastTaskCall_u16,
                                         sizeof(g_mskFastTaskCall_u16),
                                         APPSYS_SAFE_BLOCK_MAX_ATTEMPT);
@@ -340,7 +346,6 @@ static t_eReturnCode s_APPSYS_PreOperational(void)
 
     for(modIndex_u8 = (t_uint8)0 ; (modIndex_u8 <  (t_uint8)APPSYS_MODULE_NB) && (Ret_e == RC_OK) ; modIndex_u8++)
     {
-        Ret_e = c_AppSys_ModuleFunc_apf[modIndex_u8].GetState_pcb(&g_ModuleState_ae[modIndex_u8]);
         if(g_ModuleState_ae[modIndex_u8] == STATE_CYCLIC_WAITING)
         {
             ModuleInitCnt_u8 += 1;
@@ -382,10 +387,10 @@ static t_eReturnCode s_APPSYS_Operational(void)
 
     //Ret_e = FMKCPU_ResetWwdg();
     
-    Ret_e = SafeMem_SecureBlockRead(&g_safeBlock_mskfastTask_s, &mskfastTask_u16);
+    Ret_e = SMB_Read(&g_sfbk_mskfastTask_s, &mskfastTask_u16);
     if(Ret_e ==  RC_OK)
     {
-        Ret_e = SafeMem_SecureBlockRead(&g_safeBlock_isFastTaskOn_s, &isFastTaskON_b);
+        Ret_e = SMB_Read(&g_sfbk_isFastTaskOn_s, &isFastTaskON_b);
     }
     if(Ret_e == RC_OK)
     {
@@ -425,7 +430,7 @@ static t_eReturnCode s_APPSYS_Operational(void)
         if(Ret_e == RC_OK)
         {
             isFastTaskON_b = False;
-            Ret_e = SafeMem_SecureBlockWrite(&g_safeBlock_isFastTaskOn_s, &isFastTaskON_b);
+            Ret_e = SMB_Write(&g_sfbk_isFastTaskOn_s, &isFastTaskON_b);
             //---- ASSERTION already deal upon state machine function ----//
         }
     }
@@ -445,7 +450,7 @@ static void s_APPSYS_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
     t_bool isFastTaskON_b = False;
     t_uint16 mskfastTaskCall_u16;
 
-    Ret_e = SafeMem_SecureBlockRead(&g_safeBlock_mskfastTask_s, &mskfastTaskCall_u16);
+    Ret_e = SMB_Read(&g_sfbk_mskfastTask_s, &mskfastTaskCall_u16);
     if(Ret_e != RC_OK)
     {
         ASSERT((t_uint16)Ret_e);
@@ -466,7 +471,7 @@ static void s_APPSYS_FastTask(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
                 }
                 else 
                 {
-                    Ret_e = SafeMem_SecureBlockWrite(&g_safeBlock_isFastTaskOn_s,
+                    Ret_e = SMB_Write(&g_sfbk_isFastTaskOn_s,
                                                     (void *)isFastTaskON_b);
                 }
             }

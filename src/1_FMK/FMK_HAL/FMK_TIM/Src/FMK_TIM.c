@@ -2225,7 +2225,7 @@ static void s_FMKTIM_BspRqst_InterruptMngmt(TIM_HandleTypeDef *f_timerIstce_ps, 
     }
     if (Calltimer_e >= FMKTIM_TIMER_NB)
     {
-        //------------Call somoene to deal with this error------------//
+        ASSERT((t_uint16)Calltimer_e);
         return; 
     }
     else

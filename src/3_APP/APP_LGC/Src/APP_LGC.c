@@ -22,6 +22,7 @@
 #include "./APP_LGC.h"
 #include "./APP_CTRL/APP_SYS/Src/APP_SYS.h"
 #include "APP_CFG/ConfigFiles/APPLGC_ConfigPrivate.h"
+#include "3_APP/APP_CTRL/APP_SPM/Src/APP_SPM.h"
 #include "FMK_HAL/FMK_IO/Src/FMK_IO.h"
 #include "FMK_HAL/FMK_HRT/Src/FMK_HRT.h"
 
@@ -30,7 +31,7 @@
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
-#define SIGNAL_IN_TEST FMKIO_OUTPUT_SIGPWM_1
+
 // ********************************************************************
 // *                      Types
 // ********************************************************************
@@ -481,7 +482,7 @@ static void s_APPLGC_Callback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
 
     for(idxSns_u8 = 0 ; idxSns_u8 < 2 ; idxSns_u8++)
     {
-        Ret_e = SafeMem_SecureBlockWrite(   &g_SecBlockSnsValue_as[idxSns_u8],
+        Ret_e = SMB_Write(   &g_SecBlockSnsValue_as[idxSns_u8],
                                             &value_f32);
         value_f32 += (t_float32)1.0f;
     }
@@ -494,14 +495,22 @@ static void s_APPLGC_Callback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_u
 static t_eReturnCode s_APPLGC_Operational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
-    t_uint8 idxSns_u8;
-    t_float32 value_af32[2];
-
-    for(idxSns_u8 = 0 ; idxSns_u8 < 2 ; idxSns_u8++)
+    t_uint16 prmValue_u16 = (t_uint16)0;
+    t_uint8 LLI_u8;
+    for(LLI_u8 = (t_uint8)0 ; LLI_u8 < APPSPM_PRM_NB ; LLI_u8++)
     {
-        Ret_e = SafeMem_SecureBlockRead(   &g_SecBlockSnsValue_as[idxSns_u8],
-                                            &value_af32[idxSns_u8]);
+        Ret_e = APPSPM_GetParam(LLI_u8, &prmValue_u16);
+
+        if(Ret_e == RC_OK)
+        {
+            if(prmValue_u16 > (t_uint16)2500)
+            {
+                prmValue_u16 = (t_uint16)12560;
+                Ret_e = APPSPM_SetParam(LLI_u8, prmValue_u16);
+            }
+        }
     }
+   
     /*t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)

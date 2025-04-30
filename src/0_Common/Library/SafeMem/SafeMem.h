@@ -92,7 +92,7 @@
      * @param[in] f_dataContainer_pv Pointer to the reception buffer.
      * @return t_eReturnCode Return code indicating success or failure.
      */
-    t_eReturnCode SafeMem_SecureBlockRead(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+    t_eReturnCode SMB_Read(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
                                             void * f_dataContainer_pv);
     /**
      * @brief Performs a secure memory Read of a secure block.
@@ -100,7 +100,7 @@
      * @param[in] f_dataContainer_pv Pointer to the reception buffer.
      * @return t_eReturnCode Return code indicating success or failure.
      */
-    t_eReturnCode SafeMem_SecureBlockWrite( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+    t_eReturnCode SMB_Write( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
                                             void * f_dataContainer_pv);
     /**
      * @brief Performs a secure memory copy.

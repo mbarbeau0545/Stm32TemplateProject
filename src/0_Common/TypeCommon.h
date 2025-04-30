@@ -12,8 +12,6 @@
 #ifndef TYPECOMMON_H_INCLUDED
 #define TYPECOMMON_H_INCLUDED
 
-#include "0_Common/Library/SafeMem/SafeMem.h"
-
     #define true	      ((t_uint8)1)
     #define false	      ((t_uint8)0)
     #define True          ((t_uint8)1)

@@ -93,9 +93,9 @@ t_eReturnCode SafeMem_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps
 }
 
 //**************************
-// SafeMem_SecureBlockRead
+// SMB_Read
 //***************************
-t_eReturnCode SafeMem_SecureBlockRead( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+t_eReturnCode SMB_Read( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
                                          void * f_dataContainer_pv)
 {
     t_eReturnCode Ret_e = RC_OK;
@@ -153,9 +153,9 @@ t_eReturnCode SafeMem_SecureBlockRead( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
 }
 
 //**************************
-// SafeMem_SecureBlockWrite
+// SMB_Write
 //***************************
-t_eReturnCode SafeMem_SecureBlockWrite( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
+t_eReturnCode SMB_Write( t_sSafeMem_BlockInfo * f_secBlockInfo_ps,
                                           void * f_dataContainer_pv)
 {
     t_eReturnCode Ret_e = RC_OK;

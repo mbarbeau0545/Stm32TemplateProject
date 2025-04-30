@@ -28,6 +28,7 @@
     #include "1_FMK/FMK_HAL/FMK_SRL/Src/FMK_SRL.h"
     #include "3_APP/APP_CTRL/APP_ACT/Src/APP_ACT.h"
     #include "3_APP/APP_CTRL/APP_SDM/Src/APP_SDM.h"
+    #include "3_APP/APP_CTRL/APP_SPM/Src/APP_SPM.h"
     #include "3_APP/APP_CTRL/APP_SNS/Src/APP_SNS.h"
     #include "3_APP/APP_CTRL/APP_UDS/Src/APP_UDS.h"
     #include "3_APP/APP_LGC/Src/APP_LGC.h"
@@ -123,6 +124,7 @@
 
         //----- Application module -----//
         {APPSDM_Init,    APPSDM_Cyclic,     APPSDM_GetState,   APPSDM_SetState},
+        {APPSPM_Init,    APPSPM_Cyclic,     APPSPM_GetState,   APPSPM_SetState},
         {APPSNS_Init,    APPSNS_Cyclic,     APPSNS_GetState,   APPSNS_SetState},
         {APPACT_Init,    APPACT_Cyclic,     APPACT_GetState,   APPACT_SetState},
         {APPLGC_Init,    APPLGC_Cyclic,     APPLGC_GetState,   APPLGC_SetState},

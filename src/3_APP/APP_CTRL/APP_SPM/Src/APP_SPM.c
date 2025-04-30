@@ -92,9 +92,9 @@ static t_eReturnCode s_APPSM_Operational(void);
 //                      Public functions - Implementation
 //********************************************************************************
 /*********************************
- * APPSM_Init
+ * APPSPM_Init
  *********************************/
-t_eReturnCode APPSM_Init(void)
+t_eReturnCode APPSPM_Init(void)
 {
     t_uint8 idxPrm_u8;
 
@@ -108,9 +108,9 @@ t_eReturnCode APPSM_Init(void)
 }
 
 /*********************************
- * APPSM_Cyclic
+ * APPSPM_Cyclic
  *********************************/
-t_eReturnCode APPSM_Cyclic(void)
+t_eReturnCode APPSPM_Cyclic(void)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -154,9 +154,9 @@ t_eReturnCode APPSM_Cyclic(void)
 }
 
 /*********************************
- * APPSM_GetState
+ * APPSPM_GetState
  *********************************/
-t_eReturnCode APPSM_GetState(t_eCyclicModState *f_State_pe)
+t_eReturnCode APPSPM_GetState(t_eCyclicModState *f_State_pe)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -172,9 +172,9 @@ t_eReturnCode APPSM_GetState(t_eCyclicModState *f_State_pe)
 }
 
 /*********************************
- * APPSM_SetState
+ * APPSPM_SetState
  *********************************/
-t_eReturnCode APPSM_SetState(t_eCyclicModState f_State_e)
+t_eReturnCode APPSPM_SetState(t_eCyclicModState f_State_e)
 {
     g_APPSM_ModState_e = f_State_e;
     return RC_OK;

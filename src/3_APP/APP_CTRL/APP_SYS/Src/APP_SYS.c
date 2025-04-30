@@ -17,6 +17,7 @@
 // *                      Includes
 // ********************************************************************
 #include "./APP_CFG/ConfigFiles/APPSYS_ConfigPrivate.h"
+#include "Library/SafeMem/SafeMem.h"
 #include "./APP_SYS.h"
 
 // ********************************************************************

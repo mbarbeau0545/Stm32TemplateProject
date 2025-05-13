@@ -243,7 +243,7 @@ class FMKCDA_CodeGen():
         cls.code_gen.change_target_balise(TARGET_ADC_X_IRQN_START, TARGET_ADC_X_IRQN_END)
         cls.code_gen._write_into_file(func_irqn, FMKCDA)
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        print("<<<<<<<<<<<<<<<<<<<<End code generation for FmkCda Module>>>>>>>>>>>>>>>>>>>")
+        print("<<<<<<<<<<<<<<<<<<<<End code generation for FMKCDA Module>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n")
 #------------------------------------------------------------------------------
 #                             FUNCTION IMPLMENTATION

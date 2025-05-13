@@ -59,9 +59,9 @@
 //                      Public functions - Implementation
 //********************************************************************************
 //**************************
-// SafeMem_SecureBlockInit
+// SMB_SecureBlockInit
 //***************************
-t_eReturnCode SafeMem_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps, 
+t_eReturnCode SMB_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps, 
                                         const void * f_SecureArea_pv,
                                         const t_uint16 f_sizeSecArea_u16,
                                         t_uint8 f_maxAttemptOpe_u8)

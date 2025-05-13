@@ -52,7 +52,17 @@
         }
     },
     "LOGIC": {
-        "SERVICE": {},
-        "AGENTS": {}
+        "SERVICE": {
+            "ADD": {
+                "id": "0",
+                "description": "None"
+            }
+        },
+        "AGENTS": {
+            "PROTOUT": {
+                "id": "0",
+                "description": "Gère la gestion du gantry"
+            }
+        }
     }
 }

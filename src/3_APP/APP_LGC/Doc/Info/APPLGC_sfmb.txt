@@ -74,9 +74,17 @@ static t_eCyclicModState g_AppLgc_ModState_e = STATE_CYCLIC_CFG;
  * @brief Container for Sensors/ Actuators / Services Information
  */
 static t_float32 g_snsValues_af32[APPSNS_SENSOR_NB];
-static t_uAPPACT_SetValue g_actSetValues_au[APPACT_ACTUATOR_NB];
-static t_uAPPACT_GetValue g_actGetValues_au[APPACT_ACTUATOR_NB];
+static t_uAPPACT_SetValue g_actSetValues_as[APPACT_ACTUATOR_NB];
+static t_uAPPACT_GetValue g_actGetValues_as[APPACT_ACTUATOR_NB];
 static t_sAPPLGC_ServiceInfo g_srvInfo_as[APPLGC_SRV_NB];
+
+/**
+ * @brief safe mem block for sns / act / srv
+ */
+static t_sSafeMem_BlockInfo g_sfmb_snsValues_as[APPSNS_SENSOR_NB];
+static t_sSafeMem_BlockInfo g_sfmb_actSetValues_as[APPACT_ACTUATOR_NB];
+static t_sSafeMem_BlockInfo g_sfmb_actGetValues_as[APPACT_ACTUATOR_NB];
+static t_sSafeMem_BlockInfo g_sfmb_srvInfo_as[APPLGC_SRV_NB];
 
 
 /**
@@ -201,16 +209,34 @@ t_eReturnCode APPLGC_Init(void)
     {
         g_srvInfo_as[idxSrv_u8].health_e = APPLGC_SRV_HEALTH_OK;
         g_srvInfo_as[idxSrv_u8].state_e = APPLGC_SRV_STATE_NB;
+
+        Ret_e = SMB_SecureBlockInit(&g_sfmb_srvInfo_as[idxSrv_u8],
+                                    &g_srvInfo_as[idxSrv_u8],
+                                    (t_uint16)(sizeof(t_sAPPLGC_ServiceInfo)),
+                                    (t_uint8)5);
     }
+
     for(idxAct_u8 = (t_uint8)0 ; (idxAct_u8 < APPACT_ACTUATOR_NB) && (Ret_e == RC_OK) ; idxAct_u8++)
     {
-        (void)SafeMem_memclear(&g_actGetValues_au[idxAct_u8], sizeof(t_uAPPACT_GetValue));
-        (void)SafeMem_memclear(&g_actSetValues_au[idxAct_u8], sizeof(t_uAPPACT_SetValue));
+        Ret_e = SMB_SecureBlockInit(&g_sfmb_actGetValues_as[idxAct_u8],
+                                    &g_actGetValues_as[idxAct_u8],
+                                    (t_uint16)(sizeof(t_uAPPACT_GetValue)),
+                                    (t_uint8)5);
 
+        if(Ret_e == RC_OK)
+        {
+            Ret_e = SMB_SecureBlockInit(&g_sfmb_actSetValues_as[idxAct_u8],
+                                        &g_actSetValues_as[idxAct_u8],
+                                        (t_uint16)(sizeof(t_uAPPACT_SetValue)),
+                                        (t_uint8)5);
+        }
     }
     for(idxSns_u8 = (t_uint8)0 ; (idxSns_u8 < APPSNS_SENSOR_NB) && (Ret_e == RC_OK) ; idxSns_u8++)
     {
-        g_snsValues_af32[idxSns_u8] = (t_float32)0.0f;
+        Ret_e = SMB_SecureBlockInit(&g_sfmb_snsValues_as[idxSns_u8],
+                                    &g_snsValues_af32[idxSns_u8],
+                                    (t_uint16)(sizeof(t_float32)),
+                                    (t_uint8)5);
     }
 
     //---- Set Agent Init -----//
@@ -371,7 +397,12 @@ t_eReturnCode APPLGC_GetActValue(t_eAPPACT_Actuators f_actuators_e, t_uAPPACT_Ge
     }
     else
     {
-        *f_actValue_pu = g_actGetValues_au[f_actuators_e]; 
+        Ret_e = SMB_Read(   &g_sfmb_actGetValues_as[f_actuators_e],
+                            f_actValue_pu);
+        if(Ret_e != RC_OK)
+        {
+            ASSERT((t_uint32)Ret_e);
+        }
     }
 
     return Ret_e;
@@ -396,7 +427,12 @@ t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_Sensors f_sensors_e, t_float32 * f_sn
     }
     if(Ret_e == RC_OK)
     {
-        *f_snsValue_pf32 = g_snsValues_af32[f_sensors_e];
+        Ret_e = SMB_Read(   &g_sfmb_snsValues_as[f_sensors_e],
+                            f_snsValue_pf32);
+        if(Ret_e != RC_OK)
+        {
+            ASSERT((t_uint32)Ret_e);
+        }
     }
 
     return Ret_e;
@@ -404,7 +440,7 @@ t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_Sensors f_sensors_e, t_float32 * f_sn
 //********************************************************************************
 //                      Local functions - Implementation
 //********************************************************************************
-
+static void s_APPLGC_Callback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8);
 /*********************************
  * s_APPLGC_ConfigurationState
  *********************************/
@@ -412,6 +448,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 {
 
     t_eReturnCode Ret_e;
+
     return RC_OK;
 }
 
@@ -421,15 +458,26 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 static t_eReturnCode s_APPLGC_PreOperational(void)
 {
     t_eReturnCode Ret_e = RC_OK;
+    Ret_e = FMKTIM_Set_EvntLineState(FMKTIM_INTERRUPT_LINE_EVNT_2,
+                                    FMKTIM_EVNT_OPE_START_TIMER);
     return Ret_e;
 }
 
+/*********************************
+ * s_APPLGC_ConfigurationState
+ *********************************/
+static void s_APPLGC_Callback(t_eFMKTIM_InterruptLineType f_InterruptType_e, t_uint8 f_InterruptLine_u8)
+{
+    t_eReturnCode Ret_e;
+
+    return;
+}
 /*********************************
  * s_APPLGC_Operational
  *********************************/
 static t_eReturnCode s_APPLGC_Operational(void)
 {
-    t_eReturnCode Ret_e = RC_OK;
+    t_eReturnCode Ret_e;
     t_uint8 idxAgent_u8;
 
     if(g_resetSrvState_b == (t_bool)True)
@@ -456,9 +504,8 @@ static t_eReturnCode s_APPLGC_Operational(void)
         for(idxAgent_u8 = (t_uint8)0 ; (idxAgent_u8 < APPLGC_AGENT_NB) &&  (Ret_e >= RC_OK) ; idxAgent_u8++)
         {
             
-            Ret_e = c_AppLGc_AgentFunc_apf[idxAgent_u8].PeriodTask_pcb( (t_sAPPLGC_ServiceInfo *)g_srvInfo_as,
-                                                                        (t_float32 *)g_snsValues_af32,
-                                                                        (t_uAPPACT_GetValue *)g_actGetValues_au);
+            Ret_e = c_AppLGc_AgentFunc_apf[idxAgent_u8].PeriodTask_pcb( (t_float32 *)g_snsValues_af32,
+                                                                        (t_sAPPLGC_ServiceInfo *)g_srvInfo_as);
         }
     }
 
@@ -494,7 +541,11 @@ static t_eReturnCode s_APPLGC_GetSnsValues(void)
                 snsInfo_s.SnsValue_f32 = (t_float32)0.0f;
             }
 
-            g_snsValues_af32[idxSns_u8] = snsInfo_s.SnsValue_f32;
+            SMB_Write(&g_sfmb_snsValues_as[idxSns_u8], &snsInfo_s.SnsValue_f32);
+            if(Ret_e != RC_OK)
+            {
+                ASSERT((t_uint32)Ret_e);
+            }
         }
     }
     
@@ -518,7 +569,12 @@ static t_eReturnCode s_APPLGC_GetActValues(void)
 
         if(Ret_e == RC_OK)
         {
-            g_actGetValues_au[idxAct_u8] = actGetValue_u;
+            Ret_e = SMB_Write(&g_sfmb_actGetValues_as[idxAct_u8], &actGetValue_u);
+
+            if(Ret_e != RC_OK)
+            {
+                ASSERT((t_uint16)Ret_e);
+            }
         }
     }
     
@@ -531,12 +587,19 @@ static t_eReturnCode s_APPLGC_SetActValues(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uint8 idxAct_u8 = (t_uint8)0;
+    t_eAPPACT_Actuators actuatorLabel_e;
+    t_uAPPACT_SetValue actSetValue_u;
+
 
     //----- Loop on every Actuators For this Service -----//
     for(idxAct_u8 = (t_uint8)0 ; (idxAct_u8 < APPACT_ACTUATOR_NB) && (Ret_e == RC_OK) ; idxAct_u8++)
     {
+        Ret_e = SMB_Read(&g_sfmb_actSetValues_as[idxAct_u8], &actSetValue_u);
 
-        Ret_e = APPACT_Set_ActValue(idxAct_u8, (t_uAPPACT_SetValue)g_actSetValues_au[idxAct_u8]);
+        if(Ret_e == RC_OK)
+        {
+            Ret_e = APPACT_Set_ActValue(idxAct_u8, (t_uAPPACT_SetValue)actSetValue_u);
+        }
     }
 
     return Ret_e;
@@ -575,7 +638,7 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
                                         t_uint16 f_debugInfo1_u16,
                                         t_uint16 f_debugInfo2_u16)
 {
-    t_eReturnCode Ret_e;
+    t_eReturnCode Ret_e = RC_OK;
 
     // choose a way to communicate error
 
@@ -592,8 +655,8 @@ static void s_APPLGC_DiagnosticEvent(   t_eAPPSDM_DiagnosticItem f_item_e,
  *	@note   
  *
  *
- *	@param[in] 
- *	@param[out]
+ *	@params[in] 
+ *	@params[out]
  *	 
  *
  *

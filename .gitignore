@@ -5,7 +5,8 @@
 .vscode/extensions.json
 .vscode/settings.json
 .vscode/ipch
-.VSCodeCounter*
-.src/3_APP/APP_LGC/APP_CFG*
-.src/3_APP/APP_LGC/APP_LGC*
+.VSCodeCounter/
+.src/3_APP/APP_LGC/APP_CFG/
+.src/1_FMK/FMK_CFG/
+.src/2_DRV/
 .vscode/c_cpp_properties.json

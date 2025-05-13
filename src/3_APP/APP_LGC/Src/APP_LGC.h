@@ -148,11 +148,28 @@
     *
     *	@param[in] 
     *	@param[out]
-    *	 
-    *
-    *
     */
     t_eReturnCode APPLGC_GetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_SrvHealth * f_srvHealth_pe);
+    /**
+    *
+    *	@brief
+    *	@note   
+    *
+    *
+    *	@param[in] 
+    *	@param[out]
+    */
+    t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_Sensors f_sensors_e, t_float32 * f_snsValue_pf32);
+    /**
+    *
+    *	@brief
+    *	@note   
+    *
+    *
+    *	@param[in] 
+    *	@param[out]
+    */
+    t_eReturnCode APPLGC_GetActValue(t_eAPPACT_Actuators f_actuators_e, t_uAPPACT_GetValue * f_actValue_pu);
 
 #endif // APP_LGC_H_INCLUDED           
 //************************************************************************************

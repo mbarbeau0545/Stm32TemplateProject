@@ -55,21 +55,23 @@
 
     /* CAUTION : Automatic generated code section for Enum: Start */
     /**
+    * @brief Enum for Agent
+    */
+    typedef enum 
+    {
+        APPLGC_AGENT_PROTOUT = 0x00,         // Gère la gestion du gantry
+
+        APPLGC_AGENT_NB,
+    } t_eAPPLGC_AgentList;
+    /**
     * @brief Enum for Service Function Listy
     */
     typedef enum ____t_eAPPLGC_SrvList
     {
+        APPLGC_SRV_ADD = 0x00,
 
         APPLGC_SRV_NB,
     } t_eAPPLGC_SrvList;
-    /**
-    * @brief Enum for Agent
-    */
-    typedef enum ____t_eAPPLGC_AgentList
-    {
-
-        APPLGC_AGENT_NB,
-    } t_eAPPLGC_AgentList;
     /* CAUTION : Automatic generated code section for Enum: End */
     
     /* CAUTION : Automatic generated code section for Structure: Start */
@@ -79,7 +81,6 @@
     {
         t_eAPPLGC_SrvHealth health_e;
         t_eAPPLGC_SrvState  state_e;
-        t_uAPPACT_SetValue  * actVal_pau;
     } t_sAPPLGC_ServiceInfo;
 
     /**
@@ -96,8 +97,9 @@
     *   @param[in]  f_SrvInfo_pas     : All Services Infos.\n
     *
     */
-    typedef t_eReturnCode (t_cbAPPLGC_AgentPeriodicTask)(   t_float32 *f_snsValues_paf32, 
-                                                            t_sAPPLGC_ServiceInfo *f_SrvInfo_pas);
+    typedef t_eReturnCode (t_cbAPPLGC_AgentPeriodicTask)(   t_sAPPLGC_ServiceInfo *f_SrvInfo_pas,
+                                                            t_float32 *f_snsValues_paf32,
+                                                            t_uAPPACT_SetValue * f_actval_pu);
 
     /**
     *
@@ -110,8 +112,9 @@
     *	@brief      Set the Service Cyclic Function
     *
     */
-   typedef t_eReturnCode (t_cbAPPLGC_FSMCyclic)(t_float32 *f_snsValues_paf32, 
-                                                t_sAPPLGC_ServiceInfo *f_SrvInfo_pas);
+   typedef t_eReturnCode (t_cbAPPLGC_FSMCyclic)(t_sAPPLGC_ServiceInfo *f_SrvInfo_pas,
+                                                t_float32 *f_snsValues_paf32,
+                                                t_uAPPACT_SetValue * f_actval_pu);
     /**
     *
     *	@brief      Set the Service Enter Mode Function

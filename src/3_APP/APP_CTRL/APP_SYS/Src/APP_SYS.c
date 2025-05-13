@@ -320,13 +320,13 @@ static t_eReturnCode s_APPSYS_ResAlloc(void)
 {
     t_eReturnCode Ret_e;
 
-    Ret_e = SafeMem_SecureBlockInit(&g_sfbk_isFastTaskOn_s,
+    Ret_e = SMB_SecureBlockInit(&g_sfbk_isFastTaskOn_s,
                                     &g_isFastTaskON_b,
                                     sizeof(g_isFastTaskON_b),
                                     APPSYS_SAFE_BLOCK_MAX_ATTEMPT);
     if(Ret_e == RC_OK)
     {
-        Ret_e = SafeMem_SecureBlockInit(&g_sfbk_mskfastTask_s,
+        Ret_e = SMB_SecureBlockInit(&g_sfbk_mskfastTask_s,
                                         &g_mskFastTaskCall_u16,
                                         sizeof(g_mskFastTaskCall_u16),
                                         APPSYS_SAFE_BLOCK_MAX_ATTEMPT);

@@ -81,7 +81,7 @@
      * @param[in] f_maxAttemptOpe_u8 the max operation when read/write ope failed, max is SAFEMEM_MAX_ATTEMPT_OPE
      * @return t_eReturnCode Return code indicating success or failure.
      */
-    t_eReturnCode SafeMem_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps, 
+    t_eReturnCode SMB_SecureBlockInit(  t_sSafeMem_BlockInfo * f_secBlockInfo_ps, 
                                             const void * f_SecureArea_pv,
                                             const t_uint16 f_sizeSecArea_u16,
                                             t_uint8 f_maxAttemptOpe_u8);

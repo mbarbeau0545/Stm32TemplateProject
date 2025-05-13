@@ -65,12 +65,12 @@
 	//-----------------------------STRUCT TYPES---------------------------//
     typedef union 
     {
-        t_sint32 setPoint_s32;
+        t_float32 sp_f32;        /**< actuators set point to float 32bit */
     } t_uAPPACT_GetValue;
 
     typedef union 
     {
-        t_sint32 setPoint_s32;
+        t_float32 sp_f32;        /**< actuators set point to float 32bit */
     } t_uAPPACT_SetValue;
 
 

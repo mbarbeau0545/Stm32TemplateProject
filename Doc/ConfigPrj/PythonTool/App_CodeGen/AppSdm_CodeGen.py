@@ -51,7 +51,7 @@ class AppSdm_CodeGen():
     @classmethod
     def code_generation(cls, f_software_cfg, f_udscfg_path, f_is_uds_ope) -> None:
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        print("<<<<<<<<<<<<<<<<<<<<Start code generation for AppAct Module>>>>>>>>>>>>>>>>>>>")
+        print("<<<<<<<<<<<<<<<<<<<<Start code generation for APPSDM Module>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         # Load needed excel arrays
         cls.code_gen.load_excel_file(f_software_cfg)
@@ -162,9 +162,6 @@ class AppSdm_CodeGen():
         #-----------------------------------------------------------------
         #------------------------make code gen----------------------------
         #-----------------------------------------------------------------
-        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        print("<<<<<<<<<<<<<<<<<<<<Start code generation for AppSdm Module>>>>>>>>>>>>>>>>>>>")
-        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print("\t- For configPublic file")
         print("\t\t- Write enum item and strategy")
         cls.code_gen.change_target_balise(TARGET_T_ENUM_START_LINE,TARGET_T_ENUM_END_LINE)
@@ -184,7 +181,7 @@ class AppSdm_CodeGen():
         cls.code_gen.change_target_balise(TARGET_T_DIAG_STRAT_IMPL_START_LINE, TARGET_T_DIAG_STRAT_IMPL_END_LINE)
         cls.code_gen._write_into_file(impl_strat_func, APPSDM_CONGSPECIFIC_C)
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        print("<<<<<<<<<<<<<<<<<<<<End code generation for AppSdm Module>>>>>>>>>>>>>>>>>>>>>")
+        print("<<<<<<<<<<<<<<<<<<<<End code generation for APPSDM Module>>>>>>>>>>>>>>>>>>>>>")
         print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n")
         
     @classmethod

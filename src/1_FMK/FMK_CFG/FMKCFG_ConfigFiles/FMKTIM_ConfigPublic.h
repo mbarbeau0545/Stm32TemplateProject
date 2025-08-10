@@ -38,9 +38,11 @@
     /**
     * @brief This define return True if the timer is a 32 Bits timers
     */
+#if defined(FMKCPU_STM32_ECU_FAMILY_G4) |defined(FMKCPU_STM32_ECU_FAMILY_H7)
     #define FMKTIM_IS_32B_TIMER(f_timClock_e) \
         ((f_timClock_e) == FMKCPU_RCC_CLK_TIM2 ||\
          (f_timClock_e) == FMKCPU_RCC_CLK_TIM5)
+#endif
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -78,34 +80,37 @@
         FMKTIM_INTERRUPT_LINE_IO_12,                       /**< General Purpose Timer, Reference to Timer 1 Channel 2 */
         FMKTIM_INTERRUPT_LINE_IO_13,                       /**< General Purpose Timer, Reference to Timer 1 Channel 3 */
         FMKTIM_INTERRUPT_LINE_IO_14,                       /**< General Purpose Timer, Reference to Timer 1 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_21,                       /**< General Purpose Timer, Reference to Timer 2 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_22,                       /**< General Purpose Timer, Reference to Timer 2 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_23,                       /**< General Purpose Timer, Reference to Timer 2 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_24,                       /**< General Purpose Timer, Reference to Timer 2 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_31,                       /**< General Purpose Timer, Reference to Timer 3 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_32,                       /**< General Purpose Timer, Reference to Timer 3 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_33,                       /**< General Purpose Timer, Reference to Timer 3 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_34,                       /**< General Purpose Timer, Reference to Timer 3 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_41,                       /**< General Purpose Timer, Reference to Timer 4 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_42,                       /**< General Purpose Timer, Reference to Timer 4 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_43,                       /**< General Purpose Timer, Reference to Timer 4 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_44,                       /**< General Purpose Timer, Reference to Timer 4 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_51,                       /**< General Purpose Timer, Reference to Timer 5 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_52,                       /**< General Purpose Timer, Reference to Timer 5 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_53,                       /**< General Purpose Timer, Reference to Timer 5 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_54,                       /**< General Purpose Timer, Reference to Timer 5 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_61,                       /**< General Purpose Timer, Reference to Timer 8 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_62,                       /**< General Purpose Timer, Reference to Timer 8 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_63,                       /**< General Purpose Timer, Reference to Timer 8 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_64,                       /**< General Purpose Timer, Reference to Timer 8 Channel 4 */
-        FMKTIM_INTERRUPT_LINE_IO_71,                       /**< General Purpose Timer, Reference to Timer 15 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_72,                       /**< General Purpose Timer, Reference to Timer 15 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_81,                       /**< General Purpose Timer, Reference to Timer 16 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_91,                       /**< General Purpose Timer, Reference to Timer 17 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_101,                      /**< General Purpose Timer, Reference to Timer 20 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_IO_102,                      /**< General Purpose Timer, Reference to Timer 20 Channel 2 */
-        FMKTIM_INTERRUPT_LINE_IO_103,                      /**< General Purpose Timer, Reference to Timer 20 Channel 3 */
-        FMKTIM_INTERRUPT_LINE_IO_104,                      /**< General Purpose Timer, Reference to Timer 20 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_21,                       /**< General Purpose Timer, Reference to Timer 12 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_22,                       /**< General Purpose Timer, Reference to Timer 12 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_31,                       /**< General Purpose Timer, Reference to Timer 13 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_41,                       /**< General Purpose Timer, Reference to Timer 14 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_42,                       /**< General Purpose Timer, Reference to Timer 14 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_43,                       /**< General Purpose Timer, Reference to Timer 14 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_44,                       /**< General Purpose Timer, Reference to Timer 14 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_51,                       /**< General Purpose Timer, Reference to Timer 15 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_52,                       /**< General Purpose Timer, Reference to Timer 15 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_61,                       /**< General Purpose Timer, Reference to Timer 16 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_71,                       /**< General Purpose Timer, Reference to Timer 17 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_81,                       /**< General Purpose Timer, Reference to Timer 2 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_82,                       /**< General Purpose Timer, Reference to Timer 2 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_83,                       /**< General Purpose Timer, Reference to Timer 2 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_84,                       /**< General Purpose Timer, Reference to Timer 2 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_91,                       /**< General Purpose Timer, Reference to Timer 3 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_92,                       /**< General Purpose Timer, Reference to Timer 3 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_93,                       /**< General Purpose Timer, Reference to Timer 3 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_94,                       /**< General Purpose Timer, Reference to Timer 3 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_101,                      /**< General Purpose Timer, Reference to Timer 4 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_102,                      /**< General Purpose Timer, Reference to Timer 4 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_103,                      /**< General Purpose Timer, Reference to Timer 4 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_104,                      /**< General Purpose Timer, Reference to Timer 4 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_111,                      /**< General Purpose Timer, Reference to Timer 5 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_112,                      /**< General Purpose Timer, Reference to Timer 5 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_113,                      /**< General Purpose Timer, Reference to Timer 5 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_114,                      /**< General Purpose Timer, Reference to Timer 5 Channel 4 */
+        FMKTIM_INTERRUPT_LINE_IO_121,                      /**< General Purpose Timer, Reference to Timer 8 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_IO_122,                      /**< General Purpose Timer, Reference to Timer 8 Channel 2 */
+        FMKTIM_INTERRUPT_LINE_IO_123,                      /**< General Purpose Timer, Reference to Timer 8 Channel 3 */
+        FMKTIM_INTERRUPT_LINE_IO_124,                      /**< General Purpose Timer, Reference to Timer 8 Channel 4 */
     
         FMKTIM_INTERRUPT_LINE_IO_NB,
     } t_eFMKTIM_InterruptLineIO;
@@ -115,8 +120,7 @@
     */
     typedef enum
     {
-        FMKTIM_INTERRUPT_LINE_EVNT_1 = 0,                  /**< Event Purpose Timer, Reference to Timer 6 Channel 1 */
-        FMKTIM_INTERRUPT_LINE_EVNT_2,                        /**< Event Purpose Timer, Reference to Timer 7 Channel 1 */
+        FMKTIM_INTERRUPT_LINE_EVNT_1 = 0,                  /**<  Reference to timer 7, CHANNEL_1 */
     
         FMKTIM_INTERRUPT_LINE_EVNT_NB,
     } t_eFMKTIM_InterruptLineEvnt;

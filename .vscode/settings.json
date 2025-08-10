@@ -96,7 +96,15 @@
     "fmksrl_configprivate.h": "c",
     "fmksrl_configpublic.h": "c",
     "appsig_configprivate.h": "c",
-    "app_sig.h": "c"
+    "app_sig.h": "c",
+    "stm32h7xx.h": "c",
+    "stm32h723xx.h": "c",
+    "limits": "c",
+    "stm32h7xx_hal.h": "c",
+    "stm32h753xx.h": "c",
+    "core_cm7.h": "c",
+    "system_stm32h7xx.h": "c",
+    "stm32h7xx_hal_def.h": "c"
   },
   "stm32-for-vscode.armToolchainPath": false,
   "C_Cpp_Runner.cCompilerPath": "gcc",

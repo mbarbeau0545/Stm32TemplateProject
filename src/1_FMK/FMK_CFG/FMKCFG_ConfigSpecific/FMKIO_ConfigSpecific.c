@@ -87,6 +87,9 @@ t_eReturnCode FMKIO_Get_BspGpioPort(t_eFMKIO_GpioPort f_GpioPort_e, GPIO_TypeDef
             case FMKIO_GPIO_PORT_G:
                 *f_BspGpio_ps = GPIOG;
                 break;
+            case FMKIO_GPIO_PORT_H:
+                *f_BspGpio_ps = GPIOH;
+                break;
             /* CAUTION : Automatic generated code section for GPIO switch case: End */
             case FMKIO_GPIO_PORT_NB:
             default:
@@ -137,6 +140,9 @@ t_eReturnCode FMKIO_GetGpioRccClock(t_eFMKIO_GpioPort f_gpioPort_e, t_eFMKCPU_Cl
                 break;
             case FMKIO_GPIO_PORT_G:
                 *f_clockPort_pe = FMKCPU_RCC_CLK_GPIOG;
+                break;
+            case FMKIO_GPIO_PORT_H:
+                *f_clockPort_pe = FMKCPU_RCC_CLK_GPIOH;
                 break;
         /* CAUTION : Automatic generated code section for Switch Case GPIO to RCC: End */
 

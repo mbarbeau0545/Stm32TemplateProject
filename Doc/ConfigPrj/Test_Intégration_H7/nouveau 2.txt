@@ -1,0 +1,4 @@
+trucs à vérifier 
+- TIM INIT timer frequency 
+- HRTIM Timer freq s_FMKHRT_ComputeTimerFreqRange
+- check le dma la confgi et fonctionnement

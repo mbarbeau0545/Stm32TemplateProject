@@ -18,13 +18,18 @@
     // ********************************************************************
     // *                      Includes
     // ********************************************************************
-    
+    #include "./FMKCPU_ConfigPublic.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
     ///@brief Voltage multiplier to get the actual voltage since it's devided 
-    #define FMKCDA_ADC_VBAT_MULTPIPLIER         ((t_uint8)3)
-
+    #if defined(FMKCPU_STM32_ECU_FAMILY_G4)
+        #define FMKCDA_ADC_VBAT_MULTPIPLIER         ((t_uint8)3)
+    #elif defined(FMKCPU_STM32_ECU_FAMILY_H7)
+        #define FMKCDA_ADC_VBAT_MULTPIPLIER         ((t_uint8)4)
+    #else
+        #error "FMKCDA_ADC_VBAT_MULTPIPLIER non défini : définir FMKCPU_STM32_ECU_FAMILY_G4 ou H7"
+    #endif
     ///@brief calibration constant 
     #define FMKCDA_ADC_CALIB_VREF           ((t_float32)3.0f)
     #define FMKCDA_ADC_RESOLUTION           ((t_uint16)4095) // since we use 12 bits adc
@@ -54,8 +59,6 @@
         FMKCDA_ADC_1 = 0,                  /**< Reference to HAL ADC1 */
         FMKCDA_ADC_2,                        /**< Reference to HAL ADC2 */
         FMKCDA_ADC_3,                        /**< Reference to HAL ADC3 */
-        FMKCDA_ADC_4,                        /**< Reference to HAL ADC4 */
-        FMKCDA_ADC_5,                        /**< Reference to HAL ADC5 */
     
         FMKCDA_ADC_NB,
     } t_eFMKCDA_Adc;
@@ -84,6 +87,7 @@
         FMKCDA_ADC_CHANNEL_16,                       /**< Reference to HAL adc channel 16 */
         FMKCDA_ADC_CHANNEL_17,                       /**< Reference to HAL adc channel 17 */
         FMKCDA_ADC_CHANNEL_18,                       /**< Reference to HAL adc channel 18 */
+        FMKCDA_ADC_CHANNEL_19,                       /**< Reference to HAL adc channel 19 */
     
         FMKCDA_ADC_CHANNEL_NB,
     } t_eFMKCDA_AdcChannel;

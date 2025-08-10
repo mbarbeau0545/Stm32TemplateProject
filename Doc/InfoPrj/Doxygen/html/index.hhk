@@ -76,7 +76,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_i_o___ana_adc_cfg.html#a57923eb97a2c06335e58c72a810a8f38"><param name="Name" value="adcChannel_e"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="uniont__u_f_m_k_m_a_c___dma_handle_type.html#a0274c8284886115646ce942c7e66ed4d"><param name="Name" value="adcHandle_s"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#adc5a26c312e92010ba6cc4e282c80add"><param name="Name" value="AHB_Divider"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#adc5a26c312e92010ba6cc4e282c80add"><param name="Name" value="AHB_Divider_u32"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="uniont__u_a_p_p_s_n_s___reqested_unity.html#a007c6b2cab3dbf02b46e5989bb752902"><param name="Name" value="AngleUnity_e"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="uniont__u_a_p_p_s_n_s___reqested_unity.html#a3c6010b207daaac93a8d33424fc78b4f"><param name="Name" value="AngularSpdUnity_e"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#a2a5262b92e59f3e2bba693e0b4309f28"><param name="Name" value="APB1_Divider_u32"></OBJECT>
@@ -4394,7 +4394,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html"><param name="Name" value="FMKCPU_ConfigPublic.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a79dbdb4daa990faad7f54d77c6f9a7cc"><param name="Name" value="FMKCPU_STM32_ECU_FAMILY_G"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a79dbdb4daa990faad7f54d77c6f9a7cc"><param name="Name" value="FMKCPU_STM32_ECU_FAMILY_G4"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html"><param name="Name" value="FMKCPU_ConfigPublic.h"></OBJECT>
   <UL>
@@ -6915,7 +6915,7 @@
   <UL>
     <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k___c_p_u_8h.html#a08facef521cc2efa4977bce51932ddf0"><param name="Name" value="FMK_CPU.h"></OBJECT>
   </UL>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a79dbdb4daa990faad7f54d77c6f9a7cc"><param name="Name" value="FMKCPU_STM32_ECU_FAMILY_G"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a79dbdb4daa990faad7f54d77c6f9a7cc"><param name="Name" value="FMKCPU_STM32_ECU_FAMILY_G4"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a513e1632617ad7134f7d85b8d605b971a594a674e2882c60d1e8fe51486744159"><param name="Name" value="FMKCPU_SYS_CLOCK_AHB1"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a513e1632617ad7134f7d85b8d605b971a3ed4a0cb63880b271a423feda444a537"><param name="Name" value="FMKCPU_SYS_CLOCK_AHB2"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_public_8h.html#a513e1632617ad7134f7d85b8d605b971a6fee95733f6709eb1d9a35a97ae87263"><param name="Name" value="FMKCPU_SYS_CLOCK_APB1"></OBJECT>
@@ -9314,7 +9314,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html"><param name="Name" value="t_sFMKCPU_SysOscCfg"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html"><param name="Name" value="t_sFMKCPU_SysOscCfg"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#adc5a26c312e92010ba6cc4e282c80add"><param name="Name" value="AHB_Divider"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html#adc5a26c312e92010ba6cc4e282c80add"><param name="Name" value="AHB_Divider_u32"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="structt__s_f_m_k_c_p_u___sys_osc_cfg.html"><param name="Name" value="t_sFMKCPU_SysOscCfg"></OBJECT>
   <UL>

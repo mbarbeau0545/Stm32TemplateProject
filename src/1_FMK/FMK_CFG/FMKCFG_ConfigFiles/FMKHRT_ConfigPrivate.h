@@ -18,6 +18,8 @@
     // ********************************************************************
     // *                      Includes
     // ********************************************************************
+#include "APP_CFG/ConfigFiles/APPSYS_ConfigPublic.h"
+#if defined(APPSYS_MODULE_FMKHRT_ENABLE)
     #include "../FMKCFG_ConfigSpecific/FMKHRT_ConfigSpecific.h"
     #include "../FMKCFG_ConfigFiles/FMKHRT_ConfigPublic.h"
     
@@ -219,7 +221,6 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
                 [FMKHRT_HRTIM_SLAVE_3] = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
                 [FMKHRT_HRTIM_SLAVE_4] = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
                 [FMKHRT_HRTIM_SLAVE_5] = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
-                [FMKHRT_HRTIM_SLAVE_6] = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
             }
     },
 };
@@ -245,10 +246,6 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
             [FMKHRT_HRTIM_SLAVE_5] = {
                 FMKHRT_HR_LINE_9,
                 FMKHRT_HR_LINE_10,
-            },
-            [FMKHRT_HRTIM_SLAVE_6] = {
-                FMKHRT_HR_LINE_11,
-                FMKHRT_HR_LINE_12,
             },
         },
     };
@@ -288,12 +285,6 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
                                 HRTIM_TIMERINDEX_TIMER_E);
         return;
     }
-    void HRTIM1_TIMF_IRQHandler(void)
-    {
-        HAL_HRTIM_IRQHandler(   FMKHRT_PRIVATE_GetHandleTypeDef(FMKHRT_HIGH_RES_TIMER_1),
-                                HRTIM_TIMERINDEX_TIMER_F);
-        return;
-    }
     void HRTIM1_Master_IRQHandler(void)
     {
         HAL_HRTIM_IRQHandler(   FMKHRT_PRIVATE_GetHandleTypeDef(FMKHRT_HIGH_RES_TIMER_1),
@@ -301,6 +292,7 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
         return;
     }
     /* CAUTION : Automatic generated code section for IRQ Handler: Stop */
+#endif // APPSYS_MODULE_FMKHRT_ENABLE
 #endif // FMKHRT_CONFIGPRIVATE_H_INCLUDED
     //************************************************************************************
     // End of File

@@ -18,9 +18,12 @@
     // ********************************************************************
     // *                      Includes
     // ********************************************************************
+    #include "APP_CFG/ConfigFiles/APPSYS_ConfigPublic.h"
+#if defined(APPSYS_MODULE_FMKHRT_ENABLE)
     #include "FMK_CFG/FMKCFG_ConfigFiles/FMKCPU_ConfigPublic.h"
     #include "../FMKCFG_ConfigFiles/FMKHRT_ConfigPublic.h"
     #include "TypeCommon.h"
+
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
@@ -50,7 +53,6 @@
         FMKHRT_HRTIM_SLAVE_3,                        /**< Timer Slave C */
         FMKHRT_HRTIM_SLAVE_4,                        /**< Timer Slave D */
         FMKHRT_HRTIM_SLAVE_5,                        /**< Timer Slave E */
-        FMKHRT_HRTIM_SLAVE_6,                        /**< Timer Slave F */
     
         FMKHRT_HRTIM_SLAVE_NB,
     } t_eFMKHRT_HighResSlvTim;
@@ -178,7 +180,7 @@
                                                             t_uint32 f_srcAddress_u32,
                                                             t_uint32 f_destAddress_u32,
                                                             t_uint32 f_size_u32);                                                                                                                   
-    
+#endif // APPSYS_MODULE_FMKHRT_ENABLE
 #endif // FMKHRT_CONFIGSPECIFIC_H_INCLUDED
            //************************************************************************************
            // End of File

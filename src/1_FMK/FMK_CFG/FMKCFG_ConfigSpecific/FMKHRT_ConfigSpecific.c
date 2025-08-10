@@ -16,6 +16,8 @@
 // ********************************************************************
 // *                      Includes
 // ********************************************************************
+#include "APP_CFG/ConfigFiles/APPSYS_ConfigPublic.h"
+#if defined(APPSYS_MODULE_FMKHRT_ENABLE)
 #include "./FMKHRT_ConfigSpecific.h"
 // ********************************************************************
 // *                      Defines
@@ -227,36 +229,6 @@ t_eReturnCode FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLine_e,
                 if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
                 {
                     *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_5;
-                }
-                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
-                {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
-                break;
-            }
-            case FMKHRT_HR_LINE_11:
-            {
-                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
-                {
-                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
-                }
-                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
-                {
-                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_6;
-                }
-                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
-                {
-                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
-                break;
-            }
-            case FMKHRT_HR_LINE_12:
-            {
-                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
-                {
-                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
-                }
-                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
-                {
-                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_6;
                 }
                 if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
                 {
@@ -645,9 +617,11 @@ static t_eReturnCode s_FMKHRTSPEC_GetSlvTimerId(t_uint32 f_slvTimIdx_u32, t_uint
             case HRTIM_TIMERINDEX_TIMER_E:
                 *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_E;
                 break;
+#if defined(FMKCPU_STM32_ECU_FAMILY_G4)
             case HRTIM_TIMERINDEX_TIMER_F:
                 *f_slvTimId_pu32 = HRTIM_TIMERID_TIMER_F;
                 break;
+#endif
             default:
                 Ret_e = RC_ERROR_NOT_SUPPORTED;
         }
@@ -656,7 +630,7 @@ static t_eReturnCode s_FMKHRTSPEC_GetSlvTimerId(t_uint32 f_slvTimIdx_u32, t_uint
     return Ret_e;
 }
 
-
+#endif // APPSYS_MODULE_FMKHRT_ENABLE
 //************************************************************************************
 // End of File
 //************************************************************************************

@@ -103,6 +103,8 @@
         FMKHRT_HR_LINE_8,                        /**< Reference to HRTIM1, Timer Slave D, Channel 2 */
         FMKHRT_HR_LINE_9,                        /**< Reference to HRTIM1, Timer Slave E, Channel 1 */
         FMKHRT_HR_LINE_10,                       /**< Reference to HRTIM1, Timer Slave E, Channel 2 */
+        FMKHRT_HR_LINE_11,                       /**< Reference to HRTIM1, Timer Slave F, Channel 1 */
+        FMKHRT_HR_LINE_12,                       /**< Reference to HRTIM1, Timer Slave F, Channel 2 */
     
         FMKHRT_HR_LINE_NB,
     } t_eFMKHRT_HighResLine;

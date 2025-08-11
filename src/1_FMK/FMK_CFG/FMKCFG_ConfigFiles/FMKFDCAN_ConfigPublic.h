@@ -37,6 +37,7 @@
     {
         FMKFDCAN_NODE_1 = 0,                  /**< Node 1 Identifier */
         FMKFDCAN_NODE_2,                        /**< Node 2 Identifier */
+        FMKFDCAN_NODE_3,                        /**< Node 3 Identifier */
     
         FMKFDCAN_NODE_NB,
     } t_eFMKFDCAN_NodeList;

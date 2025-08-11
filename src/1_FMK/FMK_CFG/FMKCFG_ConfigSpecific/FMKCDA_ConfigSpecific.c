@@ -124,9 +124,6 @@ t_eReturnCode FMKCDA_Get_BspChannel(t_eFMKCDA_Adc f_Adc_e,
             case FMKCDA_ADC_CHANNEL_18:
                 *f_bspChannel_32 = ADC_CHANNEL_18;
                 break;
-            case FMKCDA_ADC_CHANNEL_19:
-                *f_bspChannel_32 = ADC_CHANNEL_19;
-                break;
             /* CAUTION : Automatic generated code section for switch_case ADC channel: End */
             case FMKCDA_ADC_CHANNEL_NB:
             default:

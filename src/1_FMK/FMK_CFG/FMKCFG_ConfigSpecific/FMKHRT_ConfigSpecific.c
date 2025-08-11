@@ -235,6 +235,36 @@ t_eReturnCode FMKHRT_GetTimerInfoFromLine( t_eFMKHRT_HighResLine f_HrLine_e,
                     *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
                 break;
             }
+            case FMKHRT_HR_LINE_11:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_6;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_1;                }
+                break;
+            }
+            case FMKHRT_HR_LINE_12:
+            {
+                if(f_HrTimIstc_pe != (t_eFMKHRT_HighResIstc *)NULL)
+                {
+                    *f_HrTimIstc_pe = FMKHRT_HIGH_RES_TIMER_1;
+                }
+                if(f_HrSlvTim_pe != (t_eFMKHRT_HighResSlvTim *)NULL)
+                {
+                    *f_HrSlvTim_pe = FMKHRT_HRTIM_SLAVE_6;
+                }
+                if(f_HrChnl_pe != (t_eFMKHRT_HrTimChannel  *)NULL)
+                {
+                    *f_HrChnl_pe = FMKHRT_HRTIM_CHANNEL_2;                }
+                break;
+            }
             /* CAUTION : Automatic generated code section for switch case mapping: Stop */
             case FMKHRT_HR_LINE_NB:
             default:

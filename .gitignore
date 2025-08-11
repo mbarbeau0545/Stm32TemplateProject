@@ -7,3 +7,4 @@
 .vscode/ipch
 .VSCodeCounter*
 .vscode/c_cpp_properties.json
+platform.ini

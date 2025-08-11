@@ -53,6 +53,7 @@
         FMKHRT_HRTIM_SLAVE_3,                        /**< Timer Slave C */
         FMKHRT_HRTIM_SLAVE_4,                        /**< Timer Slave D */
         FMKHRT_HRTIM_SLAVE_5,                        /**< Timer Slave E */
+        FMKHRT_HRTIM_SLAVE_6,                        /**< Timer Slave F */
     
         FMKHRT_HRTIM_SLAVE_NB,
     } t_eFMKHRT_HighResSlvTim;

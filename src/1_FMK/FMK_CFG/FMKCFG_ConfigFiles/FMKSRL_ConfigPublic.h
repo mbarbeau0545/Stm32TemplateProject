@@ -48,9 +48,6 @@
         FMKSRL_SERIAL_LINE_3,                        /**< Reference to Hardware Instance USART3 */
         FMKSRL_SERIAL_LINE_4,                        /**< Reference to Hardware Instance UART4 */
         FMKSRL_SERIAL_LINE_5,                        /**< Reference to Hardware Instance UART5 */
-        FMKSRL_SERIAL_LINE_6,                        /**< Reference to Hardware Instance USART6 */
-        FMKSRL_SERIAL_LINE_7,                        /**< Reference to Hardware Instance UART7 */
-        FMKSRL_SERIAL_LINE_8,                        /**< Reference to Hardware Instance UART8 */
     
         FMKSRL_SERIAL_LINE_NB,
     } t_eFMKSRL_SerialLine;

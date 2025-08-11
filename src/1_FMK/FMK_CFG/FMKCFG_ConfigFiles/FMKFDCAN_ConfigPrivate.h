@@ -227,11 +227,14 @@
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Variable: Start */
     //--------- Tx, Rx Buffer for Can Node 1 ---------//
-    t_sFMKFDCAN_RxItemBuffer g_Node1_RxBuffer_as[80];
-    t_sFMKFDCAN_TxItemBuffer g_Node1_TxBuffer_as[120];
+    t_sFMKFDCAN_RxItemBuffer g_Node1_RxBuffer_as[40];
+    t_sFMKFDCAN_TxItemBuffer g_Node1_TxBuffer_as[60];
     //--------- Tx, Rx Buffer for Can Node 2 ---------//
-    t_sFMKFDCAN_RxItemBuffer g_Node2_RxBuffer_as[80];
-    t_sFMKFDCAN_TxItemBuffer g_Node2_TxBuffer_as[120];
+    t_sFMKFDCAN_RxItemBuffer g_Node2_RxBuffer_as[0];
+    t_sFMKFDCAN_TxItemBuffer g_Node2_TxBuffer_as[0];
+    //--------- Tx, Rx Buffer for Can Node 3 ---------//
+    t_sFMKFDCAN_RxItemBuffer g_Node3_RxBuffer_as[0];
+    t_sFMKFDCAN_TxItemBuffer g_Node3_TxBuffer_as[0];
 
 
     ///@brief Node configuraiton
@@ -242,9 +245,9 @@
             .c_IrqnLine1_e = FMKCPU_NVIC_FDCAN1_IT0_IRQN,
             .c_IrqnLine2_e = FMKCPU_NVIC_FDCAN1_IT1_IRQN,
             .rxBufferStartAddress_pas = (t_sFMKFDCAN_RxItemBuffer *)(&g_Node1_RxBuffer_as[0]),
-            .rxBufferSize_u16 = (t_uint16)80,
+            .rxBufferSize_u16 = (t_uint16)40,
             .txBufferStartAddress_pas = (t_sFMKFDCAN_TxItemBuffer *)(&g_Node1_TxBuffer_as[0]),
-            .txBufferSize_u16 = (t_uint16)120,
+            .txBufferSize_u16 = (t_uint16)60,
         },
         [FMKFDCAN_NODE_2] = {
             .Instance = FDCAN2,
@@ -252,9 +255,19 @@
             .c_IrqnLine1_e = FMKCPU_NVIC_FDCAN2_IT0_IRQN,
             .c_IrqnLine2_e = FMKCPU_NVIC_FDCAN2_IT1_IRQN,
             .rxBufferStartAddress_pas = (t_sFMKFDCAN_RxItemBuffer *)(&g_Node2_RxBuffer_as[0]),
-            .rxBufferSize_u16 = (t_uint16)80,
+            .rxBufferSize_u16 = (t_uint16)0,
             .txBufferStartAddress_pas = (t_sFMKFDCAN_TxItemBuffer *)(&g_Node2_TxBuffer_as[0]),
-            .txBufferSize_u16 = (t_uint16)120,
+            .txBufferSize_u16 = (t_uint16)0,
+        },
+        [FMKFDCAN_NODE_3] = {
+            .Instance = FDCAN3,
+            .c_Clock_e = FMKCPU_RCC_CLK_FDCAN,
+            .c_IrqnLine1_e = FMKCPU_NVIC_FDCAN3_IT0_IRQN,
+            .c_IrqnLine2_e = FMKCPU_NVIC_FDCAN3_IT1_IRQN,
+            .rxBufferStartAddress_pas = (t_sFMKFDCAN_RxItemBuffer *)(&g_Node3_RxBuffer_as[0]),
+            .rxBufferSize_u16 = (t_uint16)0,
+            .txBufferStartAddress_pas = (t_sFMKFDCAN_TxItemBuffer *)(&g_Node3_TxBuffer_as[0]),
+            .txBufferSize_u16 = (t_uint16)0,
         },
     };
 
@@ -323,6 +336,24 @@
     void FDCAN2_IT1_IRQHandler(void)
     {
     HAL_FDCAN_IRQHandler(FMKFDCAN_PRIVATE_GetHandleTypeDef(FMKFDCAN_NODE_2));
+    return;
+    }
+
+    /**********************************
+    * FDCAN3_IT0_IRQHandler
+    **********************************/
+    void FDCAN3_IT0_IRQHandler(void)
+    {
+    HAL_FDCAN_IRQHandler(FMKFDCAN_PRIVATE_GetHandleTypeDef(FMKFDCAN_NODE_3));
+    return;
+    }
+
+    /**********************************
+    * FDCAN3_IT1_IRQHandler
+    **********************************/
+    void FDCAN3_IT1_IRQHandler(void)
+    {
+    HAL_FDCAN_IRQHandler(FMKFDCAN_PRIVATE_GetHandleTypeDef(FMKFDCAN_NODE_3));
     return;
     }
 

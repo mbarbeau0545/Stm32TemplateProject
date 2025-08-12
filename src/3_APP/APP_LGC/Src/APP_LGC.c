@@ -59,7 +59,6 @@
 // ********************************************************************
 // *                      Variables
 // ********************************************************************
-RTC_HandleTypeDef g_rtcHandle_s;
 /**
 * @brief App Logic Module State
 */
@@ -172,6 +171,7 @@ static void s_APPLGC_CanCallback(   t_eFMKFDCAN_NodeList f_Node_e,
 static void s_APPLGC_CanCallback_2(   t_eFMKFDCAN_NodeList f_Node_e,
                                     t_sFMKFDCAN_RxItemEvent f_RxItem_s, 
                                     t_eFMKFDCAN_NodeStatus f_NodeStatus_e);
+static void s_APPLGC_PulseDone(t_eFMKIO_OutPwmSig f_signal_e);
 //****************************************************************************
 //                      Public functions - Implementation
 //********************************************************************************
@@ -179,7 +179,7 @@ static void s_APPLGC_CanCallback_2(   t_eFMKFDCAN_NodeList f_Node_e,
 // ********************************************************************
 // *                      Variables
 // ********************************************************************
-
+static t_bool isPulseDone_b = TRUE;
 /*********************************
  * APPLGC_Init
  *********************************/
@@ -448,7 +448,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
     Ret_e = FMKIO_Set_InFreqSigCfg(FMKIO_INPUT_SIGFREQ_1, FMKIO_STC_RISING_EDGE, FMKIO_FREQ_MEAS_COUNT, 500, NULL_FUNCTION);
     if(Ret_e == RC_OK)
     {
-        Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_5, pwmWave_s, rampCtrl, NULL_FUNCTION,NULL_FUNCTION);
+        Ret_e = FMKIO_Set_OutPwmSigCfg(FMKIO_OUTPUT_SIGPWM_8, pwmWave_s, rampCtrl, s_APPLGC_PulseDone,NULL_FUNCTION);
     }
     
     
@@ -464,7 +464,7 @@ static t_eReturnCode s_APPLGC_PreOperational(void)
     t_eReturnCode Ret_e = RC_OK;
 
    
-    Ret_e = FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_5, 500);
+    Ret_e = FMKIO_Set_OutPwmSigDutyCycle(FMKIO_OUTPUT_SIGPWM_8, 500);
 
     if(Ret_e < RC_OK)
     {
@@ -483,42 +483,6 @@ static t_eReturnCode s_APPLGC_Operational(void)
     static t_uint32 savecTime_u32 = 0;
     t_uint32 current_u32 = 0;
     t_float32 outfreq_f32;
-
-
-    t_float32 anaMeasure_f32;
-    FMKCPU_GetTick(&current_u32);
-    
-    Ret_e = FMKIO_Get_InFreqSigValue(FMKIO_INPUT_SIGFREQ_1, &anaMeasure_f32);
-    FMKIO_Get_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_5, &outfreq_f32);
-    //FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_5, freqValue_u32);
-    //anaMeasure_f32  = (t_float32)(1 / anaMeasure_f32);
-    FMKSRL_LOG("GET %d, APPL %d, retcode %d\r\n", (t_uint32)(anaMeasure_f32), (t_uint32)(outfreq_f32+ 0.5f) ,Ret_e);
-    if(Ret_e >= RC_OK)
-    {
-        if(Ret_e >= RC_OK)
-        {
-            if((current_u32 - savecTime_u32) > 4000)
-            {
-                FMKIO_Set_OutPwmSigFrequency(FMKIO_OUTPUT_SIGPWM_5, freqValue_u32);
-                savecTime_u32 = current_u32;
-                
-                freqValue_u32 += 1001;
-                if(freqValue_u32 >6000)
-                {
-                    freqValue_u32 = 1000;
-                }
-            }
-        }
-    }
-
-    if(Ret_e == RC_OK)
-    {
-        if(anaMeasure_f32 > 4000.0f)
-        {
-            Ret_e = RC_WARNING_BUSY;
-        }
-    }
-
 
          /*t_uint8 idxAgent_u8;
         
@@ -672,6 +636,16 @@ static void s_APPLGC_CanCallback(   t_eFMKFDCAN_NodeList f_Node_e,
     return;
 }
 
+
+static void s_APPLGC_PulseDone(t_eFMKIO_OutPwmSig f_signal_e)
+{
+
+    if(isPulseDone_b == FALSE)
+    {
+        isPulseDone_b = TRUE;
+    }
+    
+}
 static void s_APPLGC_CanCallback_2(   t_eFMKFDCAN_NodeList f_Node_e,
                                     t_sFMKFDCAN_RxItemEvent f_RxItem_s, 
                                     t_eFMKFDCAN_NodeStatus f_NodeStatus_e)

@@ -50,9 +50,9 @@
     #define APPSIG_PORTGATE_CAN_NODE    (FMKFDCAN_NODE_1)
 
     #define APPSIG_PORTGATE_SRL         (APPSIG_MSG_ORIGIN_SRL)
-    #define APPSIG_PORTGATE_SRL_LINE    (FMKSRL_SERIAL_LINE_1)
+    #define APPSIG_PORTGATE_SRL_LINE    (FMKSRL_SERIAL_LINE_2)
 
-    #define APPSIG_PORTGATE_CFG         (0) // (1 << APPSIG_MSG_ORIGIN_SRL)
+    #define APPSIG_PORTGATE_CFG         (1 << APPSIG_MSG_ORIGIN_SRL) // (1 << APPSIG_MSG_ORIGIN_SRL)
     /* CAUTION : Automatic generated code section for Define: Start */
     ///@brief Serial Message Id
     #define APPSIG_SRL_ID_APPLICATIONINFO1                         ((t_uint32)0x10)

@@ -19,6 +19,7 @@
     // *                      Includes
     // ********************************************************************
     #include "./APPSDM_ConfigPublic.h"
+    #include "3_APP/APP_CTRL/APP_SIG/Src/APP_SIG.h"
     #include "APP_CFG/ConfigSpecific/APPSDM_ConfigSpecific.h"
     // ********************************************************************
     // *                      Defines
@@ -40,6 +41,13 @@
 
 	/* CAUTION : Automatic generated code section for Structure: End */
 	//-----------------------------STRUCT TYPES---------------------------//
+    typedef struct
+    {
+        t_eAPPSIG_Signal itemID_e;         //----- Signal for Item ID ----//
+        t_eAPPSIG_Signal diagState_e;      //----- Signal for Item State ----//
+        t_eAPPSIG_Signal debugInfo1;       //----- Signal for Item Info 1 ----//
+        t_eAPPSIG_Signal debugInfo2;       //----- Signal for Item Info 2 ----//
+    } t_sAPPSDM_DebugSignal;
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */
@@ -89,10 +97,12 @@
         {(t_uint16)5,                  (t_uint32)100,                (t_bool)False,                (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // APP_CYCLIC_TIMEOUT
         {(t_uint16)5,                  (t_uint32)100,                (t_bool)False,                (t_bool)False,                APPSDM_DIAG_STRAT_NONE},        // APP_FASTTASK_TIMEOUT
         {(t_uint16)5,                  (t_uint32)200,                (t_bool)False,                (t_bool)True,                 APPSDM_DIAG_STRAT_NONE},        // UDS_COM_ERROR
+        {(t_uint16)5,                  (t_uint32)65000,              (t_bool)False,                (t_bool)True,                 APPSDM_DIAG_STRAT_NONE},        // APPSYS_ECU_POS_ERROR
         {(t_uint16)5,                  (t_uint32)100,                (t_bool)False,                (t_bool)True,                 APPSDM_DIAG_STRAT_NONE},        // APPSIG_MSG_TIMEOUT
     };
 
     /* CAUTION : Automatic generated code section for Variable: End */
+
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************

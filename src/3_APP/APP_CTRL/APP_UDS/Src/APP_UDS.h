@@ -50,38 +50,13 @@
     // ********************************************************************
     // *                      Variables
     // ********************************************************************
-    /**
-     *	@brief
-    *	@note   
-    *
-    */
+    /** @brief Initializes the UDS server module. @return Initialization status. */
     t_eReturnCode APPUDS_Init(void);
-    /**
-     *	@brief
-    *	@note   
-    *
-    *
-    */
+    /** @brief Runs the UDS server cyclic processing. @return Processing status. */
     t_eReturnCode APPUDS_Cyclic(void);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *
-    */
+    /** @brief Gets the UDS module lifecycle state. @param[out] f_State_pe Destination for the current state. @return Status of the query. */
     t_eReturnCode APPUDS_GetState(t_eCyclicModState *f_State_pe);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *
-    */
+    /** @brief Sets the UDS module lifecycle state. @param[in] f_State_e Requested state. @return Status of the transition. */
     t_eReturnCode APPUDS_SetState(t_eCyclicModState f_State_e);
      //********************************************************************************
      //                      Public functions - Prototyupes

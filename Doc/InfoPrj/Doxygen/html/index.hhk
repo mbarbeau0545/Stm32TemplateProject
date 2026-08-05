@@ -1260,7 +1260,7 @@
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_d_a___config_private_8h.html#acb6e29eb8d6b1c830fdd7534aa689310"><param name="Name" value="c_FmkCda_HwVrefCfg[FMKCDA_ADC_NB]"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_d_a___config_private_8h.html#ac9185f5ba22a1052cdd218ee2c1bd18e"><param name="Name" value="c_FmkCda_VrefCalibAddress_pas16[FMKCDA_ADC_NB]"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#aeee60afe74541be26c5a19cec575f03f"><param name="Name" value="c_FMKCPU_ClkFunctions_apcb[FMKCPU_NVIC_NB]"></OBJECT>
-  <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a00e91a9fcb2f3598122eb45889fbec14"><param name="Name" value="c_FmkCpu_CoreClkValue_ua8[FMKCPU_CORE_CLOCK_SPEED_NB][FMKCPU_SYS_CLOCK_NB]"></OBJECT>
+  <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a00e91a9fcb2f3598122eb45889fbec14"><param name="Name" value="c_FmkCpu_CoreClkValue_ua16[FMKCPU_CORE_CLOCK_SPEED_NB][FMKCPU_SYS_CLOCK_NB]"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#ac09dc67fed4ddad079efbc4cce4d9332"><param name="Name" value="c_FMKCPU_IRQNPriority_ae[FMKCPU_NVIC_NB]"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#ab1dc78c2d456c854ffabaf4776e686e4"><param name="Name" value="c_FmkCpu_ITLineDacMapp_as[FMKCPU_INTERRUPT_LINE_DAC_NB]"></OBJECT>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a7a24052717074361f4d5363feba66846"><param name="Name" value="c_FmkCpu_ITLineEvntMapp_as[FMKCPU_INTERRUPT_LINE_EVNT_NB]"></OBJECT>
@@ -3162,7 +3162,7 @@
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html"><param name="Name" value="FMKCPU_ConfigPrivate.h"></OBJECT>
   <UL>
-    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a00e91a9fcb2f3598122eb45889fbec14"><param name="Name" value="c_FmkCpu_CoreClkValue_ua8[FMKCPU_CORE_CLOCK_SPEED_NB][FMKCPU_SYS_CLOCK_NB]"></OBJECT>
+    <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a00e91a9fcb2f3598122eb45889fbec14"><param name="Name" value="c_FmkCpu_CoreClkValue_ua16[FMKCPU_CORE_CLOCK_SPEED_NB][FMKCPU_SYS_CLOCK_NB]"></OBJECT>
   </UL>
   <LI><OBJECT type="text/sitemap"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html"><param name="Name" value="FMKCPU_ConfigPrivate.h"></OBJECT>
   <UL>

@@ -35,6 +35,9 @@
     * @brief Min ARR Value for PWM 
     */
     #define FMKHRT_PWM_MAX_ARR_VALUE ((t_uint32)64000)
+
+    ///@brief Max pulse that could get REPx register 
+    #define FMKHRT_MAX_PULSE_REPX       ((t_uint32)0xFF)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -221,7 +224,6 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
                 [FMKHRT_HRTIM_SLAVE_3] = FMKCPU_NVIC_HRTIM1_TIMC_IRQN,
                 [FMKHRT_HRTIM_SLAVE_4] = FMKCPU_NVIC_HRTIM1_TIMD_IRQN,
                 [FMKHRT_HRTIM_SLAVE_5] = FMKCPU_NVIC_HRTIM1_TIME_IRQN,
-                [FMKHRT_HRTIM_SLAVE_6] = FMKCPU_NVIC_HRTIM1_TIMF_IRQN,
             }
     },
 };
@@ -247,10 +249,6 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
             [FMKHRT_HRTIM_SLAVE_5] = {
                 FMKHRT_HR_LINE_9,
                 FMKHRT_HR_LINE_10,
-            },
-            [FMKHRT_HRTIM_SLAVE_6] = {
-                FMKHRT_HR_LINE_11,
-                FMKHRT_HR_LINE_12,
             },
         },
     };
@@ -288,12 +286,6 @@ const t_sFMKHRT_HrTimerCfg c_FmkHrt_HrTimCfg_as[FMKHRT_HIGH_RES_TIMER_NB] = {
     {
         HAL_HRTIM_IRQHandler(   FMKHRT_PRIVATE_GetHandleTypeDef(FMKHRT_HIGH_RES_TIMER_1),
                                 HRTIM_TIMERINDEX_TIMER_E);
-        return;
-    }
-    void HRTIM1_TIMF_IRQHandler(void)
-    {
-        HAL_HRTIM_IRQHandler(   FMKHRT_PRIVATE_GetHandleTypeDef(FMKHRT_HIGH_RES_TIMER_1),
-                                HRTIM_TIMERINDEX_TIMER_F);
         return;
     }
     void HRTIM1_Master_IRQHandler(void)

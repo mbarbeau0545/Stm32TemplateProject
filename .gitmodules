@@ -70,3 +70,15 @@
 	path = src/3_APP/APP_CTRL/APP_SIG
 	url = https://github.com/mbarbeau0545/APPSIG
 	branch = Dev
+[submodule "src/4_PCSIM"]
+	path = src/4_PCSIM
+	url = https://github.com/mbarbeau0545/PC_SIM_APP
+	branch = Dev
+[submodule "src/1_FMK/FMK_HAL/FMK_I2C"]
+	path = src/1_FMK/FMK_HAL/FMK_I2C
+	url = http://github.com/mbarbeau0545/FMK_I2C
+	branch = Dev
+[submodule "src/1_FMK/FMK_HAL/FMK_NVM"]
+	path = src/1_FMK/FMK_HAL/FMK_NVM
+	url = https://github.com/mbarbeau0545/STM32_FMK_NVM
+	branch = Dev

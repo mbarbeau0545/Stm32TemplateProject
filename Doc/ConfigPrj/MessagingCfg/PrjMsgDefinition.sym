@@ -22,6 +22,7 @@ Sig=AppSdm_ModState unsigned 3 /e:module_state
 Sig=AppSpm_ModState unsigned 3 /e:module_state
 Sig=Cyclic_Duration unsigned 16
 Sig=FastTaskDuration unsigned 12
+Sig=PRM_FLAG_PARAM_SEND_OK unsigned 1
 
 {SEND}
 

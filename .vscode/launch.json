@@ -28,14 +28,38 @@
             ]
         },
         {
+            "name": "SIL - PC_SIM",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/.pio/build/pc_sim_debug/program.exe",
+            "args": [
+                "--udp-port",
+                "19090",
+                "--sleep-ms",
+                "1"
+            ],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": true,
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "D:/Project/Software/STM32/fIntegration_H7/.pio/build/nucleo_g474re/firmware.elf",
-            "projectEnvName": "nucleo_g474re",
+            "executable": "C:/PROJECT/STM32/H7_Integration/.pio/build/nucleo_h753zi/firmware.elf",
+            "projectEnvName": "pc_sim_debug",
             "toolchainBinDir": "C:/Users/mbarb/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "C:/Users/mbarb/.platformio/platforms/ststm32/misc/svd/STM32G474xx.svd",
+            "svdPath": "C:/Users/mbarb/.platformio/platforms/ststm32/misc/svd/STM32H753.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
                 "task": "Pre-Debug"
@@ -45,21 +69,21 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "D:/Project/Software/STM32/fIntegration_H7/.pio/build/nucleo_g474re/firmware.elf",
-            "projectEnvName": "nucleo_g474re",
+            "executable": "C:/PROJECT/STM32/H7_Integration/.pio/build/nucleo_h753zi/firmware.elf",
+            "projectEnvName": "pc_sim_debug",
             "toolchainBinDir": "C:/Users/mbarb/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "C:/Users/mbarb/.platformio/platforms/ststm32/misc/svd/STM32G474xx.svd"
+            "svdPath": "C:/Users/mbarb/.platformio/platforms/ststm32/misc/svd/STM32H753.svd"
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "D:/Project/Software/STM32/fIntegration_H7/.pio/build/nucleo_g474re/firmware.elf",
-            "projectEnvName": "nucleo_g474re",
+            "executable": "C:/PROJECT/STM32/H7_Integration/.pio/build/nucleo_h753zi/firmware.elf",
+            "projectEnvName": "pc_sim_debug",
             "toolchainBinDir": "C:/Users/mbarb/.platformio/packages/toolchain-gccarmnoneeabi/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "C:/Users/mbarb/.platformio/platforms/ststm32/misc/svd/STM32G474xx.svd",
+            "svdPath": "C:/Users/mbarb/.platformio/platforms/ststm32/misc/svd/STM32H753.svd",
             "loadMode": "manual"
         }
     ]

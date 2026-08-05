@@ -27,15 +27,39 @@
     // ********************************************************************
     // *                      Types
     // ********************************************************************
+
+    ///@brief union to set/get parameter
+    typedef union
+    {
+        t_uint8 prmVal_u8;
+        t_uint16 prmVal_u16;
+        t_uint32 prmVal_u32;
+        t_sint8 prmVal_s8;
+        t_sint16 prmVal_s16;
+        t_sint32 prmVal_s32;
+        t_float32 prmVal_f32;
+    } t_uAPPSPM_PrmValType;
+
+    ///@brief enumeration of type of parameter 
+    typedef enum 
+    {
+        APPSPM_PRM_TYPE_UINT8 = 0,
+        APPSPM_PRM_TYPE_UINT16,
+        APPSPM_PRM_TYPE_UINT32,
+        APPSPM_PRM_TYPE_SINT8,
+        APPSPM_PRM_TYPE_SINT16,
+        APPSPM_PRM_TYPE_SINT32,
+        APPSPM_PRM_TYPE_FLOAT32,
+
+        APPSPM_PRM_TYPE_NB,
+    } t_eAPPSPM_PrmType;
     /* CAUTION : Automatic generated code section for Enum: Start */
     /**
     * @brief Enum for listong every parameter.
     */
     typedef enum
     {
-        APPSPM_PRM_MOTOR_X_KP = 0,
-        APPSPM_PRM_MOTOR_X_KI,
-        APPSPM_PRM_MOTOR_X_KD,
+        APPSPM_PRM_SYS_MACHINE_ID = 0,
     
         APPSPM_PRM_NB,
     } t_eAPPSPM_ItemPrm;

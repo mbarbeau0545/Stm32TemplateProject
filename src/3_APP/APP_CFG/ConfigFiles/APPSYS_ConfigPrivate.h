@@ -26,6 +26,7 @@
     #include "1_FMK/FMK_HAL/FMK_TIM/Src/FMK_TIM.h"
     #include "1_FMK/FMK_HAL/FMK_CAN/Src/FMK_FDCAN.h"
     #include "1_FMK/FMK_HAL/FMK_SRL/Src/FMK_SRL.h"
+    #include "1_FMK/FMK_HAL/FMK_NVM/Src/FMK_NVM.h"
     #include "3_APP/APP_CTRL/APP_ACT/Src/APP_ACT.h"
     #include "3_APP/APP_CTRL/APP_SDM/Src/APP_SDM.h"
     #include "3_APP/APP_CTRL/APP_SPM/Src/APP_SPM.h"
@@ -41,26 +42,49 @@
 #elif defined(FMKCPU_STM32_ECU_FAMILY_H7)
     #define APPSYS_SYSTEM_CORE_SPEED FMKCPU_CORE_CLOCK_SPEED_400MHZ
 #endif
-    #define APPSYS_ELAPSED_TIME_CYCLIC          ((t_uint8)40)                   /**< Elapsed time (in ms) between cyclic function call*/
     #define APPSYS_ITLINE_FASTTASK              FMKTIM_INTERRUPT_LINE_EVNT_1    /**< Timer Line use for FastTask */
-    #define APPSYS_ELASPED_TIME_FASTTASK        ((t_uint32)5)                   /**< Fast Task every 5 ms */
     #define APPSYS_WATCHDOG_ENABLE              (FALSE)
+
+    ///@brief Analog pin that define the Ecu Position
+    #define APPSYS_IO_ANALOG_SIGNAL (FMKIO_INPUT_SIGANA_2)
+
+    ///@brief Flag to know if user wants to reach the eeprom sys option parmeter
+    #define APPSYS_EEPROM_PARAM_ENABLE (FALSE)
+    #define APPSYS_SYS_MACH_BASED_ON_PRM (FALSE)
+
+    ///@brief Signal send to know if the parameter has been send by ros
+    #define APPSYS_FLAG_PRM_RCV_STATUS (APPSIG_SIGNAL_PRM_FLAG_PARAM_SEND_OK)
+
+    ///@brief Number of ecu position parameter
+    #define APPSYS_ECU_POS_MAX      ((t_uint32)6)
+
+    ///@brief Impose Ecu congiguration
+    #define APPSYS_IMPOSE_ECU_ID    TRUE
+    #define APPSYS_ECU_ID APPSYS_ECU_POS_1
+
+    ///@brief Time waiting PC to send Parameter
+    #define APPSYS_WAIT_PRM_TIMEOUT ((t_uint32)500)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
-	/* CAUTION : Automatic generated code section for Enum: Start */
+    /* CAUTION : Automatic generated code section for Enum: Start */
 
-	/* CAUTION : Automatic generated code section for Enum: End */
+    /* CAUTION : Automatic generated code section for Enum: End */
 	//-----------------------------ENUM TYPES-----------------------------//
 
+    /* CAUTION : Automatic generated code section for Structure: Start */
 
-	/* CAUTION : Automatic generated code section for Structure: Start */
-
-	/* CAUTION : Automatic generated code section for Structure: End */
+    /* CAUTION : Automatic generated code section for Structure: End */
 	//-----------------------------STRUCT TYPES---------------------------//
-	/* CAUTION : Automatic generated code section : Start */
+    ///@brief range for determine the ecu position
+    typedef struct
+    {
+        t_float32 min_f32;
+        t_float32 max_f32;
+    } t_sAPPSYS_EcuPosAnaRange;
+    /* CAUTION : Automatic generated code section : Start */
 
-	/* CAUTION : Automatic generated code section : End */
+    /* CAUTION : Automatic generated code section : End */
 	//-----------------------------TYPEDEF TYPES---------------------------//
     /**
     *
@@ -126,6 +150,7 @@
 #ifdef APPSYS_MODULE_FMKSRL_ENABLE
         {FMKSRL_Init,   FMKSRL_Cyclic,      FMKSRL_GetState,   FMKSRL_SetState,     APPSIG_SIGNAL_FMKSRL_MODSTATE},
 #endif // APPSYS_MODULE_FMKSRL_ENABLE
+        {FMKNVM_Init,   FMKNVM_Cyclic,      FMKNVM_GetState,   FMKNVM_SetState,     APPSIG_SIGNAL_NB},
 
         //----- Application module -----//
         {APPSDM_Init,    APPSDM_Cyclic,     APPSDM_GetState,   APPSDM_SetState,      APPSIG_SIGNAL_APPSDM_MODSTATE},
@@ -136,6 +161,26 @@
         {APPLGC_Init,    APPLGC_Cyclic,     APPLGC_GetState,   APPLGC_SetState,      APPSIG_SIGNAL_APPLGC_MODSTATE},
     };
 
+
+    /* CAUTION : Automatic generated code section for Variable: Start */
+    ///@brief Machine Option Configuration
+    const t_uint8 c_AppSys_MachOptCfg_ua8[APPSYS_MACHINE_NB][APPSYS_OPT_ID_NB] = {
+    };
+
+    ///@brief Variable to get/set the machine configuration
+    const t_eAPPSPM_ItemPrm c_AppSys_SysOpt_ItemPrmID_ae[APPSYS_OPT_ID_NB] = {
+    };
+
+    /* CAUTION : Automatic generated code section for Variable: End */
+
+    const t_sAPPSYS_EcuPosAnaRange c_EcuPosAnaRange_as[APPSYS_ECU_POS_MAX] = {
+        {2551,      3550},
+        {2051,      2550},
+        {1551,      2050},
+        {1051,      1550},
+        {551,       1050},
+        {50,        550}
+    };
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************

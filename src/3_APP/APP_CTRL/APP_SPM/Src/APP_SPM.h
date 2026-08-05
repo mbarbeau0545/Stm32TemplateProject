@@ -17,8 +17,7 @@
 
 	// ********************************************************************
 	// *                      Includes
-	// ********************************************************************
-    #ifdef APPSYS_MODULE_APP_SPM_ENABLE
+	// *******************************************************************
 	#include "TypeCommon.h"
 	#include "APP_CFG/ConfigFiles/APPSPM_ConfigPublic.h"
 	// ********************************************************************
@@ -52,8 +51,8 @@
    *	@brief      Perform all Cyclic action for this module.\n
    *   @note       In preOpe mode -> If one of the configuration is not set the Module Cyclic 
    *               retry indefinitely and the module state doesn't change until all 
-   *               actuator configuration are set
-   *               In Ope mode -> call driver cyclic
+   *               parameter configuration is valid.
+   *               In Ope mode -> performs parameter-management processing.
    *
    */
    t_eReturnCode APPSPM_Cyclic(void);
@@ -61,7 +60,7 @@
    *
    *	@brief Function to know the module state.\n 
    *
-   *	@param[in]  f_State_pe : store the value, value from @ref t_eCyclicModState
+   *	@param[out] f_State_pe : destination for the current module state.
    *
    *   @retval RC_OK                             @ref RC_OK
    *   @retval RC_ERROR_PTR_NULL                 @ref RC_ERROR_PTR_NUL
@@ -81,20 +80,20 @@
    *	@brief Get the Parameter value
    *
    *	@param[in]  f_itemId_e : the item parameter id, value from @ref t_eAPPSPM_ItemPrm
-   *	@param[in]  f_prmValue_pu16 : Container for parameter value 
+   *	@param[out] f_prmValue_pu : destination for the parameter value.
    *
    *   @retval RC_OK                             @ref RC_OK
    */
-	t_eReturnCode APPSPM_GetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uint16 * f_prmValue_pu16);
+	t_eReturnCode APPSPM_GetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType * f_prmValue_pu);
     /** 
     *	@brief Set the Parameter value
     *
     *	@param[in]  f_itemId_e : the item parameter id, value from @ref t_eAPPSPM_ItemPrm
-    *	@param[in]  f_prmValue_u16 : New Parameter Value 
+    *	@param[in]  f_prmVal_u : new parameter value.
     *
     *   @retval RC_OK                             @ref RC_OK
     */
-	t_eReturnCode APPSPM_SetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uint16 f_prmValue_u16);
+	t_eReturnCode APPSPM_SetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType f_prmVal_u);
     /**
      *
      *	@brief Get the Parameter Information
@@ -105,10 +104,9 @@
     *   @retval RC_OK                             @ref RC_OK
     */
 	t_eReturnCode APPSPM_GetParamInfo(	t_eAPPSPM_ItemPrm f_itemId_e, 
-                                        t_uint16 * f_prmMinValue_pu16,
-                                        t_uint16 * f_prmMaxValue_pu16,
-                                        t_uint16 * f_prmDefaultValue_pu16);
-    #endif // APPSYS_MODULE_APP_SPM_ENABLE
+                                        t_float32 * f_prmMinValue_pf32,
+                                        t_float32 * f_prmMaxValue_pf32,
+                                        t_float32 * f_prmDefaultValue_pf32);
 #endif // FILE_CONFIGPRIVATE_H_INCLUDED           
 //************************************************************************************
 // End of File

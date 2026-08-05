@@ -7,7 +7,7 @@
  * @date        jj/mm/yyyy
  * @version     1.0
  */
-  
+
 #ifndef APPSYS_CONFIGPUBLIC_H_INCLUDED
 #define APPSYS_CONFIGPUBLIC_H_INCLUDED
 
@@ -32,17 +32,40 @@
     #define APPSYS_MODULE_FMKSRL_ENABLE
     #define APPSYS_MODULE_APPLGC_ENABLE
     #define APPSYS_MODULE_APP_SPM_ENABLE
-
-    #define APPSYS_ELAPSED_TIME_CYCLIC ((t_uint8)40)     /**< Elapsed time (in ms) between cyclic function call*/
-    #define APPSYS_ITLINE_FASTTASK FMKTIM_INTERRUPT_LINE_EVNT_1 /**< Timer Line use for FastTask */
-    #define APPSYS_ELASPED_TIME_FASTTASK ((t_uint32)5)  /**< Fast Task every 5 ms */
     
+    #define APPSYS_ELAPSED_TIME_CYCLIC          ((t_uint8)50)                   /**< Elapsed time (in ms) between cyclic function call*/
+    #define APPSYS_ELASPED_TIME_FASTTASK        ((t_float32)1.0F) // 5 ms                   /**< Fast Task every 3 ms */
+
+    #define APPSYS_MACHINE_ID           (APPSYS_MACHINE_POC_1)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
-	/* CAUTION : Automatic generated code section for Enum: Start */
 
-	/* CAUTION : Automatic generated code section for Enum: End */
+    typedef enum
+    {
+        APPSYS_ECU_POS_1 = 0,
+
+        APPSYS_ECU_POS_NB
+    } t_eAPPSYS_EcuPos;
+
+    /* CAUTION : Automatic generated code section for Enum: Start */
+    typedef enum
+    {
+
+        APPSYS_MACHINE_NB,
+    } t_eAPPSYS_MachineList;
+
+    /**
+    * @brief System Option List.
+    */
+    typedef enum
+    {
+
+        APPSYS_OPT_ID_NB,
+    } t_eAPPSYS_SysOptionList;
+
+    /* CAUTION : Automatic generated code section for Enum: End */
+
 	//-----------------------------ENUM TYPES-----------------------------//
     // Flag automatic generate code
     /**< enum for module list */
@@ -60,6 +83,7 @@
 #ifdef APPSYS_MODULE_FMKSRL_ENABLE
         APPSYS_MODULE_FMK_SERIAL,
 #endif // APPSYS_MODULE_FMKSRL_ENABLE
+        APPSYS_MODULE_FMK_NVM,
         APPSYS_MODULE_APP_SDM,
         APPSYS_MODULE_APP_SPM,
         APPSYS_MODULE_APP_SIG,

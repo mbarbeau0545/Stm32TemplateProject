@@ -75,83 +75,17 @@
     //********************************************************************************
     //                      Public functions - Prototyupes
     //********************************************************************************
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *	@param[out]
-    *	 
-    *
-    *
-    */
+    /** @brief Initializes the application-logic module. @return Initialization status. */
     t_eReturnCode APPLGC_Init(void);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *	@param[out]
-    *	 
-    *
-    *
-    */
+    /** @brief Executes the application-logic cyclic processing. @return Processing status. */
     t_eReturnCode APPLGC_Cyclic(void);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *	@param[out]
-    *	 
-    *
-    *
-    */
+    /** @brief Gets the application-logic lifecycle state. @param[out] f_State_pe Destination for the current state. @return Status of the query. */
     t_eReturnCode APPLGC_GetState(t_eCyclicModState *f_State_pe);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *	@param[out]
-    *	 
-    *
-    *
-    */
+    /** @brief Sets the application-logic lifecycle state. @param[in] f_State_e Requested state. @return Status of the transition. */
     t_eReturnCode APPLGC_SetState(t_eCyclicModState f_State_e);
-    /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *	@param[out]
-    *	 
-    *
-    *
-    */
+    /** @brief Updates a service health state. @param[in] f_service_e Service to update. @param[in] f_srvHealth_e New service health. @return Status of the update. */
     t_eReturnCode APPLGC_SetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_SrvHealth f_srvHealth_e);
-   /**
-    *
-    *	@brief
-    *	@note   
-    *
-    *
-    *	@param[in] 
-    *	@param[out]
-    *	 
-    *
-    *
-    */
+   /** @brief Gets a service health state. @param[in] f_service_e Service to query. @param[out] f_srvHealth_pe Destination for the health state. @return Status of the query. */
     t_eReturnCode APPLGC_GetServiceHealth(t_eAPPLGC_SrvList f_service_e, t_eAPPLGC_SrvHealth * f_srvHealth_pe);
 
 #endif // APP_LGC_H_INCLUDED           

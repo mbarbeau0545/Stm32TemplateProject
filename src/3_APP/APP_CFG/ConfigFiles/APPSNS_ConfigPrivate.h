@@ -19,6 +19,8 @@
     // *                      Includes
     // ********************************************************************
     #include "./APPSNS_ConfigPublic.h"
+    #include "APP_CTRL/APP_SPM/Src/APP_SPM.h"
+    #include "APP_CTRL/APP_SIG/Src/APP_SIG.h"
     /* CAUTION : Automatic generated code section for Include: Start */
     /* CAUTION : Automatic generated code section for Include: End */
     // ********************************************************************
@@ -44,7 +46,7 @@
     *	@brief      Set a sensor configuration 
 
     */
-    typedef t_eReturnCode (t_cbAppSns_SetSnsCfg)(void);
+    typedef t_eReturnCode (t_cbAppSns_SetSnsCfg)(t_uint8 f_snsDvcOpt_u8, t_eAPPSNS_SnsDriverList * f_DrvUsed_pe);
     /**
     *
     *	@brief      get value for a sensor
@@ -85,22 +87,32 @@
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */
-
-	/**< Structure to store needed functions for a sensor */
+    ///@brief Structure for sensors device managment 
     typedef struct 
     {
-        t_eAPPSNS_SnsMeasType          measTyp_e;
+        t_eAPPSYS_SysOptionList      sysOptSnsDvc_e;
         t_cbAppSns_SetSnsCfg         * SetCfg_pcb;             /**< Reference to "set config" function */
+    } t_sAPPSNS_SnsDvcOpeCfg;
+
+	///@brief Structure to store needed functions for a sensor
+    typedef struct 
+    {
+        t_eAPPSNS_SnsDeviceList        deviceLink_e;          /**< the name of the device which sensors interface is linked */
+        t_eAPPSNS_SnsMeasType          measTyp_e;
         t_cbAppSns_GetSigValue       * GetValue_pcb;           /**< Reference to "get value" function */
         t_cbAppSns_FormatValSI       * FormatValSI_pcb;        /**< Reference to convert signal function */ 
-    } t_sAPPSNS_SysSnsFunc;
+        t_eAPPSIG_Signal               SigDebug_e;             /**< Debug signal mapping */
+    } t_sAPPSNS_SysSnsCfg;
 
-    /**< Structure to store needed functions for a driver */
+    ///@brief Structure to store needed functions for a driver
     typedef struct 
     {
         t_cbAppSns_DrvInit   * Init_pcb;
         t_cbAppSns_DrvCyclic * Cyclic_pcb;
+        t_bool isFastTaskCyclic_b;
     } t_sAPPSNS_SysDrvFunc;
+
+
     // ********************************************************************
     // *                      Prototypes
     // ********************************************************************
@@ -109,16 +121,16 @@
     // *                      Variables
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Variable: Start */
+    ///@brief Variable for System Sensors Interface Ope Mngmt Info
+    const t_sAPPSNS_SysSnsCfg c_AppSns_SysSns_as[APPSNS_SNSITF_NB] = {
+    };
+
+    ///@brief Variable for system Sensors Device Ope Mngmt
+    const t_sAPPSNS_SnsDvcOpeCfg c_AppSns_SnsDvcOpeCfg_as[APPSNS_SNSDVC_NB] = {
+    };
+
     /**< Variable for System Sensors drivers functions*/
-    const t_sAPPSNS_SysDrvFunc c_AppSns_SysDrv_apf[APPSNS_DRIVER_NB] = {
-    };
-
-    /**< Variable for System Sensors functions*/
-    const t_sAPPSNS_SysSnsFunc c_AppSns_SysSns_apf[APPSNS_SENSOR_NB] = {
-    };
-
-    /**< Variable for Sensors Unity Management */
-    const t_eAPPSNS_SnsMeasType c_AppSns_SnsMeasType_ae[APPSNS_SENSOR_NB] = {
+    const t_sAPPSNS_SysDrvFunc c_AppSns_SysDrv_as[APPSNS_DRV_NB] = {
     };
 
     /* CAUTION : Automatic generated code section for Variable: End */

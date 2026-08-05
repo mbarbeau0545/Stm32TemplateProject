@@ -18,7 +18,10 @@
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-
+    ///@brief Number maximum of max subsriber a SIGNAL can have 
+    #define APPSIG_SIG_RCV_SUBSRIBERS_MAX   ((t_uint8)1)
+    ///@brief Number maximum of max subsriber a MSG can have 
+    #define APPSIG_MSG_RCV_SUBSRIBERS_MAX   ((t_uint8)1)
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -45,6 +48,7 @@
         APPSIG_MSG_DIR_RX = 0,          //---- msg is expected to be receive ----//
         APPSIG_MSG_DIR_TX,              //---- msg is expected to be send and received ----//
         APPSIG_MSG_DIR_RX_TX,           //---- msg is expected to receive and transmitted ----//
+        APPSIG_MSG_DIR_UNUSED,          //---- msg is not used in this configuration ----//
 
         APPSIG_MSG_DIR_NB
     } t_eAPPSIG_MsgDirection;
@@ -71,6 +75,7 @@
         APPSIG_SIGNAL_APPSPM_MODSTATE,
         APPSIG_SIGNAL_CYCLIC_DURATION,
         APPSIG_SIGNAL_FASTTASKDURATION,
+        APPSIG_SIGNAL_PRM_FLAG_PARAM_SEND_OK,
     
         APPSIG_SIGNAL_NB,
     } t_eAPPSIG_Signal;

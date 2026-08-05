@@ -56,9 +56,7 @@
     {
         FMKSRL_BSP_RX_OPE_RECEIVE = 0x00,       /**< Bsp Reception Size Operation */
         FMKSRL_BSP_RX_OPE_RECEIVE_IDLE,         /**< Bsp Reception Idle Operation */
-#if defined(FMKCPU_STM32_ECU_FAMILY_G4) || defined(FMKCPU_STM32_ECU_FAMILY_H7)
         FMKSRL_BSP_RX_OPE_RECEIVE_TIMEOUT,      /**< Bsp Reception Timeout Operation */
-#endif
         FMKSRL_BSP_RX_OPE_NB                    /**< Bsp Reception Operation Number */
     } t_eFMKSRL_BspReceiveOpe;
 
@@ -222,16 +220,16 @@
     t_char g_UartBufferLog_uac[FMKSRL_UART_BUFFER_SIZE];
     /* CAUTION : Automatic generated code section for Variable: Start */
     //--------- Tx, Rx Buffer for Serial Line 1 ---------//
-    t_uint8 g_SrlLine_1_RxBuffer_ua8[256];
-    t_uint8 g_SrlLine_1_TxBuffer_ua8[256];
+    t_uint8 g_SrlLine_1_RxBuffer_ua8[1024];
+    t_uint8 g_SrlLine_1_TxBuffer_ua8[1024];
 
     //--------- Tx, Rx Buffer for Serial Line 2 ---------//
-    t_uint8 g_SrlLine_2_RxBuffer_ua8[256];
+    t_uint8 g_SrlLine_2_RxBuffer_ua8[1024];
     t_uint8 g_SrlLine_2_TxBuffer_ua8[1024];
 
     //--------- Tx, Rx Buffer for Serial Line 3 ---------//
-    t_uint8 g_SrlLine_3_RxBuffer_ua8[0];
-    t_uint8 g_SrlLine_3_TxBuffer_ua8[0];
+    t_uint8 g_SrlLine_3_RxBuffer_ua8[1024];
+    t_uint8 g_SrlLine_3_TxBuffer_ua8[1024];
 
     //--------- Tx, Rx Buffer for Serial Line 4 ---------//
     t_uint8 g_SrlLine_4_RxBuffer_ua8[0];
@@ -240,6 +238,18 @@
     //--------- Tx, Rx Buffer for Serial Line 5 ---------//
     t_uint8 g_SrlLine_5_RxBuffer_ua8[0];
     t_uint8 g_SrlLine_5_TxBuffer_ua8[0];
+
+    //--------- Tx, Rx Buffer for Serial Line 6 ---------//
+    t_uint8 g_SrlLine_6_RxBuffer_ua8[1024];
+    t_uint8 g_SrlLine_6_TxBuffer_ua8[1024];
+
+    //--------- Tx, Rx Buffer for Serial Line 7 ---------//
+    t_uint8 g_SrlLine_7_RxBuffer_ua8[0];
+    t_uint8 g_SrlLine_7_TxBuffer_ua8[0];
+
+    //--------- Tx, Rx Buffer for Serial Line 8 ---------//
+    t_uint8 g_SrlLine_8_RxBuffer_ua8[0];
+    t_uint8 g_SrlLine_8_TxBuffer_ua8[0];
 
     /**< Store the Serial Configuration */
     const t_sFMKSRL_SerialCfg c_FmkSrl_SerialCfg_as[FMKSRL_SERIAL_LINE_NB] = {
@@ -250,9 +260,9 @@
             .c_DmaRqstRx   = FMKCPU_DMA_RQSTYPE_USART1_RX,
             .c_DmaRqstTx   = FMKCPU_DMA_RQSTYPE_USART1_TX,
             .Rx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_1_RxBuffer_ua8[0]),
-            .Rx_bufferSize_u16 = (t_uint16)256,
+            .Rx_bufferSize_u16 = (t_uint16)1024,
             .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_1_TxBuffer_ua8[0]),
-            .Tx_bufferSize_u16 = (t_uint16)256,
+            .Tx_bufferSize_u16 = (t_uint16)1024,
         },
         [FMKSRL_SERIAL_LINE_2] = {
             .c_clockPort_e = FMKCPU_RCC_CLK_USART2,
@@ -261,7 +271,7 @@
             .c_DmaRqstRx   = FMKCPU_DMA_RQSTYPE_USART2_RX,
             .c_DmaRqstTx   = FMKCPU_DMA_RQSTYPE_USART2_TX,
             .Rx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_2_RxBuffer_ua8[0]),
-            .Rx_bufferSize_u16 = (t_uint16)256,
+            .Rx_bufferSize_u16 = (t_uint16)1024,
             .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_2_TxBuffer_ua8[0]),
             .Tx_bufferSize_u16 = (t_uint16)1024,
         },
@@ -269,12 +279,12 @@
             .c_clockPort_e = FMKCPU_RCC_CLK_USART3,
             .c_HwType_e    = FMKSRL_HW_PROTOCOL_USART,
             .c_IRQNType_e  = FMKCPU_NVIC_USART3_IRQN,
-            .c_DmaRqstRx   = (t_eFMKCPU_DmaRqst)0xFF,
-            .c_DmaRqstTx   = (t_eFMKCPU_DmaRqst)0xFF,
+            .c_DmaRqstRx   = FMKCPU_DMA_RQSTYPE_USART3_RX,
+            .c_DmaRqstTx   = FMKCPU_DMA_RQSTYPE_USART3_TX,
             .Rx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_3_RxBuffer_ua8[0]),
-            .Rx_bufferSize_u16 = (t_uint16)0,
+            .Rx_bufferSize_u16 = (t_uint16)1024,
             .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_3_TxBuffer_ua8[0]),
-            .Tx_bufferSize_u16 = (t_uint16)0,
+            .Tx_bufferSize_u16 = (t_uint16)1024,
         },
         [FMKSRL_SERIAL_LINE_4] = {
             .c_clockPort_e = FMKCPU_RCC_CLK_UART4,
@@ -298,6 +308,39 @@
             .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_5_TxBuffer_ua8[0]),
             .Tx_bufferSize_u16 = (t_uint16)0,
         },
+        [FMKSRL_SERIAL_LINE_6] = {
+            .c_clockPort_e = FMKCPU_RCC_CLK_USART6,
+            .c_HwType_e    = FMKSRL_HW_PROTOCOL_USART,
+            .c_IRQNType_e  = FMKCPU_NVIC_USART6_IRQN,
+            .c_DmaRqstRx   = FMKCPU_DMA_RQSTYPE_USART6_RX,
+            .c_DmaRqstTx   = FMKCPU_DMA_RQSTYPE_USART6_TX,
+            .Rx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_6_RxBuffer_ua8[0]),
+            .Rx_bufferSize_u16 = (t_uint16)1024,
+            .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_6_TxBuffer_ua8[0]),
+            .Tx_bufferSize_u16 = (t_uint16)1024,
+        },
+        [FMKSRL_SERIAL_LINE_7] = {
+            .c_clockPort_e = FMKCPU_RCC_CLK_UART7,
+            .c_HwType_e    = FMKSRL_HW_PROTOCOL_UART,
+            .c_IRQNType_e  = FMKCPU_NVIC_UART7_IRQN,
+            .c_DmaRqstRx   = (t_eFMKCPU_DmaRqst)0xFF,
+            .c_DmaRqstTx   = (t_eFMKCPU_DmaRqst)0xFF,
+            .Rx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_7_RxBuffer_ua8[0]),
+            .Rx_bufferSize_u16 = (t_uint16)0,
+            .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_7_TxBuffer_ua8[0]),
+            .Tx_bufferSize_u16 = (t_uint16)0,
+        },
+        [FMKSRL_SERIAL_LINE_8] = {
+            .c_clockPort_e = FMKCPU_RCC_CLK_UART8,
+            .c_HwType_e    = FMKSRL_HW_PROTOCOL_UART,
+            .c_IRQNType_e  = FMKCPU_NVIC_UART8_IRQN,
+            .c_DmaRqstRx   = (t_eFMKCPU_DmaRqst)0xFF,
+            .c_DmaRqstTx   = (t_eFMKCPU_DmaRqst)0xFF,
+            .Rx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_8_RxBuffer_ua8[0]),
+            .Rx_bufferSize_u16 = (t_uint16)0,
+            .Tx_StartAddressBuffer_pu8 = (t_uint8 *)(&g_SrlLine_8_TxBuffer_ua8[0]),
+            .Tx_bufferSize_u16 = (t_uint16)0,
+        },
     };
     /**
     * @brief Mapping between Serial Line And Bsp Handle Typedef
@@ -308,6 +351,9 @@
         USART3,                         // Reference to Serial Line 3 
         UART4,                          // Reference to Serial Line 4 
         UART5,                          // Reference to Serial Line 5 
+        USART6,                         // Reference to Serial Line 6 
+        UART7,                          // Reference to Serial Line 7 
+        UART8,                          // Reference to Serial Line 8 
     };
 
     /* CAUTION : Automatic generated code section for Variable: End */
@@ -431,6 +477,57 @@
         USART_HandleTypeDef * usartHandle_ps = NULL;
 
         FMKSRL_PRIVATE_GetHandleTypeDef(FMKSRL_SERIAL_LINE_5, &uartHandle_ps, &usartHandle_ps);
+
+        if(uartHandle_ps != (UART_HandleTypeDef *)NULL)
+        {
+            HAL_UART_IRQHandler((UART_HandleTypeDef *)(uartHandle_ps));
+        }
+        else if(usartHandle_ps != (USART_HandleTypeDef *)NULL)
+        {
+            HAL_USART_IRQHandler((USART_HandleTypeDef *)(usartHandle_ps));
+        }
+    }
+
+    void USART6_IRQHandler(void)
+    {
+        UART_HandleTypeDef * uartHandle_ps = NULL;
+        USART_HandleTypeDef * usartHandle_ps = NULL;
+
+        FMKSRL_PRIVATE_GetHandleTypeDef(FMKSRL_SERIAL_LINE_6, &uartHandle_ps, &usartHandle_ps);
+
+        if(uartHandle_ps != (UART_HandleTypeDef *)NULL)
+        {
+            HAL_UART_IRQHandler((UART_HandleTypeDef *)(uartHandle_ps));
+        }
+        else if(usartHandle_ps != (USART_HandleTypeDef *)NULL)
+        {
+            HAL_USART_IRQHandler((USART_HandleTypeDef *)(usartHandle_ps));
+        }
+    }
+
+    void UART7_IRQHandler(void)
+    {
+        UART_HandleTypeDef * uartHandle_ps = NULL;
+        USART_HandleTypeDef * usartHandle_ps = NULL;
+
+        FMKSRL_PRIVATE_GetHandleTypeDef(FMKSRL_SERIAL_LINE_7, &uartHandle_ps, &usartHandle_ps);
+
+        if(uartHandle_ps != (UART_HandleTypeDef *)NULL)
+        {
+            HAL_UART_IRQHandler((UART_HandleTypeDef *)(uartHandle_ps));
+        }
+        else if(usartHandle_ps != (USART_HandleTypeDef *)NULL)
+        {
+            HAL_USART_IRQHandler((USART_HandleTypeDef *)(usartHandle_ps));
+        }
+    }
+
+    void UART8_IRQHandler(void)
+    {
+        UART_HandleTypeDef * uartHandle_ps = NULL;
+        USART_HandleTypeDef * usartHandle_ps = NULL;
+
+        FMKSRL_PRIVATE_GetHandleTypeDef(FMKSRL_SERIAL_LINE_8, &uartHandle_ps, &usartHandle_ps);
 
         if(uartHandle_ps != (UART_HandleTypeDef *)NULL)
         {

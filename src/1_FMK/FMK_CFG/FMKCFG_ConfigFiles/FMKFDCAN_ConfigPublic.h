@@ -37,7 +37,6 @@
     {
         FMKFDCAN_NODE_1 = 0,                  /**< Node 1 Identifier */
         FMKFDCAN_NODE_2,                        /**< Node 2 Identifier */
-        FMKFDCAN_NODE_3,                        /**< Node 3 Identifier */
     
         FMKFDCAN_NODE_NB,
     } t_eFMKFDCAN_NodeList;
@@ -57,19 +56,6 @@
 
         FMKFDCAN_NODE_OPEMODE_NB,                   /**< Total number of operating modes. */
     } t_eFMKFDCAN_NodeOpeMode;
-
-    /**
-     * @brief Configuration list for FDCAN nodes.
-     */
-    typedef enum
-    {
-        FMKFDCAN_NODE_CFG_1 = 0x00, /**< Node configuration 1. */
-        FMKFDCAN_NODE_CFG_2,        /**< Node configuration 2. */
-        FMKFDCAN_NODE_CFG_3,        /**< Node configuration 3. */
-        FMKFDCAN_NODE_CFG_4,        /**< Node configuration 4. */
-
-        FMKFDCAN_NODE_CFG_NB,       /**< Total number of node configurations. */
-    } t_eFMKFDCAN_NodeCfgList;
 
     /**
      * @brief FDCAN interrupt lines.

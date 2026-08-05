@@ -87,6 +87,9 @@ t_eReturnCode FMKIO_Get_BspGpioPort(t_eFMKIO_GpioPort f_GpioPort_e, GPIO_TypeDef
             case FMKIO_GPIO_PORT_G:
                 *f_BspGpio_ps = GPIOG;
                 break;
+            case FMKIO_GPIO_PORT_H:
+                *f_BspGpio_ps = GPIOH;
+                break;
             /* CAUTION : Automatic generated code section for GPIO switch case: End */
             case FMKIO_GPIO_PORT_NB:
             default:
@@ -138,6 +141,9 @@ t_eReturnCode FMKIO_GetGpioRccClock(t_eFMKIO_GpioPort f_gpioPort_e, t_eFMKCPU_Cl
             case FMKIO_GPIO_PORT_G:
                 *f_clockPort_pe = FMKCPU_RCC_CLK_GPIOG;
                 break;
+            case FMKIO_GPIO_PORT_H:
+                *f_clockPort_pe = FMKCPU_RCC_CLK_GPIOH;
+                break;
         /* CAUTION : Automatic generated code section for Switch Case GPIO to RCC: End */
 
             case FMKIO_GPIO_PORT_NB:
@@ -149,6 +155,47 @@ t_eReturnCode FMKIO_GetGpioRccClock(t_eFMKIO_GpioPort f_gpioPort_e, t_eFMKCPU_Cl
     return Ret_e;
 }
 
+/*********************************
+ * FMKIO_GetGpioModeInput
+ *********************************/
+t_eReturnCode FMKIO_GetGpioModeInput(t_uint32 * f_gpioModeInput_pu32)
+{
+    t_eReturnCode Ret_e;
+
+    if(f_gpioModeInput_pu32 == NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;    
+    }
+    else 
+    {
+        Ret_e = RC_OK;
+
+        *f_gpioModeInput_pu32 = FMKIO_BSP_MODE_INPUT;
+    }
+
+    return Ret_e;
+}
+
+/*********************************
+ * FMKIO_GetGpioModeInput
+ *********************************/
+t_eReturnCode FMKIO_GetGpioModeAnalog(t_uint32 * f_gpioModeAnalog_pu32)
+{
+    t_eReturnCode Ret_e;
+
+    if(f_gpioModeAnalog_pu32 == NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;    
+    }
+    else 
+    {
+        Ret_e = RC_OK;
+
+        *f_gpioModeAnalog_pu32 = FMKIO_BSP_MODE_ANALOG;
+    }
+
+    return Ret_e;
+}
 /* CAUTION : Automatic generated code section for Exti IRQN_Handler: Start */
 /*********************************
  * EXTI0_IRQHandler

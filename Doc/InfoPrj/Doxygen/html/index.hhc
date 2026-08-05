@@ -698,7 +698,7 @@
                 <LI><OBJECT type="text/sitemap"><param name="Name" value="FMKCPU_TIMER_NB"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a17696e6a68cdf4f872408b479c0e1bd7abebcc97094cfd64e76d0eec9f876549c"><param name="ImageNumber" value="11"></OBJECT>
                 </UL>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="c_FMKCPU_ClkFunctions_apcb"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#aeee60afe74541be26c5a19cec575f03f"><param name="ImageNumber" value="11"></OBJECT>
-              <LI><OBJECT type="text/sitemap"><param name="Name" value="c_FmkCpu_CoreClkValue_ua8"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a00e91a9fcb2f3598122eb45889fbec14"><param name="ImageNumber" value="11"></OBJECT>
+              <LI><OBJECT type="text/sitemap"><param name="Name" value="c_FmkCpu_CoreClkValue_ua16"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a00e91a9fcb2f3598122eb45889fbec14"><param name="ImageNumber" value="11"></OBJECT>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="c_FMKCPU_IRQNPriority_ae"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#ac09dc67fed4ddad079efbc4cce4d9332"><param name="ImageNumber" value="11"></OBJECT>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="c_FmkCpu_ITLineDacMapp_as"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#ab1dc78c2d456c854ffabaf4776e686e4"><param name="ImageNumber" value="11"></OBJECT>
               <LI><OBJECT type="text/sitemap"><param name="Name" value="c_FmkCpu_ITLineEvntMapp_as"><param name="Local" value="_f_m_k_c_p_u___config_private_8h.html#a7a24052717074361f4d5363feba66846"><param name="ImageNumber" value="11"></OBJECT>

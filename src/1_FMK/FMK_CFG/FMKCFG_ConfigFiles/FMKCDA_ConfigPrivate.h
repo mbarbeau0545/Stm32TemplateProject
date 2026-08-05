@@ -21,23 +21,20 @@
     
     #include "./FMKCPU_ConfigPublic.h"
     #include "./FMKCDA_ConfigPublic.h"
+    #include "../FMKCFG_ConfigSpecific/FMKCDA_ConfigSpecific.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
     /* CAUTION : Automatic generated code section for ADC channels number: Start */
-    #define FMKCDA_ADC_INTERN_VREFINT_CAL_1_ADDRESS ((volatile t_uint16 *)0x1FFF75AA)
-    #define FMKCDA_ADC_INTERN_VREFINT_CAL_2_ADDRESS ((volatile t_uint16 *)0x1FFF75AA)
-    #define FMKCDA_ADC_INTERN_VREFINT_CAL_3_ADDRESS ((volatile t_uint16 *)0x1FFF75AA)
-    #define FMKCDA_ADC_INTERN_VREFINT_CAL_4_ADDRESS ((volatile t_uint16 *)0x1FFF75AA)
-    #define FMKCDA_ADC_INTERN_VREFINT_CAL_5_ADDRESS ((volatile t_uint16 *)0x1FFF75AA)
-    #define FMKCDA_ADC_INTERN_VBAT_ADDRESS ((volatile t_uint16*)0x00000000)
-    #define FMKCDA_ADC_INTERN_TS_CAL1_ADDRESS ((volatile t_uint16*)0x1FFF75A8)
-    #define FMKCDA_ADC_INTERN_TS_CAL2_ADDRESS ((volatile t_uint16*)0x1FFF75CA)
-    #define FMKCDA_ADC_1_MAX_CHANNELS ((t_uint8)19)
-    #define FMKCDA_ADC_2_MAX_CHANNELS ((t_uint8)19)
-    #define FMKCDA_ADC_3_MAX_CHANNELS ((t_uint8)19)
-    #define FMKCDA_ADC_4_MAX_CHANNELS ((t_uint8)19)
-    #define FMKCDA_ADC_5_MAX_CHANNELS ((t_uint8)19)
+    #define FMKCDA_ADC_INTERN_VREFINT_CAL_1_ADDRESS ((volatile t_uint16 *)0x1FF1E860)
+    #define FMKCDA_ADC_INTERN_VREFINT_CAL_2_ADDRESS ((volatile t_uint16 *)0x1FF1E860)
+    #define FMKCDA_ADC_INTERN_VREFINT_CAL_3_ADDRESS ((volatile t_uint16 *)0x1FF1E860)
+    #define FMKCDA_ADC_INTERN_VBAT_ADDRESS ((volatile t_uint16*)0x1FF1E860)
+    #define FMKCDA_ADC_INTERN_TS_CAL1_ADDRESS ((volatile t_uint16*)0x1FF1E820)
+    #define FMKCDA_ADC_INTERN_TS_CAL2_ADDRESS ((volatile t_uint16*)0x1FF1E840)
+    #define FMKCDA_ADC_1_MAX_CHANNELS ((t_uint8)20)
+    #define FMKCDA_ADC_2_MAX_CHANNELS ((t_uint8)20)
+    #define FMKCDA_ADC_3_MAX_CHANNELS ((t_uint8)20)
     /* CAUTION : Automatic generated code section for ADC channels number: End */
 
     #define FMKCDA_TIME_BTWN_DIAG_MS ((t_uint16)100)   /**< Time between diagnostic for adc & dac channel in cyclic ope mode*/
@@ -102,32 +99,20 @@
         [FMKCDA_ADC_1] = {
             .adcTypedef_ps = ADC1,
             .c_clock_e = FMKCPU_RCC_CLK_ADC12,
-            .c_IRQNType_e = FMKCPU_NVIC_ADC1_2_IRQN,
+            .c_IRQNType_e = FMKCPU_NVIC_ADC_IRQN,
             .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC1,
         },
         [FMKCDA_ADC_2] = {
             .adcTypedef_ps = ADC2,
             .c_clock_e = FMKCPU_RCC_CLK_ADC12,
-            .c_IRQNType_e = FMKCPU_NVIC_ADC1_2_IRQN,
+            .c_IRQNType_e = FMKCPU_NVIC_ADC_IRQN,
             .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC2,
         },
         [FMKCDA_ADC_3] = {
             .adcTypedef_ps = ADC3,
-            .c_clock_e = FMKCPU_RCC_CLK_ADC345,
+            .c_clock_e = FMKCPU_RCC_CLK_ADC3,
             .c_IRQNType_e = FMKCPU_NVIC_ADC3_IRQN,
             .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC3,
-        },
-        [FMKCDA_ADC_4] = {
-            .adcTypedef_ps = ADC4,
-            .c_clock_e = FMKCPU_RCC_CLK_ADC345,
-            .c_IRQNType_e = FMKCPU_NVIC_ADC4_IRQN,
-            .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC4,
-        },
-        [FMKCDA_ADC_5] = {
-            .adcTypedef_ps = ADC5,
-            .c_clock_e = FMKCPU_RCC_CLK_ADC345,
-            .c_IRQNType_e = FMKCPU_NVIC_ADC5_IRQN,
-            .c_DmaAdc_e = FMKCPU_DMA_RQSTYPE_ADC5,
         },
     };
 
@@ -136,8 +121,6 @@
         (t_uint8)FMKCDA_ADC_1_MAX_CHANNELS,
         (t_uint8)FMKCDA_ADC_2_MAX_CHANNELS,
         (t_uint8)FMKCDA_ADC_3_MAX_CHANNELS,
-        (t_uint8)FMKCDA_ADC_4_MAX_CHANNELS,
-        (t_uint8)FMKCDA_ADC_5_MAX_CHANNELS,
     };
 
     /**<     Variable for voltage ref calibration value */
@@ -145,24 +128,20 @@
         (volatile t_uint16 *)FMKCDA_ADC_INTERN_VREFINT_CAL_1_ADDRESS,                     // FMKCDA_ADC_1
         (volatile t_uint16 *)FMKCDA_ADC_INTERN_VREFINT_CAL_2_ADDRESS,                     // FMKCDA_ADC_2
         (volatile t_uint16 *)FMKCDA_ADC_INTERN_VREFINT_CAL_3_ADDRESS,                     // FMKCDA_ADC_3
-        (volatile t_uint16 *)FMKCDA_ADC_INTERN_VREFINT_CAL_4_ADDRESS,                     // FMKCDA_ADC_4
-        (volatile t_uint16 *)FMKCDA_ADC_INTERN_VREFINT_CAL_5_ADDRESS,                     // FMKCDA_ADC_5
     };
 
     /**< Variable for Hardware configuration adc and channel for Voltage Reference for each adc */
     const t_sFMKCDA_HwAdcCfg c_FmkCda_HwVrefCfg[FMKCDA_ADC_NB] = {
-        {FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_1
-        {FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_2
-        {FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_3
-        {FMKCDA_ADC_4,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_4
-        {FMKCDA_ADC_5,                         FMKCDA_ADC_CHANNEL_18},                // for FMKCDA_ADC_5
+        {FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_19},                // for FMKCDA_ADC_1
+        {FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_19},                // for FMKCDA_ADC_2
+        {FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_19},                // for FMKCDA_ADC_3
     };
 
     /**< Variable for Interna Sensors configuration*/
     const t_sFMKCDA_ADcInternalSnsCfg c_FmkCda_HwInternalSnsCfg_as[FMKCDA_ADC_INTERN_NB] ={
-        {{FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_17},                TRUE                          },// for FMKCDA_ADC_INTERN_VBAT
-        {{FMKCDA_ADC_1,                         FMKCDA_ADC_CHANNEL_16},                TRUE                          },// for FMKCDA_ADC_INTERN_TS_CAL1
-        {{FMKCDA_ADC_5,                         FMKCDA_ADC_CHANNEL_4},                 FALSE                         },// for FMKCDA_ADC_INTERN_TS_CAL2
+        {{FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_17},                TRUE                          },// for FMKCDA_ADC_INTERN_VBAT
+        {{FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_18},                TRUE                          },// for FMKCDA_ADC_INTERN_TS_CAL1
+        {{FMKCDA_ADC_3,                         FMKCDA_ADC_CHANNEL_18},                FALSE                         },// for FMKCDA_ADC_INTERN_TS_CAL2
     };
 
     /**< Variable for Internal Sensors Calibration address */
@@ -179,9 +158,9 @@
     
     /* CAUTION : Automatic generated code section for ADCx IRQN_Handler: Start */
     /*********************************
-     * ADC1_2_IRQHandler
+     * ADC_IRQHandler
     *********************************/
-    void ADC1_2_IRQHandler(void)
+    void ADC_IRQHandler(void)
     {
         HAL_ADC_IRQHandler(FMKCDA_PRIVATE_GetHandleTypeDef(FMKCDA_ADC_1));
         HAL_ADC_IRQHandler(FMKCDA_PRIVATE_GetHandleTypeDef(FMKCDA_ADC_2));
@@ -193,22 +172,6 @@
     void ADC3_IRQHandler(void)
     {
         HAL_ADC_IRQHandler(FMKCDA_PRIVATE_GetHandleTypeDef(FMKCDA_ADC_3));
-        return;
-    }
-    /*********************************
-     * ADC4_IRQHandler
-    *********************************/
-    void ADC4_IRQHandler(void)
-    {
-        HAL_ADC_IRQHandler(FMKCDA_PRIVATE_GetHandleTypeDef(FMKCDA_ADC_4));
-        return;
-    }
-    /*********************************
-     * ADC5_IRQHandler
-    *********************************/
-    void ADC5_IRQHandler(void)
-    {
-        HAL_ADC_IRQHandler(FMKCDA_PRIVATE_GetHandleTypeDef(FMKCDA_ADC_5));
         return;
     }
     /* CAUTION : Automatic generated code section for ADCx IRQN_Handler: End */

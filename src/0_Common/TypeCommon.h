@@ -25,6 +25,7 @@
     #ifndef NULL
         #define NULL ((void *)0)
     #endif // NULL
+
     /**
      * @brief Get a bit from a flag macro
      */
@@ -110,6 +111,12 @@
      */
     typedef enum __t_eReturnCode
     {
+        RC_NVM_BACKEND_READ_ERROR = -24,         /**< NVM backend read operation failed. */
+        RC_NVM_BACKEND_PROGRAM_ERROR = -23,      /**< NVM backend program operation failed. */
+        RC_NVM_BACKEND_ERASE_ERROR = -22,        /**< NVM backend erase operation failed. */
+        RC_NVM_VERIFY_ERROR = -21,               /**< NVM post-write verification failed. */
+        RC_NVM_CRC_ERROR = -20,                  /**< NVM record CRC is invalid. */
+        RC_NVM_FORMAT_ERROR = -19,               /**< NVM record format or configuration is invalid. */
         RC_ERROR_INSTANCE_NOT_INITIALIZED = -18, /**< The Instance or Structure should be initialized before use the function */
         RC_ERROR_ALREADY_CONFIGURED = -17,        /**< The operation is not accepted because the instance has already been configured */
         RC_ERROR_COPY_FAILED = -16,               /**< The copy between two variables failed */
@@ -138,7 +145,8 @@
         RC_WARNING_NOT_ALLOWED = 7,               /**< Not allowed to perform the requested operation */
         RC_WARNING_LIMIT_REACHED = 8,             /**< The operation cannot be done because a limit has been reached */
         RC_WARNING_WRONG_RESULT = 9,              /**< The operation has succeeded, but the result is incorrect */
-        RC_WARNING_MEM_FAILED = 10                /**< The operation to copy an element has failed */
+        RC_WARNING_MEM_FAILED = 10,                /**< The operation to copy an element has failed */
+        RC_WARNING_ALREADY_CONFIGURED = 11        /**< The operation has already been successfull */
     } t_eReturnCode;
     
     /**
@@ -150,7 +158,6 @@
         STATE_CYCLIC_PREOPE,          /**< The module needs to make actions before the operational state */
         STATE_CYCLIC_OPE,             /**< The module performs operational cyclic action */
         STATE_CYCLIC_BUSY,            /**< The module is busy doing other things, cyclic operations are not executed */
-        STATE_CYCLIC_WAITING,         /**< The module is waiting ready to operate and waiting for a system signal */
         STATE_CYCLIC_ERROR            /**< The module is in error state, Deprecated mode */
     } t_eCyclicModState;
 

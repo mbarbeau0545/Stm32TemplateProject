@@ -20,15 +20,6 @@
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-#if defined(FMKCPU_STM32_ECU_FAMILY_G4) || defined(FMKCPU_STM32_ECU_FAMILY_H7)
-        #define FMKIO_BSP_MODE_INPUT ((t_uint32)GPIO_MODE_INPUT)
-        #define FMKIO_BSP_MODE_ANALOG ((t_uint32)GPIO_MODE_ANALOG)
-    #elif FMKCPU_STM32_ECU_FAMILY_F
-        #define FMKIO_BSP_MODE_INPUT ((t_uint32)MODE_INPUT)
-        #define FMKIO_BSP_MODE_ANALOG ((t_uint32)MODE_ANALOG)
-    #else
-        #error('ecu family is currently not available')
-    #endif
 
     #define FMKIO_ENCODER_BUFFER ((t_uint8)10)
 
@@ -55,6 +46,7 @@
         FMKIO_GPIO_PORT_E,                        /**< Reference to bsp gpio E register */
         FMKIO_GPIO_PORT_F,                        /**< Reference to bsp gpio F register */
         FMKIO_GPIO_PORT_G,                        /**< Reference to bsp gpio G register */
+        FMKIO_GPIO_PORT_H,                        /**< Reference to bsp gpio H register */
     
         FMKIO_GPIO_PORT_NB,
     } t_eFMKIO_GpioPort;
@@ -89,15 +81,25 @@
     */
     typedef enum
     {
-        FMKIO_INPUT_SIGDIG_1 = 0,                  /**< Reference to PC10 */
-        FMKIO_INPUT_SIGDIG_2,                        /**< Reference to PC11 */
-        FMKIO_INPUT_SIGDIG_3,                        /**< Reference to PC13 */
-        FMKIO_INPUT_SIGDIG_4,                        /**< Reference to PC14 */
-        FMKIO_INPUT_SIGDIG_5,                        /**< Reference to PC15 */
-        FMKIO_INPUT_SIGDIG_6,                        /**< Reference to PA0 */
-        FMKIO_INPUT_SIGDIG_7,                        /**< Reference to PA7 */
-        FMKIO_INPUT_SIGDIG_8,                        /**< Reference to PB10 */
-        FMKIO_INPUT_SIGDIG_9,                        /**< Reference to PB13 */
+        FMKIO_INPUT_SIGDIG_1 = 0,                  /**< Reference to PE2 */
+        FMKIO_INPUT_SIGDIG_2,                        /**< Reference to PE3 */
+        FMKIO_INPUT_SIGDIG_3,                        /**< Reference to PE4 */
+        FMKIO_INPUT_SIGDIG_4,                        /**< Reference to PC13 */
+        FMKIO_INPUT_SIGDIG_5,                        /**< Reference to PC14 */
+        FMKIO_INPUT_SIGDIG_6,                        /**< Reference to PC15 */
+        FMKIO_INPUT_SIGDIG_7,                        /**< Reference to PF0 */
+        FMKIO_INPUT_SIGDIG_8,                        /**< Reference to PF1 */
+        FMKIO_INPUT_SIGDIG_9,                        /**< Reference to PF2 */
+        FMKIO_INPUT_SIGDIG_10,                       /**< Reference to PB2 */
+        FMKIO_INPUT_SIGDIG_11,                       /**< Reference to PF13 */
+        FMKIO_INPUT_SIGDIG_12,                       /**< Reference to PF14 */
+        FMKIO_INPUT_SIGDIG_13,                       /**< Reference to PF15 */
+        FMKIO_INPUT_SIGDIG_14,                       /**< Reference to PG0 */
+        FMKIO_INPUT_SIGDIG_15,                       /**< Reference to PD10 */
+        FMKIO_INPUT_SIGDIG_16,                       /**< Reference to PG15 */
+        FMKIO_INPUT_SIGDIG_17,                       /**< Reference to PE0 */
+        FMKIO_INPUT_SIGDIG_18,                       /**< Reference to PE1 */
+        FMKIO_INPUT_SIGDIG_19,                       /**< Reference to PB5 */
     
         FMKIO_INPUT_SIGDIG_NB,
     } t_eFMKIO_InDigSig;
@@ -107,12 +109,21 @@
     */
     typedef enum
     {
-        FMKIO_INPUT_SIGANA_1 = 0,                  /**< Reference to PA1 */
-        FMKIO_INPUT_SIGANA_2,                        /**< Reference to PA4 */
-        FMKIO_INPUT_SIGANA_3,                        /**< Reference to PB1 */
-        FMKIO_INPUT_SIGANA_4,                        /**< Reference to PB0 */
-        FMKIO_INPUT_SIGANA_5,                        /**< Reference to PA5 */
-        FMKIO_INPUT_SIGANA_6,                        /**< Reference to PA6 */
+        FMKIO_INPUT_SIGANA_1 = 0,                  /**< Reference to PF3 */
+        FMKIO_INPUT_SIGANA_2,                        /**< Reference to PF4 */
+        FMKIO_INPUT_SIGANA_3,                        /**< Reference to PF5 */
+        FMKIO_INPUT_SIGANA_4,                        /**< Reference to PF10 */
+        FMKIO_INPUT_SIGANA_5,                        /**< Reference to PC2 */
+        FMKIO_INPUT_SIGANA_6,                        /**< Reference to PC3 */
+        FMKIO_INPUT_SIGANA_7,                        /**< Reference to PC0 */
+        FMKIO_INPUT_SIGANA_8,                        /**< Reference to PC1 */
+        FMKIO_INPUT_SIGANA_9,                        /**< Reference to PA4 */
+        FMKIO_INPUT_SIGANA_10,                       /**< Reference to PC4 */
+        FMKIO_INPUT_SIGANA_11,                       /**< Reference to PC5 */
+        FMKIO_INPUT_SIGANA_12,                       /**< Reference to PB0 */
+        FMKIO_INPUT_SIGANA_13,                       /**< Reference to PB1 */
+        FMKIO_INPUT_SIGANA_14,                       /**< Reference to PF11 */
+        FMKIO_INPUT_SIGANA_15,                       /**< Reference to PF12 */
     
         FMKIO_INPUT_SIGANA_NB,
     } t_eFMKIO_InAnaSig;
@@ -122,8 +133,14 @@
     */
     typedef enum
     {
-        FMKIO_INPUT_SIGFREQ_1 = 0,                  /**< Reference to PB6, TIMER_4 CHANNEL_1 */
-        FMKIO_INPUT_SIGFREQ_2,                        /**< Reference to PB7, TIMER_4 CHANNEL_2 */
+        FMKIO_INPUT_SIGFREQ_1 = 0,                  /**< Reference to PA5, TIMER_2 CHANNEL_1 */
+        FMKIO_INPUT_SIGFREQ_2,                        /**< Reference to PB10, TIMER_2 CHANNEL_3 */
+        FMKIO_INPUT_SIGFREQ_3,                        /**< Reference to PB11, TIMER_2 CHANNEL_4 */
+        FMKIO_INPUT_SIGFREQ_4,                        /**< Reference to PD12, TIMER_4 CHANNEL_1 */
+        FMKIO_INPUT_SIGFREQ_5,                        /**< Reference to PD13, TIMER_4 CHANNEL_2 */
+        FMKIO_INPUT_SIGFREQ_6,                        /**< Reference to PB8, TIMER_4 CHANNEL_3 */
+        FMKIO_INPUT_SIGFREQ_7,                        /**< Reference to PB9, TIMER_4 CHANNEL_4 */
+        FMKIO_INPUT_SIGFREQ_8,                        /**< Reference to PA1, TIMER_2 CHANNEL_2 */
     
         FMKIO_INPUT_SIGFREQ_NB,
     } t_eFMKIO_InFreqSig;
@@ -133,6 +150,9 @@
     */
     typedef enum
     {
+        FMKIO_INPUT_ENCODER_1 = 0,                  /**< TI1 -> PB14, TI2 -> PB15, Reference to Encoder 1 */
+        FMKIO_INPUT_ENCODER_2,                        /**< TI1 -> PE5, TI2 -> PE6, Reference to Encoder 2 */
+        FMKIO_INPUT_ENCODER_3,                        /**< TI1 -> PA6, TI2 -> PA7, Reference to Encoder 3 */
     
         FMKIO_INPUT_ENCODER_NB,
     } t_eFMKIO_InEcdrSignals;
@@ -142,8 +162,12 @@
     */
     typedef enum
     {
-        FMKIO_INPUT_SIGEVNT_1 = 0,                  /**< Reference to PB3 */
-        FMKIO_INPUT_SIGEVNT_2,                        /**< Reference to PB5 */
+        FMKIO_INPUT_SIGEVNT_1 = 0,                  /**< Reference to PC12 */
+        FMKIO_INPUT_SIGEVNT_2,                        /**< Reference to PD1 */
+        FMKIO_INPUT_SIGEVNT_3,                        /**< Reference to PD2 */
+        FMKIO_INPUT_SIGEVNT_4,                        /**< Reference to PD3 */
+        FMKIO_INPUT_SIGEVNT_5,                        /**< Reference to PD4 */
+        FMKIO_INPUT_SIGEVNT_6,                        /**< Reference to PD5 */
     
         FMKIO_INPUT_SIGEVNT_NB,
     } t_eFMKIO_InEvntSig;
@@ -153,15 +177,28 @@
     */
     typedef enum
     {
-        FMKIO_OUTPUT_SIGDIG_1 = 0,                  /**< Reference to PB11 */
-        FMKIO_OUTPUT_SIGDIG_2,                        /**< Reference to PA11 */
-        FMKIO_OUTPUT_SIGDIG_3,                        /**< Reference to PA12 */
-        FMKIO_OUTPUT_SIGDIG_4,                        /**< Reference to PA9 */
-        FMKIO_OUTPUT_SIGDIG_5,                        /**< Reference to PB8 */
-        FMKIO_OUTPUT_SIGDIG_6,                        /**< Reference to PC3 */
-        FMKIO_OUTPUT_SIGDIG_7,                        /**< Reference to PC9 */
-        FMKIO_OUTPUT_SIGDIG_8,                        /**< Reference to PF0 */
-        FMKIO_OUTPUT_SIGDIG_9,                        /**< Reference to PF1 */
+        FMKIO_OUTPUT_SIGDIG_1 = 0,                  /**< Reference to PG1 */
+        FMKIO_OUTPUT_SIGDIG_2,                        /**< Reference to PE7 */
+        FMKIO_OUTPUT_SIGDIG_3,                        /**< Reference to PE8 */
+        FMKIO_OUTPUT_SIGDIG_4,                        /**< Reference to PD11 */
+        FMKIO_OUTPUT_SIGDIG_5,                        /**< Reference to PD14 */
+        FMKIO_OUTPUT_SIGDIG_6,                        /**< Reference to PD15 */
+        FMKIO_OUTPUT_SIGDIG_7,                        /**< Reference to PG2 */
+        FMKIO_OUTPUT_SIGDIG_8,                        /**< Reference to PG3 */
+        FMKIO_OUTPUT_SIGDIG_9,                        /**< Reference to PG4 */
+        FMKIO_OUTPUT_SIGDIG_10,                       /**< Reference to PG5 */
+        FMKIO_OUTPUT_SIGDIG_11,                       /**< Reference to PC10 */
+        FMKIO_OUTPUT_SIGDIG_12,                       /**< Reference to PC11 */
+        FMKIO_OUTPUT_SIGDIG_13,                       /**< Reference to PD6 */
+        FMKIO_OUTPUT_SIGDIG_14,                       /**< Reference to PD7 */
+        FMKIO_OUTPUT_SIGDIG_15,                       /**< Reference to PG10 */
+        FMKIO_OUTPUT_SIGDIG_16,                       /**< Reference to PG11 */
+        FMKIO_OUTPUT_SIGDIG_17,                       /**< Reference to PG12 */
+        FMKIO_OUTPUT_SIGDIG_18,                       /**< Reference to PG13 */
+        FMKIO_OUTPUT_SIGDIG_19,                       /**< Reference to PE10 */
+        FMKIO_OUTPUT_SIGDIG_20,                       /**< Reference to PE12 */
+        FMKIO_OUTPUT_SIGDIG_21,                       /**< Reference to PE15 */
+        FMKIO_OUTPUT_SIGDIG_22,                       /**< Reference to PG8 */
     
         FMKIO_OUTPUT_SIGDIG_NB,
     } t_eFMKIO_OutDigSig;
@@ -171,19 +208,33 @@
     */
     typedef enum
     {
-        FMKIO_OUTPUT_SIGPWM_1 = 0,                  /**< Reference to PB4, TIMER_16 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_2,                        /**< Reference to PB9, TIMER_17 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_3,                        /**< Reference to PC12, TIMER_5 CHANNEL_2 ,Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_4,                        /**< Reference to PB15, TIMER_15 CHANNEL_2 ,Pwm with Adaptable Frequency and DutyCycle */
-        FMKIO_OUTPUT_SIGPWM_5,                        /**< Reference to PC7, TIMER_8 CHANNEL_2 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_6,                        /**< Reference to PB2, TIMER_20 CHANNEL_1 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_7,                        /**< Reference to PC2, TIMER_1 CHANNEL_3 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_8,                        /**< Reference to PA8, TIMER_A CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_9,                        /**< Reference to PA10, TIMER_B CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_10,                       /**< Reference to PB12, TIMER_C CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_11,                       /**< Reference to PB14, TIMER_D CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_12,                       /**< Reference to PC6, TIMER_F CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
-        FMKIO_OUTPUT_SIGPWM_13,                       /**< Reference to PC8, TIMER_E CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
+        FMKIO_OUTPUT_SIGPWM_1 = 0,                  /**< Reference to PF6, TIMER_16 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_2,                        /**< Reference to PF7, TIMER_17 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_3,                        /**< Reference to PF8, TIMER_13 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_4,                        /**< Reference to PF9, TIMER_14 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_5,                        /**< Reference to PA0, TIMER_5 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
+        FMKIO_OUTPUT_SIGPWM_6,                        /**< Reference to PE9, TIMER_1 CHANNEL_1 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM7,SIGPWM8,SIGPWM9, */
+        FMKIO_OUTPUT_SIGPWM_7,                        /**< Reference to PE11, TIMER_1 CHANNEL_2 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM6,SIGPWM8,SIGPWM9, */
+        FMKIO_OUTPUT_SIGPWM_8,                        /**< Reference to PE13, TIMER_1 CHANNEL_3 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM6,SIGPWM7,SIGPWM9, */
+        FMKIO_OUTPUT_SIGPWM_9,                        /**< Reference to PE14, TIMER_1 CHANNEL_4 ,Pwm with Adaptable Frequency, DutyCycle and Pulses, (WaveForm pulses cannot be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM6,SIGPWM7,SIGPWM8, */
+        FMKIO_OUTPUT_SIGPWM_10,                       /**< Reference to PG6, TIMER_E CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM11, */
+        FMKIO_OUTPUT_SIGPWM_11,                       /**< Reference to PG7, TIMER_E CHANNEL_2 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM10, */
+        FMKIO_OUTPUT_SIGPWM_12,                       /**< Reference to PC6, TIMER_A CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM13, */
+        FMKIO_OUTPUT_SIGPWM_13,                       /**< Reference to PC7, TIMER_A CHANNEL_2 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM12, */
+        FMKIO_OUTPUT_SIGPWM_14,                       /**< Reference to PA8, TIMER_B CHANNEL_2 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
+        FMKIO_OUTPUT_SIGPWM_15,                       /**< Reference to PA9, TIMER_C CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM16, */
+        FMKIO_OUTPUT_SIGPWM_16,                       /**< Reference to PA10, TIMER_C CHANNEL_2 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation)
+                                                            WARNING, this pwm share frequency and pulses with SIGPWM15, */
+        FMKIO_OUTPUT_SIGPWM_17,                       /**< Reference to PA11, TIMER_D CHANNEL_1 ,Pwm with Adaptable Frequency > x Hz @ref FMKHRT_ConfigurePwmLine, DutyCycle, Pulses and current Feedback, (Waveform Pulses can be change during generation) */
     
         FMKIO_OUTPUT_SIGPWM_NB,
     } t_eFMKIO_OutPwmSig;
@@ -193,9 +244,8 @@
     */
     typedef enum
     {
-        FMKIO_COM_SIGNAL_CAN_1 = 0,                  /**< Rx -> PF11, Tx -> PF12, Reference to CAN 0 */
-        FMKIO_COM_SIGNAL_CAN_2,                        /**< Rx -> PG14, Tx -> PG15, Reference to CAN 1 */
-        FMKIO_COM_SIGNAL_CAN_3,                        /**< Rx -> PG13, Tx -> PG12, Reference to CAN 2 */
+        FMKIO_COM_SIGNAL_CAN_1 = 0,                  /**< Rx -> PD0, Tx -> PA12, Reference to CAN 0 */
+        FMKIO_COM_SIGNAL_CAN_2,                        /**< Rx -> PB12, Tx -> PB13, Reference to CAN 1 */
     
         FMKIO_COM_SIGNAL_CAN_NB,
     } t_eFMKIO_ComSigCan;
@@ -205,11 +255,14 @@
     */
     typedef enum
     {
-        FMKIO_COM_SIGNAL_SERIAL_1 = 0,                  /**< Rx -> PC5, Tx -> PC4, Reference to Serial PIN_5 */
+        FMKIO_COM_SIGNAL_SERIAL_1 = 0,                  /**< Rx -> PB7, Tx -> PB6, Reference to Serial PIN_7 */
         FMKIO_COM_SIGNAL_SERIAL_2,                        /**< Rx -> PA3, Tx -> PA2, Reference to Serial PIN_3 */
-        FMKIO_COM_SIGNAL_SERIAL_3,                        /**< Rx -> PG5, Tx -> PG6, Reference to Serial PIN_5 */
-        FMKIO_COM_SIGNAL_SERIAL_4,                        /**< Rx -> PG7, Tx -> PG8, Reference to Serial PIN_7 */
-        FMKIO_COM_SIGNAL_SERIAL_5,                        /**< Rx -> PG9, Tx -> PG10, Reference to Serial PIN_9 */
+        FMKIO_COM_SIGNAL_SERIAL_3,                        /**< Rx -> PD9, Tx -> PD8, Reference to Serial PIN_9 */
+        FMKIO_COM_SIGNAL_SERIAL_4,                        /**< Rx -> NOT USED, Tx -> NOT USED, Reference to Serial None */
+        FMKIO_COM_SIGNAL_SERIAL_5,                        /**< Rx -> NOT USED, Tx -> NOT USED, Reference to Serial None */
+        FMKIO_COM_SIGNAL_SERIAL_6,                        /**< Rx -> PG9, Tx -> PG14, Reference to Serial PIN_9 */
+        FMKIO_COM_SIGNAL_SERIAL_7,                        /**< Rx -> NOT USED, Tx -> NOT USED, Reference to Serial None */
+        FMKIO_COM_SIGNAL_SERIAL_8,                        /**< Rx -> NOT USED, Tx -> NOT USED, Reference to Serial None */
     
         FMKIO_COM_SIGNAL_SERIAL_NB,
     } t_eFMKIO_ComSigSerial;

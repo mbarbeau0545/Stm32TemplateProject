@@ -7,8 +7,7 @@
 #include "FMK_CFG/FMKCFG_ConfigFiles/FMKNVM_ConfigPrivate.h"
 
 /// @brief STM32H753 Bank 2 mapping of all logical partitions.
-static const t_sFMKNVM_PartitionStorageCfg
-    c_FMKNVM_H753PartitionStorage_as[FMKNVM_PARTITION_NB] =
+static const t_sFMKNVM_PartitionStorageCfg c_FMKNVM_H753PartitionStorage_as[FMKNVM_PARTITION_NB] =
 {
     [FMKNVM_PARTITION_USER_PARAMETERS] =
     {
@@ -84,8 +83,7 @@ t_eReturnCode FMKNVM_Specific_GetPartitionStorage(   t_eFMKNVM_PartitionId f_Par
         {
             case FMKNVM_EEPROM_TYPE_FLASH_H753:
             {
-                *f_StorageCfg_ps =
-                    c_FMKNVM_H753PartitionStorage_as[f_PartitionId_e];
+                *f_StorageCfg_ps = c_FMKNVM_H753PartitionStorage_as[f_PartitionId_e];
             }
             break;
             case FMKNVM_EEPROM_TYPE_FLASH_G4:

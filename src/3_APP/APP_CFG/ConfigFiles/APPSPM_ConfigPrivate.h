@@ -19,6 +19,7 @@
     // *                      Includes
     // ********************************************************************
     #include "./APPSPM_ConfigPublic.h"
+    #include "APP_CFG/ConfigSpecific/APPSPM_ConfigSpecific.h"
     #include "APP_CTRL/APP_SIG/Src/APP_SIG.h"
     #include "FMK_CFG/FMKCFG_ConfigFiles/FMKNVM_ConfigPublic.h"
     // ********************************************************************
@@ -26,9 +27,16 @@
     // ********************************************************************
     /* CAUTION : Automatic generated code section for define: Start */
     ///@brief number of msg to follow
-    #define APPSPM_SIG_MSG_NB       ((t_uint8)1)
+    #define APPSPM_SIG_MSG_NB                   ((t_uint8)1)
     /* CAUTION : Automatic generated code section for define: End */
-    #define APPSPM_SIG_SEND_PER_CYCLIC ((t_uint16)40)
+    #define APPSPM_PRM_HANDLE_PER_CYCLIC          ((t_uint16)40)
+
+    ///@brief Number of NVM object restore per cyclic
+    #define APPSPM_NVM_OBJ_PER_CYCLIC           ((t_uint16)20)
+
+    ///@brief Number of signal subscription per cyclcic
+    #define APPSPM_SUB_SIG_PER_CYCLIC           ((t_uint16)20)
+
     // ********************************************************************
     // *                      Types
     // ********************************************************************
@@ -42,22 +50,6 @@
 
 	/* CAUTION : Automatic generated code section for Structure: End */
 	//-----------------------------STRUCT TYPES---------------------------//
-    /**
-     * @brief Item Parameter Information
-     */
-    typedef struct __t_sAPPSPM_ItemPrmCfg
-    {
-        t_uint8 version_u8;              ///< Persistent parameter version.
-        t_float32 minItemVal_f32;         ///< Minimum canonical value.
-        t_float32 maxItemVal_f32;         ///< Maximum canonical value.
-        t_float32 DefaultItemVal_f32;     ///< Canonical default value.
-        t_float32 factor_f32;             ///< Signal decoding scale factor.
-        t_sint16 offset_s16;              ///< Signal decoding offset.
-        t_eAPPSPM_PrmType prmType_e;      ///< Canonical parameter type.
-        t_eAPPSIG_Signal signal_e;        ///< Optional APP_SIG source.
-        t_eFMKNVM_ObjectId nvmObjectId_e;  ///< Associated logical NVM object.
-    } t_sAPPSPM_ItemPrmCfg;
-
 	/* CAUTION : Automatic generated code section : Start */
 
 	/* CAUTION : Automatic generated code section : End */

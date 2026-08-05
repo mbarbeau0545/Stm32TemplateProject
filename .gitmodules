@@ -82,3 +82,11 @@
 	path = src/1_FMK/FMK_HAL/FMK_NVM
 	url = https://github.com/mbarbeau0545/STM32_FMK_NVM
 	branch = Dev
+[submodule "src/3_APP/APP_CTRL/APP_SPM"]
+	path = src/3_APP/APP_CTRL/APP_SPM
+	url = https://github.com/mbarbeau0545/STM32_APP_SPM
+	branch = Dev
+[submodule "src/1_FMK/FMK_HAL/FMK_SPI"]
+	path = src/1_FMK/FMK_HAL/FMK_SPI
+	url = https://github.com/mbarbeau0545/STM32_FMK_SPI
+	branch = Dev

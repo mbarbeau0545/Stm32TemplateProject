@@ -1,79 +1,230 @@
-# STM32 Template Project 
-This project purpose is to offers a framework/interface that works with any stm32.
-The main idea of this project is no matter the MCU used the logic will always works because it is not directly related to a hardware MPU/CPU
-## Summary 
-- [Get Started](#Get Started)
-- Annexe 1, Hardware Configuration tutorial
-- Annexe 2, Software Configuration tutorial
+# STM32 Template Project
 
-## Get Started
-- First, install all dependencies needed :
-    - Draw.io (to see Architecture Documentation of Module)
-    - Visual Studio Code
-    - On Visual Studio Code, install Platform.io
-    - On platflorm.io install the framework of stm32 "ST STM32" on the tab PIO Home/Platforms
-- Then, clone the branch Dev on your local disk
-- Go in file platform.ini and choose the right nucleo board, the one you're using. To do so, all the board managed by platform io are in PIO Home/Board, find your nucleo or the MCU name, that will generate some code
-- Look the documentation on Doc/InfoPrj for more documentation on this project. Each module has a Draw.io documentation, Click on it and look the tab 'Spec' for global Information about what does the module.
-For the doxygen documentation search the file "index.html"
-- Once it is done, you have to configure the Excel in Doc/ConfigPrj/ExcelCfg/Hardware_Configuration, see in Annexe 1 how to do so.
-- Do the same for the Software_Configuration, Annexe 2. (not a restriction if user just want to test signal)
-- To generate configuration in files from Excel (Hardware and Software) configuration, go to Doc/ConfigPrj/PythonTool_CodeGen and launch the main.py file. To do so wether the CPU you're using is already in stm32xxxx_code_gen.bat if not, create by copying one of the .bat and change the path for Excel Hardware/Software Configuration.\n
-- Now you can Build/Flash you're project using platform.io framework
-- Put your code in the file APP_LGC.c, in function APPLGC_Init to run once and APPLGC_Cyclic to run cyclically
+Ce dépôt est le **super-projet** du framework STM32. Il rassemble le framework
+FMK, les bibliothèques communes, les modules applicatifs, les configurations
+propres à la carte et les outils de génération de code. Une partie de ces
+composants est intégrée sous forme de sous-modules Git.
 
+L'objectif est de conserver une logique applicative indépendante du
+microcontrôleur. Les éléments liés au matériel (horloges, GPIO, interruptions,
+DMA, instances HAL, etc.) restent isolés dans les fichiers de configuration
+spécifiques à la cible.
 
-## Annexe 1
-- Take te datasheet of your stm32 µC, Also take the .startup of your µc
-- Open the Hardware_Configuration file
-- Go to the General Info sheet
-- Put the hardware configuration as ask by the arrays on this sheet, the first array, you just have to copied/pasted the enum IRQn_Type in file stm32fXXYY
-- For RCC Clock, go to the stm32_hal_rcc.h file and find 'RCC_Exported_Macros', copy every clock in the excel array.
-- For timer/adc/dac/dma etc put the right information and keep it as so for example for timers it's 'timer' + '_' + 'number'
-- Go to the sheet FMKIO and filled all tables as asking, Find The alternate Function in Datasheet, all information are in the array
+> [!IMPORTANT]
+> À ce jour, le projet est configuré et validé uniquement pour les
+> **STM32G474RE** et **STM32H753ZI**. La prise en charge d'un autre STM32
+> nécessite un portage et une validation supplémentaires.
 
-	for PWM purpose be careful on which timer you choose, some of them are not meant to make pwm signal
-- Go to the sheet CPU and inform the timer used for event timers whhich means periodic timer
-- Save and Generate code from Doc/ConfigPrj/PythonTool_CodeGen/somethnig.bat file.
+## Sommaire
 
-## bugs
-- FMKSRL en mode interruption , Size Cyclic, dans la callback quand on reset la reception on la reset à 0 après 
+- [Prérequis](#prérequis)
+- [Installation](#installation)
+- [Choisir la cible](#choisir-la-cible)
+- [Générer la configuration](#générer-la-configuration)
+- [Compiler, flasher et déboguer](#compiler-flasher-et-déboguer)
+- [Ajouter la logique applicative](#ajouter-la-logique-applicative)
+- [Organisation du dépôt](#organisation-du-dépôt)
+- [Documentation](#documentation)
+- [Limites actuelles](#limites-actuelles)
 
-## To test 
+## Prérequis
 
+- Git ;
+- Python 3 ;
+- Microsoft Excel, nécessaire pour modifier les fichiers de configuration ;
+- Visual Studio Code ;
+- l'extension **PlatformIO IDE** pour Visual Studio Code ;
+- la plateforme PlatformIO **ST STM32** ;
+- une sonde ST-Link compatible avec la carte utilisée ;
+- Draw.io, ou son extension Visual Studio Code, pour consulter les diagrammes
+  d'architecture.
 
+## Installation
 
-## Left to do
-    - Dans les fichiers .c passer les arguments des structures  en pointeur pour réduire la pile et le temps pour le cpu de copié les datas dans la pile.
+Cloner le super-projet avec tous ses sous-modules :
 
-    - Dans le APPSYS rajouter whatdogs 
-    - Dans APPSYS gérer la configuration des SNS + ACT
-    - Dans FMKHRTIM utiliser les modes spécifiques pour les DEFAULT 
+```bash
+git clone --recurse-submodules \
+  https://github.com/mbarbeau0545/Stm32TemplateProject.git
+cd Stm32TemplateProject
+```
 
-- Utiliser la LED builtin pour informer le Développer de l'état du µC
-    - LED clignote lentement   -> Phase d'initialisation 
-    - LED clignote rapidement  -> Phase d'initialisation échoué
-    - LED Allumé -> L'application est dans un état d'erreur
-    - LED clignote plus        -> L'application est lancé 
+Pour une copie déjà clonée sans les sous-modules :
 
-- Faire des ASSERTION pour savoir l'erreur
-- Faire un module Supply Voltage Control
-- Faire l'intégration MatLab du projet
-- Mettre les IRQN Handlers dans les fichiers        spécifics car propre à chaque CPU ??
-- Mettre à jour la documentation 
-    - Mettre à jour la documentaiton drawio
-    - Créer un script python qui fait une documentation générale du Projet avec toutes les API par Modules ?
+```bash
+git submodule update --init --recursive
+```
 
-- Dans le module FDCAN
-    - Rendre InitDrv Public, ne pas supposer que tout le monde va l'utiliser 
-    -  Inverser l'ordre de l'init, d'abord set Hw Clock et après Init
-    - Update du flag FlagError Detected et gestion dans la cylic
-    - Mettre la gestion du buffer dans t_sFMKFDCAN_CanInfo pour pouvoir géré pour chaque Node la Rx/Tx Software FiFo Size. en gros un pointeur vers une varaible qui est un tableau généré dynamiquemeent par la config EXcel
-    - géré dynamiquement depuis la config Excel la software Fifo Rx/Tx.
+Les sous-modules suivent actuellement leur branche `Dev`. Après une mise à jour
+du super-projet, synchroniser les révisions attendues avec :
 
-- Dans FMKCPU, 
-    - dans les fonctions de ChannelCfg
-        Ne pas mettre GetInfoInit dans la structure de fonction mais chaque fonction de config appelle sa propre fonction dans et la file à SetBspTimerInit
-    - Rajouter les callback d'erreur et les gérer dans la cyclic 
-    - Rajouter un fichier FMKTIM avec la gestion des timers, et mettre FMKCPU dans FMKCPU. 
-    
+```bash
+git submodule sync --recursive
+git submodule update --init --recursive
+```
+
+## Choisir la cible
+
+La cible PlatformIO active est définie dans
+[`platformio.ini`](platformio.ini). La configuration fournie active la carte
+Nucleo H753ZI :
+
+```ini
+[env:nucleo_h753zi]
+board = nucleo_h753zi
+```
+
+Les deux cibles actuellement prises en charge sont :
+
+| Microcontrôleur | Carte PlatformIO | Configuration matérielle |
+| --- | --- | --- |
+| STM32H753ZI | `nucleo_h753zi` | `Doc/ConfigPrj/ExcelCfg/STM32H753ZI/STM32H753ZI_HwCfg.xlsx` |
+| STM32G474RE | `nucleo_g474re` | `Doc/ConfigPrj/ExcelCfg/STM32G474RE/STM32G474RE_HwCfg.xlsx` |
+
+Pour changer de cible :
+
+1. sélectionner la carte correspondante dans `platformio.ini` ;
+2. vérifier les options propres à la cible, notamment le script de linker ;
+3. régénérer les fichiers de configuration avec le classeur matériel de cette
+   cible ;
+4. nettoyer le précédent build avant de recompiler.
+
+Le script de linker
+`linker/STM32H753ZITX_FLASH_FMKNVM.ld` est spécifique au STM32H753ZI et réserve
+une zone Flash au module FMK NVM. Il ne doit pas être utilisé tel quel pour le
+STM32G474RE.
+
+## Générer la configuration
+
+La configuration du projet est produite à partir de :
+
+- un classeur matériel propre au microcontrôleur dans
+  `Doc/ConfigPrj/ExcelCfg/<cible>/` ;
+- le classeur logiciel
+  `Doc/ConfigPrj/ExcelCfg/Project_SoftwareCfg_V0.xlsm`.
+
+Avant la génération :
+
+1. renseigner le classeur matériel avec les informations de la documentation
+   ST : IRQ, clocks RCC, GPIO, fonctions alternatives, timers, ADC, DAC et DMA ;
+2. configurer les modules applicatifs dans le classeur logiciel ;
+3. enregistrer et fermer les classeurs pour éviter qu'Excel ne conserve un
+   fichier temporaire ou un verrou.
+
+Depuis la racine du dépôt, lancer le générateur avec la cible souhaitée.
+
+Pour le STM32H753ZI :
+
+```powershell
+python Doc/ConfigPrj/PythonTool_CodeGen/main.py `
+  Doc/ConfigPrj/ExcelCfg/STM32H753ZI/STM32H753ZI_HwCfg.xlsx `
+  Doc/ConfigPrj/ExcelCfg/Project_SoftwareCfg_V0.xlsm
+```
+
+Pour le STM32G474RE :
+
+```powershell
+python Doc/ConfigPrj/PythonTool_CodeGen/main.py `
+  Doc/ConfigPrj/ExcelCfg/STM32G474RE/STM32G474RE_HwCfg.xlsx `
+  Doc/ConfigPrj/ExcelCfg/Project_SoftwareCfg_V0.xlsm
+```
+
+Contrôler les différences Git après chaque génération avant de compiler :
+
+```bash
+git status --short
+git diff
+```
+
+## Compiler, flasher et déboguer
+
+Les commandes suivantes s'exécutent depuis la racine du dépôt.
+
+Compiler la cible embarquée active :
+
+```bash
+pio run -e nucleo_h753zi
+```
+
+Flasher avec ST-Link :
+
+```bash
+pio run -e nucleo_h753zi -t upload
+```
+
+Nettoyer les fichiers de build :
+
+```bash
+pio run -e nucleo_h753zi -t clean
+```
+
+Le dépôt contient aussi l'environnement `pc_sim_debug`, destiné à la simulation
+sur PC d'une partie du projet :
+
+```bash
+pio run -e pc_sim_debug
+```
+
+Cet environnement ne remplace pas les essais sur la cible réelle.
+
+## Ajouter la logique applicative
+
+La logique propre au produit se trouve dans :
+
+```text
+src/3_APP/APP_LGC/Src/APP_LGC.c
+```
+
+- `APPLGC_Init()` contient l'initialisation exécutée au démarrage du module ;
+- `APPLGC_Cyclic()` contient le traitement cyclique ;
+- l'application utilise les API publiques des modules FMK et ne manipule pas
+  directement leurs handles HAL.
+
+Les fichiers générés dans `src/1_FMK/FMK_CFG` et `src/3_APP/APP_CFG` doivent
+être modifiés via les sources de configuration lorsque cela est possible, afin
+qu'une nouvelle génération ne perde pas les changements.
+
+## Organisation du dépôt
+
+| Répertoire | Rôle |
+| --- | --- |
+| `src/0_Common` | Types communs et bibliothèques génériques |
+| `src/1_FMK/FMK_HAL` | Modules matériels du framework |
+| `src/1_FMK/FMK_CFG` | Configuration publique, privée et spécifique à la cible |
+| `src/2_DRV` | Drivers de composants externes |
+| `src/3_APP` | Modules et logique applicatifs |
+| `src/4_PCSIM` | Adaptation et simulation sur PC |
+| `Doc/ConfigPrj` | Classeurs et outils de génération |
+| `Doc/InfoPrj` | Architecture, notes techniques et documentation Doxygen |
+
+## Documentation
+
+- Les diagrammes Draw.io se trouvent dans les répertoires `Doc` des modules et
+  dans `Doc/InfoPrj`.
+- La documentation Doxygen générée est accessible depuis
+  `Doc/InfoPrj/Doxygen/html/index.html`.
+- Les notes de configuration générales se trouvent dans
+  `Doc/InfoPrj/InfoCfg`.
+- Certains modules possèdent également leur propre `README.md`.
+
+## Limites actuelles
+
+- La compatibilité est validée uniquement sur **STM32G474RE** et
+  **STM32H753ZI**, avec les configurations fournies dans le dépôt.
+- Le simple changement de la valeur `board` dans `platformio.ini` ne suffit pas
+  pour prendre en charge un nouveau microcontrôleur.
+- Une nouvelle cible demande au minimum une configuration HAL et FMK spécifique,
+  un classeur matériel, une configuration des pins, clocks, IRQ et DMA, ainsi
+  qu'un script de linker adapté.
+- Certains backends sont spécifiques à une famille ou à une cible. C'est
+  notamment le cas du stockage en Flash interne et du script de linker NVM du
+  STM32H753ZI.
+- Les fichiers générés dépendent de la cohérence entre la cible PlatformIO, le
+  classeur matériel et le classeur logiciel. Mélanger les configurations de
+  deux cibles produit un build invalide ou un comportement matériel incorrect.
+- La simulation PC ne couvre qu'une partie des accès matériels et ne valide ni
+  les timings, ni les interruptions, ni les DMA, ni les périphériques réels.
+- Les configurations présentes pour d'autres références STM32 sont des travaux
+  historiques ou incomplets ; elles ne constituent pas des cibles supportées.
+- Le projet et ses sous-modules évoluent encore sur la branche `Dev`. Une
+  validation sur carte reste nécessaire après une mise à jour.

@@ -9,7 +9,7 @@
 
 /**
  * @brief Return the immutable STM32H753 internal Flash backend API.
- * @note The backend owns its context for the complete program lifetime. The
+ * @note The backend owns its context for the complete program lifetime.The
  *       configured storage is STM32H753 Flash Bank 2, while the linker keeps
  *       executable code and constants in Bank 1.
  * @retval Pointer to the configured STM32H753 Flash backend API.

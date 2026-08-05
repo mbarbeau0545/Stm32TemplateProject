@@ -19,7 +19,7 @@ typedef struct __t_sFMKNVM_PartitionStorageCfg
 /**
  * @brief Return the backend selected for the current board and MCU.
  * @note The returned table and context must remain valid for the full module
- *       lifetime. FMK_NVM never modifies the callback table.
+ *       lifetime.FMK_NVM never modifies the callback table.
  * @retval Pointer to the selected immutable backend API.
  * @retval NULL No backend or physical storage range is configured.
  */
@@ -28,7 +28,7 @@ const t_sFMKNVM_BackendApi * FMKNVM_Specific_GetBackendApi(void);
 /**
  * @brief Return one physical partition mapping for the selected backend.
  * @note The selected EEPROM type determines which backend-specific storage
- *       table is used. The mapping is copied into caller-owned runtime data.
+ *       table is used.The mapping is copied into caller-owned runtime data.
  * @param[in] f_PartitionId_e : Logical partition requiring physical storage.
  * @param[out] f_StorageCfg_ps : Destination receiving the selected mapping.
  * @retval RC_OK The physical partition mapping was copied.

@@ -63,8 +63,7 @@ static t_uint8 g_FMKNVM_CalibrationCache_au8[512U];
 static t_uint8 g_FMKNVM_CountersCache_au8[512U];
 
 /// @brief Logical partition definitions independent of the selected backend.
-static const t_sFMKNVM_PartitionDescriptor
-    c_FMKNVM_PartitionDescriptors_as[FMKNVM_PARTITION_NB] =
+static const t_sFMKNVM_PartitionDescriptor c_FMKNVM_PartitionDescriptors_as[FMKNVM_PARTITION_NB] =
 {
     [FMKNVM_PARTITION_USER_PARAMETERS] =
     {
@@ -96,8 +95,7 @@ static const t_sFMKNVM_PartitionDescriptor
 };
 
 /// @brief Logical object mapping generated for the current application.
-static const t_sFMKNVM_ObjectDescriptor
-    c_FMKNVM_ObjectDescriptors_as[FMKNVM_OBJECT_NB] =
+static const t_sFMKNVM_ObjectDescriptor c_FMKNVM_ObjectDescriptors_as[FMKNVM_OBJECT_NB] =
 {
     [FMKNVM_OBJECT_APPSPM_MACHINE_ID] =
     {
@@ -108,9 +106,7 @@ static const t_sFMKNVM_ObjectDescriptor
     }
 };
 
-_Static_assert(FMKNVM_MAX_PARTITION_PAYLOAD_CAPACITY >= 512U,
-               "FMK_NVM partition payload capacity is too small");
-_Static_assert(FMKNVM_EEPROM_TYPE < FMKNVM_EEPROM_TYPE_NB,
-               "FMK_NVM EEPROM type is invalid");
+_Static_assert(FMKNVM_MAX_PARTITION_PAYLOAD_CAPACITY >= 512U, "FMK_NVM partition payload capacity is too small");
+_Static_assert(FMKNVM_EEPROM_TYPE < FMKNVM_EEPROM_TYPE_NB, "FMK_NVM EEPROM type is invalid");
 
 #endif // FMKNVM_CONFIGPRIVATE_H_INCLUDED

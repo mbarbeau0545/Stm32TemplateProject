@@ -5,8 +5,7 @@
 #include "FMK_CFG/FMKCFG_ConfigSpecific/FMKI2C_ConfigSpecific.h"
 #include "FMK_HAL/FMK_I2C/Src/FMK_I2C.h"
 
-t_eReturnCode FMKI2C_Specific_BoardInit(t_eFMKI2C_Line f_I2CLine_e,
-                                         I2C_HandleTypeDef * f_Handle_ps)
+t_eReturnCode FMKI2C_Specific_BoardInit(t_eFMKI2C_Line f_I2CLine_e, I2C_HandleTypeDef * f_Handle_ps)
 {
     t_eReturnCode Ret_e = RC_OK;
 

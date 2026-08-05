@@ -2,6 +2,17 @@
 
 Ce fichier définit les règles obligatoires pour toute modification dans ce dépôt. Les modules existants `FMK_FDCAN`, `FMK_SRL`, `FMK_TIM` et `FMK_I2C` servent de références architecturales.
 
+## Project language
+
+- All new or modified project content must be written in English.
+- This rule applies to source code comments, Doxygen documentation, Markdown
+  files, user-facing messages, configuration descriptions, tests, examples,
+  issue templates and pull request templates.
+- When modifying an existing section written in French, translate the affected
+  section into English as part of the same change.
+- Identifiers, technical terms and abbreviations must remain consistent with
+  the existing project naming conventions.
+
 ## Architecture du dépôt
 
 - `src/0_Common` : types communs et bibliothèques génériques, sans dépendance à un module FMK ou à une carte.
@@ -61,7 +72,7 @@ Ce fichier définit les règles obligatoires pour toute modification dans ce dé
 - Toute implémentation comporte des commentaires numérotés décrivant les étapes métier, par exemple `//---- 1- Calculate slot offset ----//` puis `//---- 2- Program backend record ----//`.
 - Chaque implémentation de fonction doit être écrite sous forme développée, avec son bandeau, ses déclarations, des commentaires de traitement en anglais, des accolades sur lignes séparées et un unique `return` final. Les implémentations compactées sur une ligne sont strictement interdites.
 - Toute structure de contrôle (`if`, `else`, `for`, `while`, `switch`, `case`) est obligatoirement développée : condition, accolade ouvrante, contenu et accolade fermante occupent des lignes séparées. Les formes telles que `if(...) { action; }` sont strictement interdites.
-- Dans la mesure du possible, une ligne source ne dépasse pas 80 colonnes. Les déclarations, appels et conditions longues sont découpés et alignés.
+- Dans la mesure du possible, une ligne source ne dépasse pas 120 colonnes. Les déclarations, appels et conditions longues sont découpés et alignés.
 - Dans un `typedef struct`, chaque membre reste entièrement sur une seule
   ligne : type, nom, point-virgule et commentaire `///<`. Les commentaires
   `///<` de tous les membres sont alignés dans la même colonne. Pour cette
@@ -95,6 +106,48 @@ t_eReturnCode FMKXXX_Function(   t_uint8 f_First_u8,
  * FMKXXX_FunctionName
  *********************************/
 ```
+
+## C formatting and API design
+
+### Line length and wrapping
+
+- Keep simple assignments on one line.
+- Do not insert a line break immediately after `=` for a simple right-hand expression.
+- Keep function declarations, definitions, and calls on one line when they fit within 120 characters.
+- Use 140 characters only as an exceptional hard limit.
+- Do not place one argument per line automatically.
+- Break lines only at meaningful logical boundaries.
+- Do not reformat existing code into an excessively vertical style.
+- For a multiline function declaration, definition, or call, keep the first argument on the same line as the
+  function name and align subsequent arguments with the first argument.
+- Do not leave an opening parenthesis alone at the end of a function declaration, definition, or call line.
+- Keep structure assignments and initializations compact when every resulting line remains readable.
+
+```c
+Slot_ps->txReservation_u16 = f_Task_ps->txReservation_u16;
+Slot_ps->rxReservation_u16 = f_Task_ps->rxReservation_u16;
+Slot_ps->result_s.eventKind_e = FMKSPI_TRANSFER_EVENT_TERMINAL;
+
+static t_eReturnCode s_FMKXXX_CompleteResult(   t_eFMKXXX_Line f_Line_e,
+                                                const t_sFMKXXX_Task * f_Task_ps,
+                                                t_eFMKXXX_Status f_Status_e,
+                                                t_uint32 f_HealthMask_u32);
+```
+
+### API and implementation consistency
+
+- Preserve the existing FMK parameter naming scheme: `f_` prefix and a type suffix.
+- Pass immutable input structures and buffers through `const` pointers.
+- Pass small scalar identifiers and enum values by value.
+- Use an explicit context structure when a group of state values is shared by several local operations; do not
+  introduce a context structure only to hide an otherwise clear short parameter list.
+- Keep local variables in the narrowest useful scope and initialize them close to their first use.
+- Keep one final `return` per function and propagate call results through a named variable before testing them.
+- Organize parameter validation as readable `if` / `else if` blocks before the processing section.
+- Split a large function only when the extracted function represents a coherent operation or state, not merely to
+  reduce the line count.
+- Keep Doxygen on public APIs, callback typedefs, types, and local prototypes; implementation bodies retain only
+  their function banner and numbered processing comments.
 
 ## Organisation des fichiers C
 

@@ -43,6 +43,7 @@
     ///@brief enumeration of type of parameter 
     typedef enum 
     {
+        //---- type that could be send with APPSIG ----//
         APPSPM_PRM_TYPE_UINT8 = 0,
         APPSPM_PRM_TYPE_UINT16,
         APPSPM_PRM_TYPE_UINT32,
@@ -50,6 +51,8 @@
         APPSPM_PRM_TYPE_SINT16,
         APPSPM_PRM_TYPE_SINT32,
         APPSPM_PRM_TYPE_FLOAT32,
+
+        //---- Type tha cannot be send threw appsig ----//
 
         APPSPM_PRM_TYPE_NB,
     } t_eAPPSPM_PrmType;

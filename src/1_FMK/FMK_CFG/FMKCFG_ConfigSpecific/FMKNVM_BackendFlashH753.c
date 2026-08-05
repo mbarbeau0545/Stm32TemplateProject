@@ -31,12 +31,11 @@ typedef struct __t_sFMKNVM_BackendFlashH753Context
 } t_sFMKNVM_BackendFlashH753Context;
 
 /// @brief Private context selected for the STM32H753 backend.
-static t_sFMKNVM_BackendFlashH753Context
-    g_FMKNVM_BackendFlashH753Context_s;
+static t_sFMKNVM_BackendFlashH753Context g_FMKNVM_BackendFlashH753Context_s;
 
 /**
  * @brief Initialize the STM32H753 internal Flash backend context.
- * @note No Flash operation is started. The function validates the Bank 2
+ * @note No Flash operation is started.The function validates the Bank 2
  *       geometry compiled into this backend and makes later callbacks usable.
  * @param[in] f_Context_pv : Backend-owned
  *            t_sFMKNVM_BackendFlashH753Context instance.
@@ -56,11 +55,10 @@ static t_eReturnCode s_FMKNVM_H753_Init(void * f_Context_pv);
  * @retval RC_ERROR_PTR_NULL A supplied pointer is null.
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
  */
-static t_eReturnCode s_FMKNVM_H753_GetGeometry(   void * f_Context_pv,
-                                                  t_sFMKNVM_BackendGeometry * f_Geometry_ps);
+static t_eReturnCode s_FMKNVM_H753_GetGeometry(void * f_Context_pv, t_sFMKNVM_BackendGeometry * f_Geometry_ps);
 /**
  * @brief Return operational capabilities of the STM32H753 backend.
- * @note Reads and writes are synchronous. Read-while-write is supported
+ * @note Reads and writes are synchronous.Read-while-write is supported
  *       because this project links the application exclusively in Bank 1 and
  *       dedicates Bank 2 to FMK_NVM.
  * @param[in] f_Context_pv : Initialized backend-owned context.
@@ -73,8 +71,8 @@ static t_eReturnCode s_FMKNVM_H753_GetCapabilities(   void * f_Context_pv,
                                                       t_sFMKNVM_BackendCapabilities * f_Capabilities_ps);
 /**
  * @brief Copy bytes from memory-mapped STM32H753 Flash Bank 2.
- * @note The address is relative to the configured Bank 2 base. Large reads
- *       are split into SafeMem-compatible chunks. The destination is consumed
+ * @note The address is relative to the configured Bank 2 base.Large reads
+ *       are split into SafeMem-compatible chunks.The destination is consumed
  *       only during this synchronous call and is never retained.
  * @param[in] f_Context_pv : Initialized backend-owned context.
  * @param[in] f_Address_u32 : Bank-2-relative byte address.
@@ -87,16 +85,16 @@ static t_eReturnCode s_FMKNVM_H753_GetCapabilities(   void * f_Context_pv,
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
  * @retval RC_NVM_BACKEND_READ_ERROR SafeMem could not complete the read.
  */
-static t_eReturnCode s_FMKNVM_H753_Read(  void * f_Context_pv,
-                                         t_uint32 f_Address_u32,
-                                         t_uint8 * f_Data_pu8,
-                                         t_uint32 f_Size_u32);
+static t_eReturnCode s_FMKNVM_H753_Read(   void * f_Context_pv,
+                                           t_uint32 f_Address_u32,
+                                           t_uint8 * f_Data_pu8,
+                                           t_uint32 f_Size_u32);
 /**
  * @brief Program bytes into erased STM32H753 Flash Bank 2.
- * @note The destination must start on a 32-byte Flash-word boundary. Input is
+ * @note The destination must start on a 32-byte Flash-word boundary.Input is
  *       copied into an aligned 32-byte staging word and unused tail bytes stay
- *       erased. Every destination Flash word is checked for the erased value
- *       before HAL_FLASH_Program is called. The source is never retained.
+ *       erased.Every destination Flash word is checked for the erased value
+ *       before HAL_FLASH_Program is called.The source is never retained.
  * @param[in] f_Context_pv : Initialized backend-owned context.
  * @param[in] f_Address_u32 : Bank-2-relative, 32-byte-aligned address.
  * @param[in] f_Data_pcu8 : Caller-owned bytes consumed synchronously.
@@ -114,7 +112,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
                                               t_uint32 f_Size_u32);
 /**
  * @brief Erase complete sectors from STM32H753 Flash Bank 2.
- * @note Both address and size must be multiples of 128 Kbytes. The operation
+ * @note Both address and size must be multiples of 128 Kbytes.The operation
  *       is synchronous and uses 32-bit parallelism for the board's 3.3-V
  *       supply.
  * @param[in] f_Context_pv : Initialized backend-owned context.
@@ -126,9 +124,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
  * @retval RC_NVM_BACKEND_ERASE_ERROR Flash unlock, erase, or lock failed.
  */
-static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
-                                         t_uint32 f_Address_u32,
-                                         t_uint32 f_Size_u32);
+static t_eReturnCode s_FMKNVM_H753_Erase(void * f_Context_pv, t_uint32 f_Address_u32, t_uint32 f_Size_u32);
 /**
  * @brief Report the activity of this synchronous Flash backend.
  * @param[in] f_Context_pv : Backend-owned context, unused by this query.
@@ -144,8 +140,7 @@ static t_bool s_FMKNVM_H753_IsBusy(void * f_Context_pv);
  * @retval RC_ERROR_PTR_NULL A supplied pointer is null.
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
  */
-static t_eReturnCode s_FMKNVM_H753_GetOperationResult(   void * f_Context_pv,
-                                                         t_eReturnCode * f_OperationResult_pe);
+static t_eReturnCode s_FMKNVM_H753_GetOperationResult(void * f_Context_pv, t_eReturnCode * f_OperationResult_pe);
 /**
  * @brief Service backend work from FMKNVM_Cyclic.
  * @note The STM32H753 implementation is synchronous, therefore this callback
@@ -160,8 +155,7 @@ static void s_FMKNVM_H753_Cyclic(void * f_Context_pv);
  * @retval TRUE The complete range belongs to the configured storage.
  * @retval FALSE The size is zero or the range exceeds storage.
  */
-static t_bool s_FMKNVM_H753_IsRangeValid(  t_uint32 f_Address_u32,
-                                           t_uint32 f_Size_u32);
+static t_bool s_FMKNVM_H753_IsRangeValid(t_uint32 f_Address_u32, t_uint32 f_Size_u32);
 /**
  * @brief Check that one complete physical Flash word is erased.
  * @param[in] f_AbsoluteAddress_u32 : 32-byte-aligned physical Flash address.
@@ -174,8 +168,7 @@ static t_bool s_FMKNVM_H753_IsErased(   t_uint32 f_AbsoluteAddress_u32);
  * @param[in] f_AbsoluteAddress_u32 : 32-byte-aligned physical address.
  * @param[in] f_Size_u32 : Size rounded to a 32-byte cache-line multiple.
  */
-static void s_FMKNVM_H753_Invalidate(   t_uint32 f_AbsoluteAddress_u32,
-                                        t_uint32 f_Size_u32);
+static void s_FMKNVM_H753_Invalidate(t_uint32 f_AbsoluteAddress_u32, t_uint32 f_Size_u32);
 
 /// @brief Immutable callback table selected by ConfigSpecific.
 static const t_sFMKNVM_BackendApi c_FMKNVM_BackendFlashH753Api_s =
@@ -183,14 +176,12 @@ static const t_sFMKNVM_BackendApi c_FMKNVM_BackendFlashH753Api_s =
     .context_pv = &g_FMKNVM_BackendFlashH753Context_s,
     .Init_pcb = s_FMKNVM_H753_Init,
     .GetGeometry_pcb = s_FMKNVM_H753_GetGeometry,
-    .GetCapabilities_pcb =
-        s_FMKNVM_H753_GetCapabilities,
+    .GetCapabilities_pcb = s_FMKNVM_H753_GetCapabilities,
     .Read_pcb = s_FMKNVM_H753_Read,
     .Program_pcb = s_FMKNVM_H753_Program,
     .Erase_pcb = s_FMKNVM_H753_Erase,
     .IsBusy_pcb = s_FMKNVM_H753_IsBusy,
-    .GetOperationResult_pcb =
-        s_FMKNVM_H753_GetOperationResult,
+    .GetOperationResult_pcb = s_FMKNVM_H753_GetOperationResult,
     .Cyclic_pcb = s_FMKNVM_H753_Cyclic
 };
 
@@ -199,8 +190,7 @@ static const t_sFMKNVM_BackendApi c_FMKNVM_BackendFlashH753Api_s =
  *********************************/
 const t_sFMKNVM_BackendApi * FMKNVM_BackendFlashH753_GetApi(void)
 {
-    const t_sFMKNVM_BackendApi * BackendApi_ps =
-        &c_FMKNVM_BackendFlashH753Api_s;
+    const t_sFMKNVM_BackendApi * BackendApi_ps = &c_FMKNVM_BackendFlashH753Api_s;
 
     //---- 1- Return the lifetime-stable backend contract ----//
 
@@ -219,8 +209,7 @@ static t_eReturnCode s_FMKNVM_H753_Init(void * f_Context_pv)
     {
         Ret_e = RC_ERROR_PTR_NULL;
     }
-    else if((FLASH_BANK2_BASE != FMKNVM_H753_STORAGE_ADDRESS) ||
-            (FLASH_BANK_SIZE != FMKNVM_H753_STORAGE_SIZE) ||
+    else if((FLASH_BANK2_BASE != FMKNVM_H753_STORAGE_ADDRESS) || (FLASH_BANK_SIZE != FMKNVM_H753_STORAGE_SIZE) ||
             (FLASH_SECTOR_SIZE != FMKNVM_H753_ERASE_UNIT_SIZE))
     {
         Ret_e = RC_ERROR_WRONG_CONFIG;
@@ -233,8 +222,7 @@ static t_eReturnCode s_FMKNVM_H753_Init(void * f_Context_pv)
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         //---- 3- Publish the initialized synchronous state ----//
         Context_ps->lastOperationResult_e = RC_OK;
@@ -247,8 +235,7 @@ static t_eReturnCode s_FMKNVM_H753_Init(void * f_Context_pv)
 /*********************************
  * s_FMKNVM_H753_GetGeometry
  *********************************/
-static t_eReturnCode s_FMKNVM_H753_GetGeometry(   void * f_Context_pv,
-                                                  t_sFMKNVM_BackendGeometry * f_Geometry_ps)
+static t_eReturnCode s_FMKNVM_H753_GetGeometry(void * f_Context_pv, t_sFMKNVM_BackendGeometry * f_Geometry_ps)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -259,8 +246,7 @@ static t_eReturnCode s_FMKNVM_H753_GetGeometry(   void * f_Context_pv,
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         if(Context_ps->isInitialized_b == FALSE)
         {
@@ -269,14 +255,10 @@ static t_eReturnCode s_FMKNVM_H753_GetGeometry(   void * f_Context_pv,
         else
         {
             //---- 2- Export the STM32H753 physical geometry ----//
-            f_Geometry_ps->storageSize_u32 =
-                FMKNVM_H753_STORAGE_SIZE;
-            f_Geometry_ps->eraseUnitSize_u32 =
-                FMKNVM_H753_ERASE_UNIT_SIZE;
-            f_Geometry_ps->programUnitSize_u32 =
-                FMKNVM_H753_PROGRAM_UNIT_SIZE;
-            f_Geometry_ps->commitUnitSize_u32 =
-                FMKNVM_H753_PROGRAM_UNIT_SIZE;
+            f_Geometry_ps->storageSize_u32 = FMKNVM_H753_STORAGE_SIZE;
+            f_Geometry_ps->eraseUnitSize_u32 = FMKNVM_H753_ERASE_UNIT_SIZE;
+            f_Geometry_ps->programUnitSize_u32 = FMKNVM_H753_PROGRAM_UNIT_SIZE;
+            f_Geometry_ps->commitUnitSize_u32 = FMKNVM_H753_PROGRAM_UNIT_SIZE;
         }
     }
 
@@ -298,8 +280,7 @@ static t_eReturnCode s_FMKNVM_H753_GetCapabilities(   void * f_Context_pv,
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         if(Context_ps->isInitialized_b == FALSE)
         {
@@ -310,8 +291,7 @@ static t_eReturnCode s_FMKNVM_H753_GetCapabilities(   void * f_Context_pv,
             //---- 2- Export the synchronous dual-bank capabilities ----//
             f_Capabilities_ps->eraseRequired_b = TRUE;
             f_Capabilities_ps->readWhileWriteSupported_b = TRUE;
-            f_Capabilities_ps->maxTransferSize_u32 =
-                FMKNVM_H753_STORAGE_SIZE;
+            f_Capabilities_ps->maxTransferSize_u32 = FMKNVM_H753_STORAGE_SIZE;
         }
     }
 
@@ -321,10 +301,10 @@ static t_eReturnCode s_FMKNVM_H753_GetCapabilities(   void * f_Context_pv,
 /*********************************
  * s_FMKNVM_H753_Read
  *********************************/
-static t_eReturnCode s_FMKNVM_H753_Read(  void * f_Context_pv,
-                                         t_uint32 f_Address_u32,
-                                         t_uint8 * f_Data_pu8,
-                                         t_uint32 f_Size_u32)
+static t_eReturnCode s_FMKNVM_H753_Read(   void * f_Context_pv,
+                                           t_uint32 f_Address_u32,
+                                           t_uint8 * f_Data_pu8,
+                                           t_uint32 f_Size_u32)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -335,8 +315,7 @@ static t_eReturnCode s_FMKNVM_H753_Read(  void * f_Context_pv,
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         if(Context_ps->isInitialized_b == FALSE)
         {
@@ -344,9 +323,7 @@ static t_eReturnCode s_FMKNVM_H753_Read(  void * f_Context_pv,
         }
         else
         {
-            t_bool isRangeValid_b =
-                s_FMKNVM_H753_IsRangeValid(   f_Address_u32,
-                                              f_Size_u32);
+            t_bool isRangeValid_b = s_FMKNVM_H753_IsRangeValid(f_Address_u32, f_Size_u32);
 
             if(isRangeValid_b == FALSE)
             {
@@ -357,30 +334,23 @@ static t_eReturnCode s_FMKNVM_H753_Read(  void * f_Context_pv,
                 t_uint32 copiedSize_u32 = 0U;
 
                 //---- 2- Copy the memory-mapped Flash in bounded chunks ----//
-                while((copiedSize_u32 < f_Size_u32) &&
-                      (Ret_e == RC_OK))
+                while((copiedSize_u32 < f_Size_u32) && (Ret_e == RC_OK))
                 {
-                    t_uint32 remainingSize_u32 =
-                        f_Size_u32 - copiedSize_u32;
+                    t_uint32 remainingSize_u32 = f_Size_u32 - copiedSize_u32;
                     t_uint32 chunkSize_u32 = remainingSize_u32;
 
                     if(chunkSize_u32 >
                        FMKNVM_H753_SAFEMEM_CHUNK_SIZE)
                     {
-                        chunkSize_u32 =
-                            FMKNVM_H753_SAFEMEM_CHUNK_SIZE;
+                        chunkSize_u32 = FMKNVM_H753_SAFEMEM_CHUNK_SIZE;
                     }
 
-                    const t_uint8 * FlashData_pcu8 =
-                        (const t_uint8 *)(
+                    const t_uint8 * FlashData_pcu8 = (const t_uint8 *)(
                             FMKNVM_H753_STORAGE_ADDRESS +
                             f_Address_u32 +
                             copiedSize_u32);
 
-                    Ret_e = SafeMem_memcpy(   &f_Data_pu8[
-                                                copiedSize_u32],
-                                              FlashData_pcu8,
-                                              (t_uint16)chunkSize_u32);
+                    Ret_e = SafeMem_memcpy(&f_Data_pu8[copiedSize_u32], FlashData_pcu8, (t_uint16)chunkSize_u32);
 
                     if(Ret_e == RC_OK)
                     {
@@ -417,8 +387,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         if(Context_ps->isInitialized_b == FALSE)
         {
@@ -426,12 +395,9 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
         }
         else
         {
-            t_bool isRangeValid_b =
-                s_FMKNVM_H753_IsRangeValid(   f_Address_u32,
-                                              f_Size_u32);
+            t_bool isRangeValid_b = s_FMKNVM_H753_IsRangeValid(f_Address_u32, f_Size_u32);
 
-            if((isRangeValid_b == FALSE) ||
-               ((f_Address_u32 %
+            if((isRangeValid_b == FALSE) || ((f_Address_u32 %
                  FMKNVM_H753_PROGRAM_UNIT_SIZE) != 0U))
             {
                 Ret_e = RC_ERROR_PARAM_INVALID;
@@ -454,70 +420,56 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
                     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS_BANK2);
 
                     //---- 3- Program one aligned Flash word per loop ----//
-                    while((programmedSize_u32 < f_Size_u32) &&
-                          (Ret_e == RC_OK))
+                    while((programmedSize_u32 < f_Size_u32) && (Ret_e == RC_OK))
                     {
-                        t_uint32 FlashWord_au32[
-                            FMKNVM_H753_PROGRAM_WORD_COUNT]
+                        t_uint32 FlashWord_au32[FMKNVM_H753_PROGRAM_WORD_COUNT]
                             __attribute__((aligned(32)));
-                        t_uint32 remainingSize_u32 =
-                            f_Size_u32 - programmedSize_u32;
+                        t_uint32 remainingSize_u32 = f_Size_u32 - programmedSize_u32;
                         t_uint32 chunkSize_u32 = remainingSize_u32;
-                        t_uint32 absoluteAddress_u32 =
-                            FMKNVM_H753_STORAGE_ADDRESS +
+                        t_uint32 absoluteAddress_u32 = FMKNVM_H753_STORAGE_ADDRESS +
                             f_Address_u32 +
                             programmedSize_u32;
 
                         if(chunkSize_u32 >
                            FMKNVM_H753_PROGRAM_UNIT_SIZE)
                         {
-                            chunkSize_u32 =
-                                FMKNVM_H753_PROGRAM_UNIT_SIZE;
+                            chunkSize_u32 = FMKNVM_H753_PROGRAM_UNIT_SIZE;
                         }
 
-                        Ret_e = SafeMem_memset(   FlashWord_au32,
-                                                  0x00FFU,
-                                                  (t_uint16)
-                                                  sizeof(FlashWord_au32));
+                        Ret_e = SafeMem_memset(FlashWord_au32, 0x00FFU, (t_uint16) sizeof(FlashWord_au32));
 
                         if(Ret_e == RC_OK)
                         {
                             Ret_e = SafeMem_memcpy(   FlashWord_au32,
-                                                     &f_Data_pcu8[
-                                                        programmedSize_u32],
-                                                     (t_uint16)chunkSize_u32);
+                                                      &f_Data_pcu8[programmedSize_u32],
+                                                      (t_uint16)chunkSize_u32);
                         }
 
                         if(Ret_e == RC_OK)
                         {
                             t_bool isFlashWordErased_b;
 
-                            isFlashWordErased_b =
-                                s_FMKNVM_H753_IsErased(absoluteAddress_u32);
+                            isFlashWordErased_b = s_FMKNVM_H753_IsErased(absoluteAddress_u32);
 
                             if(isFlashWordErased_b == FALSE)
                             {
-                                Ret_e =
-                                    RC_NVM_BACKEND_PROGRAM_ERROR;
+                                Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
                             }
                         }
 
                         if(Ret_e == RC_OK)
                         {
-                            HalStatus_e =
-                                HAL_FLASH_Program(   FLASH_TYPEPROGRAM_FLASHWORD,
-                                                     absoluteAddress_u32,
-                                                     (t_uint32)FlashWord_au32);
+                            HalStatus_e = HAL_FLASH_Program(   FLASH_TYPEPROGRAM_FLASHWORD,
+                                                               absoluteAddress_u32,
+                                                               (t_uint32)FlashWord_au32);
 
                             if(HalStatus_e == HAL_OK)
                             {
-                                programmedSize_u32 +=
-                                    chunkSize_u32;
+                                programmedSize_u32 += chunkSize_u32;
                             }
                             else
                             {
-                                Ret_e =
-                                    RC_NVM_BACKEND_PROGRAM_ERROR;
+                                Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
                             }
                         }
                     }
@@ -525,8 +477,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
                     //---- 4- Lock Flash after every programming session ----//
                     HalStatus_e = HAL_FLASH_Lock();
 
-                    if((HalStatus_e != HAL_OK) &&
-                       (Ret_e == RC_OK))
+                    if((HalStatus_e != HAL_OK) && (Ret_e == RC_OK))
                     {
                         Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
                     }
@@ -534,17 +485,14 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
                     //---- 5- Discard cached data for programmed words ----//
                     if(Ret_e == RC_OK)
                     {
-                        t_uint32 cacheSize_u32 =
-                            ((f_Size_u32 +
+                        t_uint32 cacheSize_u32 = ((f_Size_u32 +
                               FMKNVM_H753_PROGRAM_UNIT_SIZE - 1U) /
                              FMKNVM_H753_PROGRAM_UNIT_SIZE) *
                             FMKNVM_H753_PROGRAM_UNIT_SIZE;
-                        t_uint32 absoluteAddress_u32 =
-                            FMKNVM_H753_STORAGE_ADDRESS +
+                        t_uint32 absoluteAddress_u32 = FMKNVM_H753_STORAGE_ADDRESS +
                             f_Address_u32;
 
-                        s_FMKNVM_H753_Invalidate(   absoluteAddress_u32,
-                                                   cacheSize_u32);
+                        s_FMKNVM_H753_Invalidate(absoluteAddress_u32, cacheSize_u32);
                     }
                 }
             }
@@ -559,9 +507,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
 /*********************************
  * s_FMKNVM_H753_Erase
  *********************************/
-static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
-                                         t_uint32 f_Address_u32,
-                                         t_uint32 f_Size_u32)
+static t_eReturnCode s_FMKNVM_H753_Erase(void * f_Context_pv, t_uint32 f_Address_u32, t_uint32 f_Size_u32)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -572,8 +518,7 @@ static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         if(Context_ps->isInitialized_b == FALSE)
         {
@@ -581,14 +526,10 @@ static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
         }
         else
         {
-            t_bool isRangeValid_b =
-                s_FMKNVM_H753_IsRangeValid(   f_Address_u32,
-                                              f_Size_u32);
+            t_bool isRangeValid_b = s_FMKNVM_H753_IsRangeValid(f_Address_u32, f_Size_u32);
 
-            if((isRangeValid_b == FALSE) ||
-               ((f_Address_u32 %
-                 FMKNVM_H753_ERASE_UNIT_SIZE) != 0U) ||
-               ((f_Size_u32 %
+            if((isRangeValid_b == FALSE) || ((f_Address_u32 %
+                 FMKNVM_H753_ERASE_UNIT_SIZE) != 0U) || ((f_Size_u32 %
                  FMKNVM_H753_ERASE_UNIT_SIZE) != 0U))
             {
                 Ret_e = RC_ERROR_PARAM_INVALID;
@@ -611,23 +552,18 @@ static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
 
                     Erase_s.TypeErase = FLASH_TYPEERASE_SECTORS;
                     Erase_s.Banks = FLASH_BANK_2;
-                    Erase_s.Sector =
-                        f_Address_u32 /
+                    Erase_s.Sector = f_Address_u32 /
                         FMKNVM_H753_ERASE_UNIT_SIZE;
-                    Erase_s.NbSectors =
-                        f_Size_u32 /
+                    Erase_s.NbSectors = f_Size_u32 /
                         FMKNVM_H753_ERASE_UNIT_SIZE;
-                    Erase_s.VoltageRange =
-                        FLASH_VOLTAGE_RANGE_3;
+                    Erase_s.VoltageRange = FLASH_VOLTAGE_RANGE_3;
 
                     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_ALL_ERRORS_BANK2);
 
                     //---- 3- Erase the requested complete sectors ----//
-                    HalStatus_e = HAL_FLASHEx_Erase(   &Erase_s,
-                                                       &sectorError_u32);
+                    HalStatus_e = HAL_FLASHEx_Erase(&Erase_s, &sectorError_u32);
 
-                    if((HalStatus_e != HAL_OK) ||
-                       (sectorError_u32 != 0xFFFFFFFFUL))
+                    if((HalStatus_e != HAL_OK) || (sectorError_u32 != 0xFFFFFFFFUL))
                     {
                         Ret_e = RC_NVM_BACKEND_ERASE_ERROR;
                     }
@@ -635,8 +571,7 @@ static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
                     //---- 4- Lock Flash after the erase session ----//
                     HalStatus_e = HAL_FLASH_Lock();
 
-                    if((HalStatus_e != HAL_OK) &&
-                       (Ret_e == RC_OK))
+                    if((HalStatus_e != HAL_OK) && (Ret_e == RC_OK))
                     {
                         Ret_e = RC_NVM_BACKEND_ERASE_ERROR;
                     }
@@ -644,12 +579,10 @@ static t_eReturnCode s_FMKNVM_H753_Erase( void * f_Context_pv,
                     //---- 5- Discard cached data for erased sectors ----//
                     if(Ret_e == RC_OK)
                     {
-                        t_uint32 absoluteAddress_u32 =
-                            FMKNVM_H753_STORAGE_ADDRESS +
+                        t_uint32 absoluteAddress_u32 = FMKNVM_H753_STORAGE_ADDRESS +
                             f_Address_u32;
 
-                        s_FMKNVM_H753_Invalidate(   absoluteAddress_u32,
-                                                   f_Size_u32);
+                        s_FMKNVM_H753_Invalidate(absoluteAddress_u32, f_Size_u32);
                     }
                 }
             }
@@ -677,8 +610,7 @@ static t_bool s_FMKNVM_H753_IsBusy(void * f_Context_pv)
 /*********************************
  * s_FMKNVM_H753_GetOperationResult
  *********************************/
-static t_eReturnCode s_FMKNVM_H753_GetOperationResult(   void * f_Context_pv,
-                                                         t_eReturnCode * f_OperationResult_pe)
+static t_eReturnCode s_FMKNVM_H753_GetOperationResult(void * f_Context_pv, t_eReturnCode * f_OperationResult_pe)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -689,8 +621,7 @@ static t_eReturnCode s_FMKNVM_H753_GetOperationResult(   void * f_Context_pv,
     }
     else
     {
-        t_sFMKNVM_BackendFlashH753Context * Context_ps =
-            (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
+        t_sFMKNVM_BackendFlashH753Context * Context_ps = (t_sFMKNVM_BackendFlashH753Context *)f_Context_pv;
 
         if(Context_ps->isInitialized_b == FALSE)
         {
@@ -699,8 +630,7 @@ static t_eReturnCode s_FMKNVM_H753_GetOperationResult(   void * f_Context_pv,
         else
         {
             //---- 2- Return the latest synchronous completion result ----//
-            *f_OperationResult_pe =
-                Context_ps->lastOperationResult_e;
+            *f_OperationResult_pe = Context_ps->lastOperationResult_e;
         }
     }
 
@@ -719,15 +649,12 @@ static void s_FMKNVM_H753_Cyclic(void * f_Context_pv)
 /*********************************
  * s_FMKNVM_H753_IsRangeValid
  *********************************/
-static t_bool s_FMKNVM_H753_IsRangeValid(  t_uint32 f_Address_u32,
-                                           t_uint32 f_Size_u32)
+static t_bool s_FMKNVM_H753_IsRangeValid(t_uint32 f_Address_u32, t_uint32 f_Size_u32)
 {
     t_bool isRangeValid_b = FALSE;
 
     //---- 1- Validate without allowing unsigned address overflow ----//
-    if((f_Size_u32 != 0U) &&
-       (f_Address_u32 < FMKNVM_H753_STORAGE_SIZE) &&
-       (f_Size_u32 <=
+    if((f_Size_u32 != 0U) && (f_Address_u32 < FMKNVM_H753_STORAGE_SIZE) && (f_Size_u32 <=
         (FMKNVM_H753_STORAGE_SIZE - f_Address_u32)))
     {
         isRangeValid_b = TRUE;
@@ -741,14 +668,12 @@ static t_bool s_FMKNVM_H753_IsRangeValid(  t_uint32 f_Address_u32,
  *********************************/
 static t_bool s_FMKNVM_H753_IsErased(   t_uint32 f_AbsoluteAddress_u32)
 {
-    const volatile t_uint32 * FlashWord_pcu32 =
-        (const volatile t_uint32 *)f_AbsoluteAddress_u32;
+    const volatile t_uint32 * FlashWord_pcu32 = (const volatile t_uint32 *)f_AbsoluteAddress_u32;
     t_bool isErased_b = TRUE;
 
     //---- 1- Check every 32-bit word of the 256-bit Flash word ----//
     for(t_uint32 idx_u32 = 0U ;
-        (idx_u32 < FMKNVM_H753_PROGRAM_WORD_COUNT) &&
-        (isErased_b == TRUE) ;
+        (idx_u32 < FMKNVM_H753_PROGRAM_WORD_COUNT) && (isErased_b == TRUE) ;
         idx_u32++)
     {
         if(FlashWord_pcu32[idx_u32] != 0xFFFFFFFFUL)
@@ -763,15 +688,13 @@ static t_bool s_FMKNVM_H753_IsErased(   t_uint32 f_AbsoluteAddress_u32)
 /*********************************
  * s_FMKNVM_H753_Invalidate
  *********************************/
-static void s_FMKNVM_H753_Invalidate(   t_uint32 f_AbsoluteAddress_u32,
-                                        t_uint32 f_Size_u32)
+static void s_FMKNVM_H753_Invalidate(t_uint32 f_AbsoluteAddress_u32, t_uint32 f_Size_u32)
 {
     //---- 1- Synchronize Flash writes before cache maintenance ----//
     __DSB();
 
     //---- 2- Invalidate aligned data-cache lines covering Flash ----//
-    SCB_InvalidateDCache_by_Addr(   (t_uint32 *)f_AbsoluteAddress_u32,
-        (int32_t)f_Size_u32);
+    SCB_InvalidateDCache_by_Addr(   (t_uint32 *)f_AbsoluteAddress_u32, (int32_t)f_Size_u32);
 
     //---- 3- Synchronize subsequent memory-mapped Flash reads ----//
     __DSB();

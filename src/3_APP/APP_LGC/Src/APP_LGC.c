@@ -453,6 +453,8 @@ static t_eReturnCode s_APPLGC_Operational(void)
     t_sAPPLGC_ParamTest prmTest_s;
     static t_uint16 swVersion_u16 = 0;
     static t_char serialnumb[4] = {0};
+    t_sAPPSDM_DiagHistoryItem diagItem_s;
+    t_bool isAvailable_b;
     //static t_bool isSent_b = FALSE;
 
     Ret_e = s_APPLGC_UpdateSnsValues();
@@ -468,6 +470,10 @@ static t_eReturnCode s_APPLGC_Operational(void)
     if(Ret_e == RC_OK)
     {
         Ret_e = APPSPM_Get_TestParam(&prmTest_s);
+        APPSDM_ReportDiagEvnt(APPSDM_DIAG_ITEM_FMK_CFG_ERROR,
+                                APPSDM_DIAG_ITEM_REPORT_FAIL,
+                            0,0);
+        APPSDM_GetDiagHistoryItem(0, &diagItem_s, &isAvailable_b);
         if(Ret_e == RC_OK)
         {
             if(prmTest_s.isOK == TRUE)
@@ -621,8 +627,6 @@ static t_eReturnCode s_APPLGC_ResetSrvState(void)
 {
     t_eReturnCode Ret_e = RC_OK;
     t_uint8 idxSrv_u8;
-
-    Ret_e = APPSDM_ResetDiagEvnt();
 
     if(Ret_e == RC_OK)
     {

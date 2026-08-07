@@ -19,6 +19,8 @@
     // *                      Defines
     // ********************************************************************
     #define APPSDM_BROADCAST_TIMEOUT ((t_uint32)1000) /**< Every Second  */
+    /** @brief Number of persistent diagnostic history slots exposed to the HMI. */
+    #define APPSDM_MAX_DIAG_ITEM_MONITORING ((t_uint8)10U)
     // ********************************************************************
     // *                      Types
     // ********************************************************************

@@ -22,6 +22,14 @@
 // *                      Defines
 // ********************************************************************
 
+#define FMKCPU_RTC_ASYNCH_PREDIV     ((t_uint32)127U)
+/**
+ * @brief RTC synchronous predivider for the nominal LSI frequency.
+ * @note Both supported G4 and H7 families use LSI_VALUE as the nominal
+ *       low-speed internal oscillator frequency.
+ */
+#define FMKCPU_RTC_SYNCH_PREDIV      ((t_uint32)((LSI_VALUE / 128U) - 1U))
+
 // ********************************************************************
 // *                      Types
 // ********************************************************************
@@ -223,11 +231,10 @@ static t_uint32 s_FMKCPU_ComputePllOutputHz(const t_sFMKCPU_PllOscCfg *f_pllCfg_
 //********************************************************************************
 //                      Public functions - Prototypes
 //********************************************************************************
-t_eReturnCode FMKCPU_ComputeSystemClockValues(
-    const t_sFMKCPU_SysOscCfg *f_sysOscCfg_ps,
-    const t_sFMKCPU_PllOscCfg *f_pll1OscCfg_ps,
-    const t_sFMKCPU_PllOscCfg * const *f_pllOtherCfg_ppps,
-    t_uint16 *f_clockValue_pu16)
+t_eReturnCode FMKCPU_ComputeSystemClockValues(  const t_sFMKCPU_SysOscCfg *f_sysOscCfg_ps,
+                                                const t_sFMKCPU_PllOscCfg *f_pll1OscCfg_ps,
+                                                const t_sFMKCPU_PllOscCfg * const *f_pllOtherCfg_ppps,
+                                                t_uint16 *f_clockValue_pu16)
 {
     t_eReturnCode Ret_e = RC_OK;
 
@@ -466,6 +473,104 @@ t_eReturnCode FMKCPU_Set_BspHardwareInitAfterHal(void)
         }
     }
 #endif
+
+    return Ret_e;
+}
+
+/*********************************
+ * FMKCPU_Set_BspRtcCfg
+ *********************************/
+t_eReturnCode FMKCPU_Set_BspRtcCfg(RTC_HandleTypeDef *f_RtcHandle_ps)
+{
+    t_eReturnCode Ret_e = RC_OK;
+    HAL_StatusTypeDef bspRet_e = HAL_OK;
+    RCC_PeriphCLKInitTypeDef periphClkCfg_s = {0};
+
+    if(f_RtcHandle_ps == (RTC_HandleTypeDef *)NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;
+    }
+    else
+    {
+        /*
+         * The RTC belongs to the backup domain.
+         * Keep backup-domain write access enabled because FMK_CPU also uses
+         * RTC backup registers to store the date/time validity marker.
+         */
+        HAL_PWR_EnableBkUpAccess();
+
+        /*
+         * Select the RTC kernel clock.
+         *
+         * G4 and H7 both support LSI as RTC source through
+         * RCC_PeriphCLKInitTypeDef::RTCClockSelection. The HAL implementation
+         * takes care of the family-specific backup-domain sequence if the
+         * selected RTC source has to change.
+         */
+        periphClkCfg_s.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+
+#if defined(FMKCPU_STM32_ECU_FAMILY_G4)
+        periphClkCfg_s.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+
+#elif defined(FMKCPU_STM32_ECU_FAMILY_H7)
+        periphClkCfg_s.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+
+#else
+        #error "FMKCPU_Set_BspRtcCfg supports only STM32G4 and STM32H7"
+#endif
+
+        bspRet_e = HAL_RCCEx_PeriphCLKConfig(&periphClkCfg_s);
+
+        if(bspRet_e != HAL_OK)
+        {
+            Ret_e = RC_ERROR_WRONG_RESULT;
+        }
+    }
+
+    if(Ret_e == RC_OK)
+    {
+        /*
+         * Enable the RTC APB/backup-domain interface clock after selecting
+         * its kernel clock source.
+         */
+        Ret_e = FMKCPU_Set_HwClock(FMKCPU_RCC_CLK_RTC, FMKCPU_CLOCKPORT_OPE_ENABLE);
+
+        f_RtcHandle_ps->Instance = RTC;
+        f_RtcHandle_ps->Init.HourFormat = RTC_HOURFORMAT_24;
+        f_RtcHandle_ps->Init.AsynchPrediv = FMKCPU_RTC_ASYNCH_PREDIV;
+        f_RtcHandle_ps->Init.SynchPrediv = FMKCPU_RTC_SYNCH_PREDIV;
+        f_RtcHandle_ps->Init.OutPut = RTC_OUTPUT_DISABLE;
+        f_RtcHandle_ps->Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+        f_RtcHandle_ps->Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+
+        /*
+         * RTC_InitTypeDef is not strictly identical between all STM32 HAL
+         * families/revisions.
+         *
+         * G4 exposes OutPutRemap and OutPutPullUp.
+         * H7 exposes OutPutRemap and exposes OutPutPullUp when the selected
+         * device provides the TAMP block.
+         */
+#if defined(FMKCPU_STM32_ECU_FAMILY_G4)
+        f_RtcHandle_ps->Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+        f_RtcHandle_ps->Init.OutPutPullUp = RTC_OUTPUT_PULLUP_NONE;
+
+#elif defined(FMKCPU_STM32_ECU_FAMILY_H7)
+        f_RtcHandle_ps->Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+
+    #if defined(TAMP) && defined(RTC_OUTPUT_PULLUP_NONE)
+        f_RtcHandle_ps->Init.OutPutPullUp = RTC_OUTPUT_PULLUP_NONE;
+    #endif
+#endif
+
+        bspRet_e = HAL_RTC_Init(f_RtcHandle_ps);
+
+        if((bspRet_e != HAL_OK)
+        || (Ret_e != RC_OK))
+        {
+            Ret_e = RC_ERROR_WRONG_RESULT;
+        }
+    }
 
     return Ret_e;
 }

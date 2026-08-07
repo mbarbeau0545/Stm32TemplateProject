@@ -37,6 +37,9 @@
     ///@brief max/min treshold for Temperature
     #define FMKCPU_CPU_TEMP_TRESHOLD_MIN    ((t_float32)-20.0f)
     #define FMKCPU_CPU_TEMP_TRESHOLD_MAX    ((t_float32)60.0f)
+
+    /// @brief Backup-register marker proving that a complete calendar value was set.
+    #define FMKCPU_RTC_BACKUP_MAGIC ((t_uint32)0x46524354UL)
     // ********************************************************************
     // *                      Types
     // ********************************************************************

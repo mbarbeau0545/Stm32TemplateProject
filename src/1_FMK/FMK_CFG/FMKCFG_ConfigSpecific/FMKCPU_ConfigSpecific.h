@@ -117,6 +117,21 @@
     t_eReturnCode FMKCPU_Set_BspHardwareInitAfterHal(void);
     /**
     *
+    *   @brief      Configure and initialize the RTC peripheral for the selected
+    *               STM32 ECU family.
+    *   @note       G4 and H7 use LSI as RTC source. Family-specific HAL fields
+    *               are handled internally and are not exposed to FMK_CPU.
+    *
+    *   @param[in,out] f_RtcHandle_ps : RTC HAL handle owned by FMK_CPU.
+    *
+    *  @retval RC_OK                             @ref RC_OK
+    *  @retval RC_ERROR_PTR_NULL                 @ref RC_ERROR_PTR_NULL
+    *  @retval RC_ERROR_WRONG_RESULT             @ref RC_ERROR_WRONG_RESULT
+    *
+    */
+    t_eReturnCode FMKCPU_Set_BspRtcCfg(RTC_HandleTypeDef *f_RtcHandle_ps);
+    /**
+    *
     *	@brief      Decode ECU-family specific reset flags.
     *
     *	@param[out] f_resetFlag_pe        : reset flag storage.
@@ -185,11 +200,10 @@
     *  @retval RC_ERROR_NOT_SUPPORTED            @ref RC_ERROR_NOT_SUPPORTED
     *
     */
-    t_eReturnCode FMKCPU_ComputeSystemClockValues(
-        const t_sFMKCPU_SysOscCfg *f_sysOscCfg_ps,
-        const t_sFMKCPU_PllOscCfg *f_pll1OscCfg_ps,
-        const t_sFMKCPU_PllOscCfg * const *f_pllOtherCfg_ppps,
-        t_uint16 *f_clockValue_pu16);
+    t_eReturnCode FMKCPU_ComputeSystemClockValues(  const t_sFMKCPU_SysOscCfg *f_sysOscCfg_ps,
+                                                    const t_sFMKCPU_PllOscCfg *f_pll1OscCfg_ps,
+                                                    const t_sFMKCPU_PllOscCfg * const *f_pllOtherCfg_ppps,
+                                                    t_uint16 *f_clockValue_pu16);
     /**
     *
     *	@brief      Get the family-specific system clock configuration bound to one public speed enum.

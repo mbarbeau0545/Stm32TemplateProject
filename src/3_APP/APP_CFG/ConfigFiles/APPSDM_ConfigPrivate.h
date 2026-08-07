@@ -26,10 +26,11 @@
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
-    #define APPSDM_MAX_DIAG_ITEM_MONITORING ((t_uint8)10)
-
     ///@brief activate deactivate diagnostic managment 
     #define APPSDM_DIAG_MNGMT_STATUS        ((t_bool)TRUE)
+
+    ///@brief Sync for an item everey minute on active state
+    #define APPSDM_SYNC_NVM_ITEM            ((t_uint32)120000) 
     // ********************************************************************
     // *                      Types
     // ********************************************************************

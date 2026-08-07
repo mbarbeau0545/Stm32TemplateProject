@@ -27,42 +27,33 @@
     // ********************************************************************
     // *                      Types
     // ********************************************************************
+    /* CAUTION : Automatic generated code section for Enum: Start */
+    /// @brief Enumeration of type of parameter..
 
-    ///@brief union to set/get parameter
-    typedef union
+    typedef enum
     {
-        t_uint8 prmVal_u8;
-        t_uint16 prmVal_u16;
-        t_uint32 prmVal_u32;
-        t_sint8 prmVal_s8;
-        t_sint16 prmVal_s16;
-        t_sint32 prmVal_s32;
-        t_float32 prmVal_f32;
-    } t_uAPPSPM_PrmValType;
-
-    ///@brief enumeration of type of parameter 
-    typedef enum 
-    {
-        //---- type that could be send with APPSIG ----//
-        APPSPM_PRM_TYPE_UINT8 = 0,
+        APPSPM_PRM_TYPE_4_CHAR = 0,
+        APPSPM_PRM_TYPE_STRUCT_APPLGC_PARAMTEST,
+        APPSPM_PRM_TYPE_UINT8,
         APPSPM_PRM_TYPE_UINT16,
         APPSPM_PRM_TYPE_UINT32,
         APPSPM_PRM_TYPE_SINT8,
         APPSPM_PRM_TYPE_SINT16,
         APPSPM_PRM_TYPE_SINT32,
         APPSPM_PRM_TYPE_FLOAT32,
-
-        //---- Type tha cannot be send threw appsig ----//
-
+    
         APPSPM_PRM_TYPE_NB,
     } t_eAPPSPM_PrmType;
-    /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Enum for listong every parameter.
-    */
+
+    /// @brief Lists every system parameter..
+
     typedef enum
     {
         APPSPM_PRM_SYS_MACHINE_ID = 0,
+        APPSPM_PRM_SERIAL_NUMBER,
+        APPSPM_PRM_HW_VERSION,
+        APPSPM_PRM_SW_VERSION,
+        APPSPM_PRM_TEST_PARAM,
     
         APPSPM_PRM_NB,
     } t_eAPPSPM_ItemPrm;
@@ -70,7 +61,15 @@
     /* CAUTION : Automatic generated code section for Enum: End */
 
 	//-----------------------------ENUM TYPES-----------------------------//
+    ///@brief List of access to a parameter 
+    typedef enum 
+    {
+        APPSPM_PRM_ACCESS_RO = 0,           ///< Parameter can only be read 
+        APPSPM_PRM_ACCESS_WO,               ///< Parameter can only be write
+        APPSPM_PRM_ACCESS_RW,                ///< Parameter can be read & write
 
+        APPSPM_PRM_ACCESS_NB
+    } t_eAPPSPM_PrmAccess;
 	/* CAUTION : Automatic generated code section for Structure: Start */
 
 	/* CAUTION : Automatic generated code section for Structure: End */

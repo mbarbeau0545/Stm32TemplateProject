@@ -22,6 +22,7 @@
 #include "APP_CFG/ConfigFiles/APPSPM_ConfigPrivate.h"
 #include "APP_CFG/ConfigSpecific/APPSPM_ConfigSpecific.h"
 #include "FMK_HAL/FMK_NVM/Src/FMK_NVM.h"
+#include "Library/SafeMem/SafeMem.h"
 // ********************************************************************
 // *                      Defines
 // ********************************************************************
@@ -54,6 +55,13 @@ typedef enum __t_eAPPSPM_ConfigurationState
 
 /* CAUTION : Automatic generated code section for Structure: End */
 //-----------------------------STRUCT TYPES---------------------------//
+/// @brief Holds the runtime value and generated configuration of a parameter.
+typedef struct __t_sAPPSPM_ItemPrmInfo
+{
+    t_uint8 status_u8;                         ///< Parameter runtime status.
+    const t_sAPPSPM_ItemPrmCfg * Cfg_ps;        ///< Generated configuration and cache mapping.
+} t_sAPPSPM_ItemPrmInfo;
+
 /* CAUTION : Automatic generated code section : Start */
 
 /* CAUTION : Automatic generated code section : End */
@@ -69,6 +77,9 @@ typedef enum __t_eAPPSPM_ConfigurationState
  * @brief Container for Parameter Information 
  */
 static t_sAPPSPM_ItemPrmInfo g_ItemPrmInfo_as[APPSPM_PRM_NB];
+
+/// @brief Shared restore scratch sized from the largest generated parameter.
+static t_uint8 g_APPSPM_RestoreBuffer_au8[APPSPM_MAX_PARAM_SIZE];
 
 ///@brief Container for Module State Machine
 static t_eCyclicModState g_APPSM_ModState_e = STATE_CYCLIC_CFG;
@@ -176,8 +187,7 @@ t_eReturnCode APPSPM_Init(void)
     {
         SETBIT_8B( g_ItemPrmInfo_as[idxPrm_u16].status_u8,
                    APPSPM_PRMSTATE_BIT_NO_OPE);
-        g_ItemPrmInfo_as[idxPrm_u16].value_u.prmVal_u32 = 0U;
-        g_ItemPrmInfo_as[idxPrm_u16].prmCfg_ps =
+        g_ItemPrmInfo_as[idxPrm_u16].Cfg_ps =
             &c_AppSpm_ItemPrmInfo_as[idxPrm_u16];
     }
 
@@ -277,33 +287,55 @@ t_eReturnCode APPSPM_SetState(t_eCyclicModState f_State_e)
 /*********************************
  * APPSPM_GetParam
  *********************************/
-t_eReturnCode APPSPM_GetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType * f_prmValue_pu)
+t_eReturnCode APPSPM_GetParam(  t_eAPPSPM_ItemPrm f_itemId_e,
+                                void * f_prmValue_pv,
+                                t_uint16 f_Size_u16)
 {
     t_eReturnCode Ret_e;
 
     //---- 1- Validate the logical parameter identifier ----//
     if(f_itemId_e >= APPSPM_PRM_NB)
     {
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
-    else if(f_prmValue_pu == NULL)
+    else if(f_prmValue_pv == NULL)
     {
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
         Ret_e = RC_ERROR_PTR_NULL;
     }
     else if(g_FlagParamInit_b == FALSE)
     {
         Ret_e = RC_WARNING_BUSY;
     }
-    else if(GETBIT(g_ItemPrmInfo_as[f_itemId_e].status_u8, APPSPM_PRMSTATE_BIT_OK) != BIT_IS_SET_8B)
+    else if(GETBIT(g_ItemPrmInfo_as[f_itemId_e].status_u8,
+                   APPSPM_PRMSTATE_BIT_OK) != BIT_IS_SET_8B)
     {
         Ret_e = RC_WARNING_PENDING;
     }
+    else if(g_ItemPrmInfo_as[f_itemId_e].Cfg_ps->Access_e == APPSPM_PRM_ACCESS_WO)
+    {
+        Ret_e = RC_WARNING_NOT_ALLOWED;
+    }
     else
     {
-        *f_prmValue_pu = g_ItemPrmInfo_as[f_itemId_e].value_u;
-        Ret_e = RC_OK;
+        const t_sAPPSPM_ItemPrmCfg * ParamCfg_ps =
+            g_ItemPrmInfo_as[f_itemId_e].Cfg_ps;
+
+        //---- 2- Require the generated exact parameter size ----//
+        if((ParamCfg_ps == NULL) ||
+           (ParamCfg_ps->cacheData_pv == NULL) ||
+           (f_Size_u16 != ParamCfg_ps->Size_u16))
+        {
+            Ret_e = RC_ERROR_PARAM_INVALID;
+        }
+        else
+        {
+            //---- 3- Copy only this parameter cache to the caller ----//
+            Ret_e = SafeMem_memcpy( f_prmValue_pv,
+                                    ParamCfg_ps->cacheData_pv,
+                                    ParamCfg_ps->Size_u16);
+        }
     }
 
     return Ret_e;
@@ -312,32 +344,52 @@ t_eReturnCode APPSPM_GetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType
 /*********************************
  * APPSPM_SetParam
  *********************************/
-t_eReturnCode APPSPM_SetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType f_prmVal_u)
+t_eReturnCode APPSPM_SetParam(  t_eAPPSPM_ItemPrm f_itemId_e,
+                                const void * f_prmValue_pv,
+                                t_uint16 f_Size_u16)
 {
-    t_eReturnCode Ret_e;
+    t_eReturnCode Ret_e = RC_OK;
 
     //---- 1- Validate the logical parameter identifier ----//
     if(f_itemId_e >= APPSPM_PRM_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
+    else if(f_prmValue_pv == NULL)
+    {
+        Ret_e = RC_ERROR_PTR_NULL;
+    }
     else if(g_FlagParamInit_b == FALSE)
     {
         Ret_e = RC_WARNING_BUSY;
     }
+    else if(g_ItemPrmInfo_as[f_itemId_e].Cfg_ps->Access_e == APPSPM_PRM_ACCESS_RO)
+    {
+        Ret_e = RC_WARNING_NOT_ALLOWED;
+    }
     else
     {
-        t_sAPPSPM_ItemPrmInfo * itemPrmInfo_ps =
+        t_sAPPSPM_ItemPrmInfo * ParamInfo_ps =
             &g_ItemPrmInfo_as[f_itemId_e];
 
-        //---- 2- Validate and store the canonical typed value ----//
-        Ret_e = APPSPM_ApplyCanonicalValue( itemPrmInfo_ps,
-                                            &f_prmVal_u);
-
-        if(Ret_e == RC_OK)
+        if((ParamInfo_ps->Cfg_ps == NULL) ||
+           (f_Size_u16 != ParamInfo_ps->Cfg_ps->Size_u16))
         {
-            //---- 3- Update Status ----//
-            SETBIT_8B(itemPrmInfo_ps->status_u8, APPSPM_PRMSTATE_BIT_NVM_OPE);
+            Ret_e = RC_ERROR_PARAM_INVALID;
+        }
+        else
+        {
+            //---- 2- Validate and copy into the exact parameter cache ----//
+            Ret_e = APPSPM_ApplyCanonicalValue( ParamInfo_ps->Cfg_ps,
+                                                f_prmValue_pv,
+                                                f_Size_u16);
+
+            if(Ret_e == RC_OK)
+            {
+                //---- 3- Defer NVM publication to the operational manager ----//
+                SETBIT_8B(ParamInfo_ps->status_u8,
+                          APPSPM_PRMSTATE_BIT_NVM_OPE);
+            }
         }
     }
 
@@ -374,9 +426,9 @@ t_eReturnCode APPSPM_GetParamInfo(   t_eAPPSPM_ItemPrm f_itemId_e,
             &g_ItemPrmInfo_as[f_itemId_e];
 
         *f_prmDefaultValue_pf32 =
-            itemPrmInfo_ps->prmCfg_ps->DefaultItemVal_f32;
-        *f_prmMaxValue_pf32 = itemPrmInfo_ps->prmCfg_ps->maxItemVal_f32;
-        *f_prmMinValue_pf32 = itemPrmInfo_ps->prmCfg_ps->minItemVal_f32;
+            itemPrmInfo_ps->Cfg_ps->DefaultItemVal_f32;
+        *f_prmMaxValue_pf32 = itemPrmInfo_ps->Cfg_ps->maxItemVal_f32;
+        *f_prmMinValue_pf32 = itemPrmInfo_ps->Cfg_ps->minItemVal_f32;
         Ret_e = RC_OK;
     }
 
@@ -556,7 +608,7 @@ static t_eReturnCode s_APPSPM_CfgSts_RegisterSignalsState(void)
         t_eAPPSPM_ItemPrm ItemId_e = (t_eAPPSPM_ItemPrm)idxParam_u16;
 
         const t_sAPPSPM_ItemPrmCfg * ParamCfg_ps =
-            g_ItemPrmInfo_as[ItemId_e].prmCfg_ps;
+            g_ItemPrmInfo_as[ItemId_e].Cfg_ps;
 
         if(ParamCfg_ps->signal_e < APPSIG_SIGNAL_NB)
         {
@@ -583,7 +635,7 @@ static t_eReturnCode s_APPSPM_RestoreParameter(t_eAPPSPM_ItemPrm f_ItemId_e)
     t_sAPPSPM_ItemPrmInfo * ParamInfo_ps =
         &g_ItemPrmInfo_as[f_ItemId_e];
     t_eFMKNVM_ObjectId NvmObjectId_e =
-        ParamInfo_ps->prmCfg_ps->nvmObjectId_e;
+        ParamInfo_ps->Cfg_ps->nvmObjectId_e;
     t_bool useDefault_b = FALSE;
     t_eReturnCode Ret_e = RC_OK;
 
@@ -591,26 +643,21 @@ static t_eReturnCode s_APPSPM_RestoreParameter(t_eAPPSPM_ItemPrm f_ItemId_e)
     if(NvmObjectId_e < FMKNVM_OBJECT_NB)
     {
         t_sFMKNVM_ObjectInfo ObjectInfo_s;
-        t_uint32 typeSize_u32;
-
+        
         //---- 2- Validate the software type configuration ----//
-        Ret_e = APPSPM_GetTypeSize( ParamInfo_ps->prmCfg_ps->prmType_e,
-                                      &typeSize_u32);
+        t_uint32 typeSize_u32 = (t_uint32)ParamInfo_ps->Cfg_ps->Size_u16;
 
-        if(Ret_e == RC_OK)
-        {
-            //---- 3- Read the current logical NVM object information ----//
-            Ret_e = FMKNVM_GetObjectInfo( NvmObjectId_e,
-                                          &ObjectInfo_s);
-        }
-
+        //---- 3- Read the current logical NVM object information ----//
+        Ret_e = FMKNVM_GetObjectInfo(   NvmObjectId_e,
+                                        &ObjectInfo_s);
+    
         if(Ret_e == RC_OK)
         {
             t_bool isObjectCompatible_b =
                 (ObjectInfo_s.isAvailable_b == TRUE) &&
                 (ObjectInfo_s.dataSize_u32 == typeSize_u32) &&
                 (ObjectInfo_s.version_u16 ==
-                 (t_uint16)ParamInfo_ps->prmCfg_ps->version_u8);
+                 (t_uint16)ParamInfo_ps->Cfg_ps->version_u8);
 
             //---- 4- Treat incompatible persistent data as absent data ----//
             if(isObjectCompatible_b == FALSE)
@@ -622,18 +669,24 @@ static t_eReturnCode s_APPSPM_RestoreParameter(t_eAPPSPM_ItemPrm f_ItemId_e)
         if((Ret_e == RC_OK) &&
            (useDefault_b == FALSE))
         {
-            t_uAPPSPM_PrmValType NvmValue_u;
-
-            //---- 5- Read and validate the stored canonical value ----//
-            NvmValue_u.prmVal_u32 = 0U;
-            Ret_e = FMKNVM_GetObject( NvmObjectId_e,
-                                      &NvmValue_u,
-                                      typeSize_u32);
+            //---- 5- Read into one shared scratch instead of a max-size union per parameter ----//
+            if(typeSize_u32 > (t_uint32)APPSPM_MAX_PARAM_SIZE)
+            {
+                Ret_e = RC_ERROR_PARAM_INVALID;
+            }
+            else
+            {
+                Ret_e = FMKNVM_GetObject( NvmObjectId_e,
+                                          g_APPSPM_RestoreBuffer_au8,
+                                          typeSize_u32);
+            }
 
             if(Ret_e == RC_OK)
             {
-                Ret_e = APPSPM_ApplyCanonicalValue( ParamInfo_ps,
-                                                    &NvmValue_u);
+                Ret_e = APPSPM_ApplyCanonicalValue(
+                    ParamInfo_ps->Cfg_ps,
+                    (const void *)g_APPSPM_RestoreBuffer_au8,
+                    ParamInfo_ps->Cfg_ps->Size_u16);
 
                 if(Ret_e == RC_ERROR_LIMIT_REACHED)
                 {
@@ -641,7 +694,7 @@ static t_eReturnCode s_APPSPM_RestoreParameter(t_eAPPSPM_ItemPrm f_ItemId_e)
                     Ret_e = RC_OK;
                 }
             }
-            else if(Ret_e == RC_WARNING_NO_OPERATION)
+            else if(Ret_e == RC_WARNING_NVM_OBJECT_NOT_AVAILABLE)
             {
                 useDefault_b = TRUE;
                 Ret_e = RC_OK;
@@ -663,7 +716,8 @@ static t_eReturnCode s_APPSPM_RestoreParameter(t_eAPPSPM_ItemPrm f_ItemId_e)
        (useDefault_b == TRUE))
     {
         //---- 8- Apply the configured typed default value ----//
-        Ret_e = APPSPM_ApplyDefault(ParamInfo_ps);
+        Ret_e = APPSPM_ApplyDefault(f_ItemId_e,
+                                    ParamInfo_ps->Cfg_ps);
 
         if((Ret_e == RC_OK) &&
            (NvmObjectId_e < FMKNVM_OBJECT_NB))
@@ -685,40 +739,34 @@ static t_eReturnCode s_APPSPM_PublishNvmObject(const t_sAPPSPM_ItemPrmInfo * f_P
 
     //---- 1- Validate the parameter runtime pointer ----//
     if((f_ParamInfo_ps == NULL) ||
-       (f_ParamInfo_ps->prmCfg_ps == NULL))
+       (f_ParamInfo_ps->Cfg_ps == NULL))
     {
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
         Ret_e = RC_ERROR_PTR_NULL;
     }
     
-    else if(f_ParamInfo_ps->prmCfg_ps->nvmObjectId_e == FMKNVM_OBJECT_NB)
+    else if(f_ParamInfo_ps->Cfg_ps->nvmObjectId_e == FMKNVM_OBJECT_NB)
     {
         //---- 3- Volatile parameters require no NVM publication ----//
         Ret_e = RC_OK;
     }
-    else if(f_ParamInfo_ps->prmCfg_ps->nvmObjectId_e >= FMKNVM_OBJECT_NB)
+    else if(f_ParamInfo_ps->Cfg_ps->nvmObjectId_e >= FMKNVM_OBJECT_NB)
     {
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
         Ret_e = RC_ERROR_PARAM_INVALID;
     }
     else 
     {
-        t_uint32 typeSize_u32;
-
         //---- 2- Publish bytes without choosing a commit time ----//
-        Ret_e = APPSPM_GetTypeSize( f_ParamInfo_ps->prmCfg_ps->prmType_e,
-                                      &typeSize_u32);
+        t_uint32 PrmSize_u32 = (t_uint32)f_ParamInfo_ps->Cfg_ps->Size_u16;
 
-        if(Ret_e == RC_OK)
+        Ret_e = FMKNVM_SetObject(   f_ParamInfo_ps->Cfg_ps->nvmObjectId_e,
+                                    f_ParamInfo_ps->Cfg_ps->cacheData_pv,
+                                    PrmSize_u32);
+
+        if(Ret_e == RC_WARNING_NO_OPERATION)
         {
-            Ret_e = FMKNVM_SetObject( f_ParamInfo_ps->prmCfg_ps->nvmObjectId_e,
-                                      &f_ParamInfo_ps->value_u,
-                                      typeSize_u32);
-
-            if(Ret_e == RC_WARNING_NO_OPERATION)
-            {
-                Ret_e = RC_OK;
-            }
+            Ret_e = RC_OK;
         }
     }
 
@@ -756,21 +804,20 @@ static t_eReturnCode s_APPSM_Operational(void)
             }
             else if(Ret_e < RC_OK)
             {
-                ASSERT((t_uint16)Ret_e);
+                ASSERT((t_sint32)Ret_e);
                 RESETBIT_8B(prmInfo_ps->status_u8, APPSPM_PRMSTATE_BIT_OK);
             } 
         }
 
         //---- 2- we send the value to sig and he deals with sending/ or do nothing ----//
         if((Ret_e == RC_OK)
-        && (prmInfo_ps->prmCfg_ps->signal_e < APPSIG_SIGNAL_NB)
-        && (prmInfo_ps->prmCfg_ps->prmType_e <= APPSPM_PRM_TYPE_FLOAT32))
+        && (prmInfo_ps->Cfg_ps->signal_e < APPSIG_SIGNAL_NB))
         {
-            Ret_e = APPSPM_EncodePrmValue(prmInfo_ps,
+            Ret_e = APPSPM_EncodePrmValue(  prmInfo_ps->Cfg_ps,
                                             &sigValue_f32);
             if(Ret_e == RC_OK)
             {
-                Ret_e = APPSIG_SetSignalValue(  prmInfo_ps->prmCfg_ps->signal_e,
+                Ret_e = APPSIG_SetSignalValue(  prmInfo_ps->Cfg_ps->signal_e,
                                                 sigValue_f32);
                 if(Ret_e == RC_OK)
                 {
@@ -806,7 +853,7 @@ static void s_APPSPM_AppSigMsgRcvCallback(t_eAPPSIG_Signal f_prmSignal_e, t_floa
 
     if(f_prmSignal_e >= APPSIG_SIGNAL_NB)
     {
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
     }
     else
     {
@@ -820,14 +867,14 @@ static void s_APPSPM_AppSigMsgRcvCallback(t_eAPPSIG_Signal f_prmSignal_e, t_floa
             {
                 msgInfoFound_b = TRUE;
                 Ret_e = APPSPM_GetVoidFromFloat32(f_value_f32,
-                                                    g_ItemPrmInfo_as[idxParam_u16].prmCfg_ps->prmType_e,
+                                                    g_ItemPrmInfo_as[idxParam_u16].Cfg_ps->Type_e,
                                                     &tmpValue_u32);
 
                 if(Ret_e == RC_OK)
                 {
                     //---- apply offset and factor ----//
                     FMKSRL_LOG("[SPM0], rcv prm %d, value %d", idxParam_u16, tmpValue_u32);
-                    Ret_e = APPSPM_DecodeSigValue(&g_ItemPrmInfo_as[idxParam_u16],
+                    Ret_e = APPSPM_DecodeSigValue(  g_ItemPrmInfo_as[idxParam_u16].Cfg_ps,
                                                     (void *)&tmpValue_u32);
                 }
 
@@ -840,7 +887,7 @@ static void s_APPSPM_AppSigMsgRcvCallback(t_eAPPSIG_Signal f_prmSignal_e, t_floa
         }
         if(msgInfoFound_b == FALSE)
         {
-            ASSERT((t_uint16)f_prmSignal_e);
+            ASSERT((t_sint32)f_prmSignal_e);
         }
     }
 

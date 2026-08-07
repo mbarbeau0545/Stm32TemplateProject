@@ -111,12 +111,12 @@
      */
     typedef enum __t_eReturnCode
     {
-        RC_NVM_BACKEND_READ_ERROR = -24,         /**< NVM backend read operation failed. */
-        RC_NVM_BACKEND_PROGRAM_ERROR = -23,      /**< NVM backend program operation failed. */
-        RC_NVM_BACKEND_ERASE_ERROR = -22,        /**< NVM backend erase operation failed. */
-        RC_NVM_VERIFY_ERROR = -21,               /**< NVM post-write verification failed. */
-        RC_NVM_CRC_ERROR = -20,                  /**< NVM record CRC is invalid. */
-        RC_NVM_FORMAT_ERROR = -19,               /**< NVM record format or configuration is invalid. */
+        RC_ERROR_NVM_BACKEND_READ = -24,         /**< NVM backend read operation failed. */
+        RC_ERROR_NVM_BACKEND_PROGRAM = -23,      /**< NVM backend program operation failed. */
+        RC_ERROR_NVM_BACKEND_ERASE = -22,        /**< NVM backend erase operation failed. */
+        RC_ERROR_NVM_NVM_VERIFY = -21,               /**< NVM post-write verification failed. */
+        RC_ERROR_NVM_CRC_ERROR = -20,                  /**< NVM record CRC is invalid. */
+        RC_ERROR_NVM_FORMAT = -19,               /**< NVM record format or configuration is invalid. */
         RC_ERROR_INSTANCE_NOT_INITIALIZED = -18, /**< The Instance or Structure should be initialized before use the function */
         RC_ERROR_ALREADY_CONFIGURED = -17,        /**< The operation is not accepted because the instance has already been configured */
         RC_ERROR_COPY_FAILED = -16,               /**< The copy between two variables failed */
@@ -146,7 +146,9 @@
         RC_WARNING_LIMIT_REACHED = 8,             /**< The operation cannot be done because a limit has been reached */
         RC_WARNING_WRONG_RESULT = 9,              /**< The operation has succeeded, but the result is incorrect */
         RC_WARNING_MEM_FAILED = 10,                /**< The operation to copy an element has failed */
-        RC_WARNING_ALREADY_CONFIGURED = 11        /**< The operation has already been successfull */
+        RC_WARNING_MEM_TRUNCATED = 11,            /**< The operation succeed but the variable is truncated */
+        RC_WARNING_ALREADY_CONFIGURED = 12,       /**< The operation has already been successfull */
+        RC_WARNING_NVM_OBJECT_NOT_AVAILABLE = 13, /**< Object is not available on ram */
     } t_eReturnCode;
     
     /**

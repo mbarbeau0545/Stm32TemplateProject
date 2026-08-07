@@ -196,9 +196,8 @@
 
     //-----------------------------ENUM TYPES-----------------------------//
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Enum for System Oscillator Clock.
-    */
+    /// @brief Enum for System Oscillator Clock.
+
     typedef enum
     {
         FMKCPU_SYS_CLOCK_HSE = 0,                /**< Reference to Hardware Bus HSE */
@@ -225,9 +224,8 @@
         FMKCPU_SYS_CLOCK_NB,
     } t_eFMKCPU_SysClkOsc;
 
-    /**
-    * @brief Enum for rcc clock state reference.
-    */
+    /// @brief Enum for rcc clock state reference.
+
     typedef enum
     {
         FMKCPU_RCC_CLK_ADC12 = 0,              /**< Reference to RCC Clock ADC12 */
@@ -330,9 +328,8 @@
         FMKCPU_RCC_CLK_NB,
     } t_eFMKCPU_ClockPort;
 
-    /**
-    * @brief Enum for NVIC list.
-    */
+    /// @brief Enum for NVIC list.
+
     typedef enum
     {
         FMKCPU_NVIC_ADC_IRQN = 0,           /**< Reference to HAL nvic ADC_IRQn */
@@ -479,9 +476,8 @@
         FMKCPU_NVIC_NB,
     } t_eFMKCPU_IRQNType;
 
-    /**
-    * @brief Enum for the different request available for DMA service.
-    */
+    /// @brief Enum for the different request available for DMA service.
+
     typedef enum
     {
         FMKCPU_DMA_RQSTYPE_ADC1 = 0,               /**< Reference to Bsp Dma Request for ADC1 */
@@ -499,9 +495,8 @@
         FMKCPU_DMA_RQSTYPE_NB,
     } t_eFMKCPU_DmaRqst;
 
-    /**
-    * @brief Enum for Number of Dma.
-    */
+    /// @brief Enum for Number of Dma.
+
     typedef enum
     {
         FMKCPU_DMA_CTRL_1 = 0,                  /**< Reference to DMA 1 */
@@ -510,9 +505,8 @@
         FMKCPU_DMA_CTRL_NB,
     } t_eFMKCPU_DmaController;
 
-    /**
-    * @brief Enum for number of channel in DMA.
-    */
+    /// @brief Enum for number of channel in DMA.
+
     typedef enum
     {
         FMKCPU_DMA_CHANNEL_1 = 0,                  /**< Reference to Channel 1 */
@@ -527,9 +521,8 @@
         FMKCPU_DMA_CHANNEL_NB,
     } t_eFMKCPU_DmaChnl;
 
-    /**
-    * @brief Enum for Number of Dma Multiplexage Controler.
-    */
+    /// @brief Enum for Number of Dma Multiplexage Controler.
+
     typedef enum
     {
         FMKCPU_DMA_MUX_1 = 0,                  /**< Reference to DMAMUX 1 */

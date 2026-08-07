@@ -59,9 +59,8 @@
     // *                      Types
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Number of timer enable in smt32xxx board.
-    */
+    /// @brief Number of timer enable in smt32xxx board.
+
     typedef enum
     {
         FMKTIM_TIMER_1 = 0,                  /**< Reference for HAL timer1, this timer has 4 channel(s) */

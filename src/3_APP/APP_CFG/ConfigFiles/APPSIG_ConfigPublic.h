@@ -54,9 +54,8 @@
     } t_eAPPSIG_MsgDirection;
 
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Signal list available.
-    */
+    /// @brief Signal list available.
+
     typedef enum
     {
         APPSIG_SIGNAL_FMKCPU_MODSTATE = 0,
@@ -80,9 +79,8 @@
         APPSIG_SIGNAL_NB,
     } t_eAPPSIG_Signal;
 
-    /**
-    * @brief message serial available.
-    */
+    /// @brief message serial available.
+
     typedef enum
     {
         APPSIG_SRL_MSG_APPLICATIONINFO1 = 0,
@@ -90,9 +88,8 @@
         APPSIG_SRL_MSG_NB,
     } t_eAPPSIG_SrlMsgList;
 
-    /**
-    * @brief message can available.
-    */
+    /// @brief message can available.
+
     typedef enum
     {
     

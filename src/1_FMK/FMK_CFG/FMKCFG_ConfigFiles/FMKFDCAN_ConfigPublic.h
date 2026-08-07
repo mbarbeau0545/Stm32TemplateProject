@@ -30,9 +30,8 @@
         //-----------------------------ENUM TYPES-----------------------------//
     
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief List of FDCAN nodes..
-    */
+    /// @brief List of FDCAN nodes..
+
     typedef enum
     {
         FMKFDCAN_NODE_1 = 0,                  /**< Node 1 Identifier */

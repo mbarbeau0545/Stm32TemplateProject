@@ -46,6 +46,8 @@ TPL_APP_SPC_PATH_C = r"Doc\\ConfigPrj\\PythonTool_CodeGen\\App_CodeGen\\template
 APPSPM_CFG_PRIVATE = r'src\\3_APP\APP_CFG\\ConfigFiles\\APPSPM_ConfigPrivate.h'
 APPSPM_CFG_PUBLIC = r'src\\3_APP\APP_CFG\\ConfigFiles\\APPSPM_ConfigPublic.h'
 
+FMKNVM_CFG_PRIVATE = r'src\1_FMK\FMK_CFG\FMKCFG_ConfigFiles\FMKNVM_ConfigPrivate.h'
+FMKNVM_CFG_PUBLIC = r'src\1_FMK\FMK_CFG\FMKCFG_ConfigFiles\FMKNVM_ConfigPublic.h'
 
 APPSYS_CFG_PUBLIC = r'src\3_APP\APP_CFG\ConfigFiles\APPSYS_ConfigPublic.h'
 APPSYS_CFG_PRIVATE = r'src\3_APP\APP_CFG\ConfigFiles\APPSYS_ConfigPrivate.h'

@@ -34,9 +34,8 @@
     //-----------------------------ENUM TYPES-----------------------------//
 
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief List of gpio port available on this board.
-    */
+    /// @brief List of gpio port available on this board.
+
     typedef enum
     {
         FMKIO_GPIO_PORT_A = 0,                  /**< Reference to bsp gpio A register */
@@ -51,9 +50,8 @@
         FMKIO_GPIO_PORT_NB,
     } t_eFMKIO_GpioPort;
 
-    /**
-    * @brief List of Pin available for each GPIO on this board.
-    */
+    /// @brief List of Pin available for each GPIO on this board.
+
     typedef enum
     {
         FMKIO_GPIO_PIN_0 = 0,                  /**< Reference to bsp gpio pin 0 */
@@ -76,9 +74,8 @@
         FMKIO_GPIO_PIN_NB,
     } t_eFMKIO_BspGpioPin;
 
-    /**
-    * @brief /List of input digital pin available on this board.
-    */
+    /// @brief /List of input digital pin available on this board.
+
     typedef enum
     {
         FMKIO_INPUT_SIGDIG_1 = 0,                  /**< Reference to PE2 */
@@ -104,9 +101,8 @@
         FMKIO_INPUT_SIGDIG_NB,
     } t_eFMKIO_InDigSig;
 
-    /**
-    * @brief List of input Analog pin available on this board.
-    */
+    /// @brief List of input Analog pin available on this board.
+
     typedef enum
     {
         FMKIO_INPUT_SIGANA_1 = 0,                  /**< Reference to PF3 */
@@ -128,9 +124,8 @@
         FMKIO_INPUT_SIGANA_NB,
     } t_eFMKIO_InAnaSig;
 
-    /**
-    * @brief List of input frequency pin available on this board.
-    */
+    /// @brief List of input frequency pin available on this board.
+
     typedef enum
     {
         FMKIO_INPUT_SIGFREQ_1 = 0,                  /**< Reference to PA5, TIMER_2 CHANNEL_1 */
@@ -145,9 +140,8 @@
         FMKIO_INPUT_SIGFREQ_NB,
     } t_eFMKIO_InFreqSig;
 
-    /**
-    * @brief List of signals used for Input Encoder.
-    */
+    /// @brief List of signals used for Input Encoder.
+
     typedef enum
     {
         FMKIO_INPUT_ENCODER_1 = 0,                  /**< TI1 -> PB14, TI2 -> PB15, Reference to Encoder 1 */
@@ -157,9 +151,8 @@
         FMKIO_INPUT_ENCODER_NB,
     } t_eFMKIO_InEcdrSignals;
 
-    /**
-    * @brief List of input event pin available on this board.
-    */
+    /// @brief List of input event pin available on this board.
+
     typedef enum
     {
         FMKIO_INPUT_SIGEVNT_1 = 0,                  /**< Reference to PC12 */
@@ -172,9 +165,8 @@
         FMKIO_INPUT_SIGEVNT_NB,
     } t_eFMKIO_InEvntSig;
 
-    /**
-    * @brief List of output digital pin available on this board.
-    */
+    /// @brief List of output digital pin available on this board.
+
     typedef enum
     {
         FMKIO_OUTPUT_SIGDIG_1 = 0,                  /**< Reference to PG1 */
@@ -203,9 +195,8 @@
         FMKIO_OUTPUT_SIGDIG_NB,
     } t_eFMKIO_OutDigSig;
 
-    /**
-    * @brief List of output PWM pin available on this board.
-    */
+    /// @brief List of output PWM pin available on this board.
+
     typedef enum
     {
         FMKIO_OUTPUT_SIGPWM_1 = 0,                  /**< Reference to PF6, TIMER_16 CHANNEL_1 ,Pwm with Adaptable Frequency and DutyCycle */
@@ -239,9 +230,8 @@
         FMKIO_OUTPUT_SIGPWM_NB,
     } t_eFMKIO_OutPwmSig;
 
-    /**
-    * @brief List of signals used for CAN communication.
-    */
+    /// @brief List of signals used for CAN communication.
+
     typedef enum
     {
         FMKIO_COM_SIGNAL_CAN_1 = 0,                  /**< Rx -> PD0, Tx -> PA12, Reference to CAN 0 */
@@ -250,9 +240,8 @@
         FMKIO_COM_SIGNAL_CAN_NB,
     } t_eFMKIO_ComSigCan;
 
-    /**
-    * @brief List of signals used for Serial communication.
-    */
+    /// @brief List of signals used for Serial communication.
+
     typedef enum
     {
         FMKIO_COM_SIGNAL_SERIAL_1 = 0,                  /**< Rx -> PB7, Tx -> PB6, Reference to Serial PIN_7 */

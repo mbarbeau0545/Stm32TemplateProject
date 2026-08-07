@@ -52,7 +52,6 @@ typedef struct
     t_bool isActive_b;
     t_sAPPLGC_AgentFunc * AgCfg_ps;
 } t_sAPPLGC_AgentInfo;
-
 /* CAUTION : Automatic generated code section for Enum: Start */
 
 /* CAUTION : Automatic generated code section for Enum: End */
@@ -303,12 +302,12 @@ t_eReturnCode APPLGC_GetSnsValue(t_eAPPSNS_SnsInterface f_snsIfID_e, t_float32 *
     if(f_snsIfID_e >= APPSNS_SNSITF_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
-        ASSERT((t_uint16)f_snsIfID_e);
+        ASSERT((t_sint32)f_snsIfID_e);
     }
     if(f_snsValue_pf32 == NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
     }
     if(Ret_e == RC_OK)
     {
@@ -337,12 +336,12 @@ t_eReturnCode APPLGC_GetActValue(t_eAPPACT_ActInterface f_actIfID_e, t_float32 *
     if(f_actIfID_e >= APPACT_ACTITF_NB)
     {
         Ret_e = RC_ERROR_PARAM_INVALID;
-        ASSERT((t_uint16)f_actIfID_e);
+        ASSERT((t_sint32)f_actIfID_e);
     }
     if(f_actValue_pf32 == NULL)
     {
         Ret_e = RC_ERROR_PTR_NULL;
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
     }
     if(Ret_e == RC_OK)
     {
@@ -379,7 +378,7 @@ static t_eReturnCode s_APPLGC_ConfigurationState(void)
 
     if(Ret_e < RC_OK)
     {
-        ASSERT((t_uint16)Ret_e);
+        ASSERT((t_sint32)Ret_e);
     }
 
     t_sFMKIO_PwmWaveformCfg pwmCfg_s = {
@@ -451,6 +450,9 @@ static t_eReturnCode s_APPLGC_Operational(void)
 {
 
     t_eReturnCode Ret_e;
+    t_sAPPLGC_ParamTest prmTest_s;
+    static t_uint16 swVersion_u16 = 0;
+    static t_char serialnumb[4] = {0};
     //static t_bool isSent_b = FALSE;
 
     Ret_e = s_APPLGC_UpdateSnsValues();
@@ -462,6 +464,21 @@ static t_eReturnCode s_APPLGC_Operational(void)
     if(Ret_e == RC_OK)
     {
         Ret_e = APPSYS_GetEcuPosition(&g_EcuPos_e);
+    }
+    if(Ret_e == RC_OK)
+    {
+        Ret_e = APPSPM_Get_TestParam(&prmTest_s);
+        if(Ret_e == RC_OK)
+        {
+            if(prmTest_s.isOK == TRUE)
+            {
+                prmTest_s.isOK = FALSE;
+                prmTest_s.capacity_f32 = 1332402942.0;
+                SafeMem_snprintf(prmTest_s.name_ac, 10, NULL, "BOUTAF\0");
+
+                APPSPM_Set_TestParam(&prmTest_s);
+            }
+        }
     }
     static t_uint32 saveTime_u32 = 0;
     t_uint32 currentTime_u32;
@@ -548,7 +565,7 @@ static t_eReturnCode s_APPLGC_UpdateSnsValues(void)
 
         if(Ret_e < RC_OK)
         {
-            ASSERT((t_uint16)idxSns_u8);
+            ASSERT((t_sint32)idxSns_u8);
         }
     }
     
@@ -587,7 +604,7 @@ static t_eReturnCode s_APPLGC_UpdateActValues(void)
         {
             if(Ret_e < RC_OK)
             {
-                ASSERT((t_uint16)Ret_e);
+                ASSERT((t_sint32)Ret_e);
             }
             g_actValues_as[idxAct_u8].value_f32 = 0.0f;
             g_actValues_as[idxAct_u8].isValueOK_b = FALSE;
@@ -661,12 +678,12 @@ static void s_APPLGC_AppSigMsgRcvCallback(  t_uint16 f_msgID_u16,
 
     if((f_msgID_u16 >= (t_uint16)APPSIG_CAN_MSG_NB))
     {
-        ASSERT((t_uint16)f_msgID_u16);
+        ASSERT((t_sint32)f_msgID_u16);
     }
     else if((f_signal_ae == (t_eAPPSIG_Signal *)NULL)
     || (f_sigValue_af32 == (t_float32 *)NULL))
     {
-        ASSERT((t_uint16)0);
+        ASSERT((t_sint32)0);
     }
     else if(g_AppLgc_ModState_e != STATE_CYCLIC_OPE)
     {

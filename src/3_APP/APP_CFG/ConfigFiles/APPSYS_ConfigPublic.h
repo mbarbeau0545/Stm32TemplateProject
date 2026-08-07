@@ -51,16 +51,15 @@
     /* CAUTION : Automatic generated code section for Enum: Start */
     typedef enum
     {
-
+    
         APPSYS_MACHINE_NB,
     } t_eAPPSYS_MachineList;
 
-    /**
-    * @brief System Option List.
-    */
+    /// @brief System Option List.
+
     typedef enum
     {
-
+    
         APPSYS_OPT_ID_NB,
     } t_eAPPSYS_SysOptionList;
 

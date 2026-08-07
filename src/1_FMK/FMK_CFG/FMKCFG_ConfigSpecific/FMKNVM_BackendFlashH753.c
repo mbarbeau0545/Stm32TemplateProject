@@ -83,7 +83,7 @@ static t_eReturnCode s_FMKNVM_H753_GetCapabilities(   void * f_Context_pv,
  * @retval RC_ERROR_PTR_NULL A supplied pointer is null.
  * @retval RC_ERROR_PARAM_INVALID The requested range is outside Bank 2.
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
- * @retval RC_NVM_BACKEND_READ_ERROR SafeMem could not complete the read.
+ * @retval RC_ERROR_NVM_BACKEND_READ SafeMem could not complete the read.
  */
 static t_eReturnCode s_FMKNVM_H753_Read(   void * f_Context_pv,
                                            t_uint32 f_Address_u32,
@@ -103,7 +103,7 @@ static t_eReturnCode s_FMKNVM_H753_Read(   void * f_Context_pv,
  * @retval RC_ERROR_PTR_NULL A supplied pointer is null.
  * @retval RC_ERROR_PARAM_INVALID The range or alignment is invalid.
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
- * @retval RC_NVM_BACKEND_PROGRAM_ERROR Flash was not erased or the HAL
+ * @retval RC_ERROR_NVM_BACKEND_PROGRAM Flash was not erased or the HAL
  *         operation failed.
  */
 static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
@@ -122,7 +122,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
  * @retval RC_ERROR_PTR_NULL The backend context is null.
  * @retval RC_ERROR_PARAM_INVALID The range or sector alignment is invalid.
  * @retval RC_ERROR_INSTANCE_NOT_INITIALIZED Backend Init was not completed.
- * @retval RC_NVM_BACKEND_ERASE_ERROR Flash unlock, erase, or lock failed.
+ * @retval RC_ERROR_NVM_BACKEND_ERASE Flash unlock, erase, or lock failed.
  */
 static t_eReturnCode s_FMKNVM_H753_Erase(void * f_Context_pv, t_uint32 f_Address_u32, t_uint32 f_Size_u32);
 /**
@@ -358,7 +358,7 @@ static t_eReturnCode s_FMKNVM_H753_Read(   void * f_Context_pv,
                     }
                     else
                     {
-                        Ret_e = RC_NVM_BACKEND_READ_ERROR;
+                        Ret_e = RC_ERROR_NVM_BACKEND_READ;
                     }
                 }
             }
@@ -411,7 +411,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
 
                 if(HalStatus_e != HAL_OK)
                 {
-                    Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
+                    Ret_e = RC_ERROR_NVM_BACKEND_PROGRAM;
                 }
                 else
                 {
@@ -453,7 +453,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
 
                             if(isFlashWordErased_b == FALSE)
                             {
-                                Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
+                                Ret_e = RC_ERROR_NVM_BACKEND_PROGRAM;
                             }
                         }
 
@@ -469,7 +469,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
                             }
                             else
                             {
-                                Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
+                                Ret_e = RC_ERROR_NVM_BACKEND_PROGRAM;
                             }
                         }
                     }
@@ -479,7 +479,7 @@ static t_eReturnCode s_FMKNVM_H753_Program(   void * f_Context_pv,
 
                     if((HalStatus_e != HAL_OK) && (Ret_e == RC_OK))
                     {
-                        Ret_e = RC_NVM_BACKEND_PROGRAM_ERROR;
+                        Ret_e = RC_ERROR_NVM_BACKEND_PROGRAM;
                     }
 
                     //---- 5- Discard cached data for programmed words ----//
@@ -543,7 +543,7 @@ static t_eReturnCode s_FMKNVM_H753_Erase(void * f_Context_pv, t_uint32 f_Address
 
                 if(HalStatus_e != HAL_OK)
                 {
-                    Ret_e = RC_NVM_BACKEND_ERASE_ERROR;
+                    Ret_e = RC_ERROR_NVM_BACKEND_ERASE;
                 }
                 else
                 {
@@ -565,7 +565,7 @@ static t_eReturnCode s_FMKNVM_H753_Erase(void * f_Context_pv, t_uint32 f_Address
 
                     if((HalStatus_e != HAL_OK) || (sectorError_u32 != 0xFFFFFFFFUL))
                     {
-                        Ret_e = RC_NVM_BACKEND_ERASE_ERROR;
+                        Ret_e = RC_ERROR_NVM_BACKEND_ERASE;
                     }
 
                     //---- 4- Lock Flash after the erase session ----//
@@ -573,7 +573,7 @@ static t_eReturnCode s_FMKNVM_H753_Erase(void * f_Context_pv, t_uint32 f_Address
 
                     if((HalStatus_e != HAL_OK) && (Ret_e == RC_OK))
                     {
-                        Ret_e = RC_NVM_BACKEND_ERASE_ERROR;
+                        Ret_e = RC_ERROR_NVM_BACKEND_ERASE;
                     }
 
                     //---- 5- Discard cached data for erased sectors ----//

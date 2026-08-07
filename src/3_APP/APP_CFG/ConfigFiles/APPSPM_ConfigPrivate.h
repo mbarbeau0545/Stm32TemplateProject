@@ -63,22 +63,93 @@
     // *                      Variables
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Variable: Start */
-    ///@brief Variable for System Parameter Inforamtion
-    const t_sAPPSPM_ItemPrmCfg c_AppSpm_ItemPrmInfo_as[APPSPM_PRM_NB] ={
-    //version_u8                   minItemVal_u16                maxItemVal_u16                 DefaultItemVal_u16
-    [APPSPM_PRM_SYS_MACHINE_ID] = {
-        .version_u8 = (t_uint8)1,
-        .minItemVal_f32 = (t_float32)0,
-        .maxItemVal_f32 = (t_float32)65535,
-        .DefaultItemVal_f32 = (t_float32)1,
-        .factor_f32 = (t_float32)1.0,
-        .offset_s16 = (t_sint16)0,
-        .prmType_e = APPSPM_PRM_TYPE_UINT16,
-        .signal_e = APPSIG_SIGNAL_NB,
-        .nvmObjectId_e = FMKNVM_OBJECT_APPSPM_MACHINE_ID
-    },
-    };
+    /// @brief Largest configured APP_SPM parameter in bytes.
+    #define APPSPM_MAX_PARAM_SIZE ((t_uint16)20U)
 
+    /// @brief Exact-size RAM cache for parameter SYS_MACHINE_ID.
+    static t_uint8 g_APPSPM_SYS_MACHINE_ID_Cache_au8[2U];
+    /// @brief Exact-size RAM cache for parameter SERIAL_NUMBER.
+    static t_uint8 g_APPSPM_SERIAL_NUMBER_Cache_au8[4U];
+    /// @brief Exact-size RAM cache for parameter HW_VERSION.
+    static t_uint8 g_APPSPM_HW_VERSION_Cache_au8[2U];
+    /// @brief Exact-size RAM cache for parameter SW_VERSION.
+    static t_uint8 g_APPSPM_SW_VERSION_Cache_au8[2U];
+    /// @brief Exact-size RAM cache for parameter TEST_PARAM.
+    static t_uint8 g_APPSPM_TEST_PARAM_Cache_au8[20U];
+
+    /// @brief Generated system parameter configuration.
+    const t_sAPPSPM_ItemPrmCfg c_AppSpm_ItemPrmInfo_as[APPSPM_PRM_NB] = {
+        [APPSPM_PRM_SYS_MACHINE_ID] = {
+            .version_u8 = (t_uint8)1,
+            .minItemVal_f32 = (t_float32)0,
+            .maxItemVal_f32 = (t_float32)65535,
+            .DefaultItemVal_f32 = (t_float32)1,
+            .factor_f32 = (t_float32)1.0,
+            .offset_s16 = (t_sint16)0,
+            .Type_e = APPSPM_PRM_TYPE_UINT16,
+            .Access_e = APPSPM_PRM_ACCESS_RO,
+            .Size_u16 = (t_uint16)2U,
+            .cacheData_pv = (void *)g_APPSPM_SYS_MACHINE_ID_Cache_au8,
+            .signal_e = APPSIG_SIGNAL_NB,
+            .nvmObjectId_e = FMKNVM_OBJECT_MACHINE_ID
+        },
+        [APPSPM_PRM_SERIAL_NUMBER] = {
+            .version_u8 = (t_uint8)1,
+            .minItemVal_f32 = (t_float32)APPSPM_MIN_UNUSED,
+            .maxItemVal_f32 = (t_float32)APPSPM_MAX_UNUSED,
+            .DefaultItemVal_f32 = (t_float32)APPSPM_DEFAULT_UNUSED,
+            .factor_f32 = (t_float32)APPSPM_FACTOR_UNUSED,
+            .offset_s16 = (t_sint16)APPSPM_OFFSET_UNUSED,
+            .Type_e = APPSPM_PRM_TYPE_4_CHAR,
+            .Access_e = APPSPM_PRM_ACCESS_RO,
+            .Size_u16 = (t_uint16)4U,
+            .cacheData_pv = (void *)g_APPSPM_SERIAL_NUMBER_Cache_au8,
+            .signal_e = APPSIG_SIGNAL_NB,
+            .nvmObjectId_e = FMKNVM_OBJECT_SERIAL_NUMBER
+        },
+        [APPSPM_PRM_HW_VERSION] = {
+            .version_u8 = (t_uint8)1,
+            .minItemVal_f32 = (t_float32)0,
+            .maxItemVal_f32 = (t_float32)65535,
+            .DefaultItemVal_f32 = (t_float32)1,
+            .factor_f32 = (t_float32)1.0,
+            .offset_s16 = (t_sint16)0,
+            .Type_e = APPSPM_PRM_TYPE_UINT16,
+            .Access_e = APPSPM_PRM_ACCESS_WO,
+            .Size_u16 = (t_uint16)2U,
+            .cacheData_pv = (void *)g_APPSPM_HW_VERSION_Cache_au8,
+            .signal_e = APPSIG_SIGNAL_NB,
+            .nvmObjectId_e = FMKNVM_OBJECT_HW_VERSION
+        },
+        [APPSPM_PRM_SW_VERSION] = {
+            .version_u8 = (t_uint8)1,
+            .minItemVal_f32 = (t_float32)0,
+            .maxItemVal_f32 = (t_float32)65535,
+            .DefaultItemVal_f32 = (t_float32)1,
+            .factor_f32 = (t_float32)1.0,
+            .offset_s16 = (t_sint16)0,
+            .Type_e = APPSPM_PRM_TYPE_UINT16,
+            .Access_e = APPSPM_PRM_ACCESS_RW,
+            .Size_u16 = (t_uint16)2U,
+            .cacheData_pv = (void *)g_APPSPM_SW_VERSION_Cache_au8,
+            .signal_e = APPSIG_SIGNAL_NB,
+            .nvmObjectId_e = FMKNVM_OBJECT_SW_VERISON
+        },
+        [APPSPM_PRM_TEST_PARAM] = {
+            .version_u8 = (t_uint8)1,
+            .minItemVal_f32 = (t_float32)APPSPM_MIN_UNUSED,
+            .maxItemVal_f32 = (t_float32)APPSPM_MAX_UNUSED,
+            .DefaultItemVal_f32 = (t_float32)APPSPM_DEFAULT_UNUSED,
+            .factor_f32 = (t_float32)APPSPM_FACTOR_UNUSED,
+            .offset_s16 = (t_sint16)APPSPM_OFFSET_UNUSED,
+            .Type_e = APPSPM_PRM_TYPE_STRUCT_APPLGC_PARAMTEST,
+            .Access_e = APPSPM_PRM_ACCESS_RW,
+            .Size_u16 = (t_uint16)20U,
+            .cacheData_pv = (void *)g_APPSPM_TEST_PARAM_Cache_au8,
+            .signal_e = APPSIG_SIGNAL_NB,
+            .nvmObjectId_e = FMKNVM_OBJECT_TEST_PARAM
+        },
+    };
 
     /* CAUTION : Automatic generated code section for Variable: End */
 

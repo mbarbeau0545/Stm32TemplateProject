@@ -88,9 +88,8 @@
     //-----------------------------ENUM TYPES-----------------------------//
 
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief High Resolution Line Avaiblable on CPU.
-    */
+    /// @brief High Resolution Line Avaiblable on CPU.
+
     typedef enum
     {
         FMKHRT_HR_LINE_1 = 0,                  /**< Reference to HRTIM1, Timer Slave A, Channel 1 */

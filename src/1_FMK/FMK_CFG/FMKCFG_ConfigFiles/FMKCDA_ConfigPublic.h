@@ -29,9 +29,8 @@
     // ********************************************************************
     //-----------------------------ENUM TYPES-----------------------------//
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Internal Sensors manage by the cpu.
-    */
+    /// @brief Internal Sensors manage by the cpu.
+
     typedef enum
     {
         FMKCDA_ADC_INTERN_VBAT = 0,               /**< Refernce to VBAT */
@@ -41,9 +40,8 @@
         FMKCDA_ADC_INTERN_NB,
     } t_eFMKCDA_AdcInternSns;
 
-    /**
-    * @brief Nmber of ADC in this harware.
-    */
+    /// @brief Nmber of ADC in this harware.
+
     typedef enum
     {
         FMKCDA_ADC_1 = 0,                  /**< Reference to HAL ADC1 */
@@ -53,9 +51,8 @@
         FMKCDA_ADC_NB,
     } t_eFMKCDA_Adc;
 
-    /**
-    * @brief  Number of channel in ADC Instances.
-    */
+    /// @brief  Number of channel in ADC Instances.
+
     typedef enum
     {
         FMKCDA_ADC_CHANNEL_0 = 0,                  /**< Reference to HAL adc channel 0 */

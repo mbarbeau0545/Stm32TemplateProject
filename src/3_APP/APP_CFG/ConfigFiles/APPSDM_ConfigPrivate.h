@@ -21,6 +21,8 @@
     #include "./APPSDM_ConfigPublic.h"
     #include "3_APP/APP_CTRL/APP_SIG/Src/APP_SIG.h"
     #include "APP_CFG/ConfigSpecific/APPSDM_ConfigSpecific.h"
+
+    #include "FMK_HAL/FMK_NVM/Src/FMK_NVM.h"
     // ********************************************************************
     // *                      Defines
     // ********************************************************************
@@ -73,6 +75,19 @@
     // ********************************************************************
     // *                      Variables
     // ********************************************************************
+    ///@brief Mapping to find the nvm object registration
+    const t_eFMKNVM_ObjectId c_AppSdm_ObjectRegistID_ae[APPSDM_MAX_DIAG_ITEM_MONITORING] = {
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_1,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_2,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_3,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_4,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_5,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_6,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_7,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_8,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_9,
+        FMKNVM_OBJECT_SDM_DIAG_ITEM_10
+    };
     /* CAUTION : Automatic generated code section for Variable: Start */
     /**
     * @brief Diagnostic Item Configuration

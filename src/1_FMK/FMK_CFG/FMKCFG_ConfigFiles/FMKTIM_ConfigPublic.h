@@ -69,9 +69,8 @@
         FMKTIM_INTERRUPT_LINE_TYPE_NB,
     } t_eFMKTIM_InterruptLineType;
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Number of General Purpose Interrupt Line, for PWM, Input-Compare, Output Compare, One sPulse.
-    */
+    /// @brief Number of General Purpose Interrupt Line, for PWM, Input-Compare, Output Compare, One sPulse.
+
     typedef enum
     {
         FMKTIM_INTERRUPT_LINE_IO_11 = 0,                 /**< General Purpose Timer, Reference to Timer 1 Channel 1 */
@@ -113,9 +112,8 @@
         FMKTIM_INTERRUPT_LINE_IO_NB,
     } t_eFMKTIM_InterruptLineIO;
 
-    /**
-    * @brief Number of Event Purpose Interrupt Line.
-    */
+    /// @brief Number of Event Purpose Interrupt Line.
+
     typedef enum
     {
         FMKTIM_INTERRUPT_LINE_EVNT_1 = 0,                  /**<  Reference to timer 7, CHANNEL_1 */
@@ -123,9 +121,8 @@
         FMKTIM_INTERRUPT_LINE_EVNT_NB,
     } t_eFMKTIM_InterruptLineEvnt;
 
-    /**
-    * @brief Number of DAC Purpose Interrupt Line.
-    */
+    /// @brief Number of DAC Purpose Interrupt Line.
+
     typedef enum
     {
     

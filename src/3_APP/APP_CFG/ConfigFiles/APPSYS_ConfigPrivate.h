@@ -31,7 +31,6 @@
     #include "3_APP/APP_CTRL/APP_SDM/Src/APP_SDM.h"
     #include "3_APP/APP_CTRL/APP_SPM/Src/APP_SPM.h"
     #include "3_APP/APP_CTRL/APP_SNS/Src/APP_SNS.h"
-    #include "3_APP/APP_CTRL/APP_UDS/Src/APP_UDS.h"
     #include "3_APP/APP_CTRL/APP_SIG/Src/APP_SIG.h"
     #include "3_APP/APP_LGC/Src/APP_LGC.h"
     // ********************************************************************
@@ -49,8 +48,8 @@
     #define APPSYS_IO_ANALOG_SIGNAL (FMKIO_INPUT_SIGANA_2)
 
     ///@brief Flag to know if user wants to reach the eeprom sys option parmeter
-    #define APPSYS_EEPROM_PARAM_ENABLE (FALSE)
-    #define APPSYS_SYS_MACH_BASED_ON_PRM (FALSE)
+    #define APPSYS_EEPROM_PARAM_ENABLE (TRUE)
+    #define APPSYS_SYS_MACH_BASED_ON_PRM (TRUE)
 
     ///@brief Signal send to know if the parameter has been send by ros
     #define APPSYS_FLAG_PRM_RCV_STATUS (APPSIG_SIGNAL_PRM_FLAG_PARAM_SEND_OK)

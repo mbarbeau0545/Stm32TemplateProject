@@ -37,9 +37,8 @@
     //-----------------------------ENUM TYPES-----------------------------//
     
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Enum for Serial Line Available on CPU.
-    */
+    /// @brief Enum for Serial Line Available on CPU.
+
     typedef enum
     {
         FMKSRL_SERIAL_LINE_1 = 0,                  /**< Reference to Hardware Instance USART1 */

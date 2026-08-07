@@ -40,18 +40,16 @@
     // *                      Types
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Enum for Actuators Interface list.
-    */
+    /// @brief Enum for Actuators Interface list.
+
     typedef enum
     {
     
         APPACT_ACTITF_NB,
     } t_eAPPACT_ActInterface;
 
-    /**
-    * @brief Enum for Actuators drivers list.
-    */
+    /// @brief Enum for Actuators drivers list.
+
     typedef enum
     {
         APPACT_DRV_CL42T = 0,              /**< CL42T Driver  */
@@ -59,9 +57,8 @@
         APPACT_DRV_NB,
     } t_eAPPACT_ActDriverList;
 
-    /**
-    * @brief Enumeration of all sensors device list.
-    */
+    /// @brief Enumeration of all sensors device list.
+
     typedef enum
     {
     

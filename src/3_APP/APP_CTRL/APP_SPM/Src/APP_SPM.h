@@ -19,7 +19,7 @@
 	// *                      Includes
 	// *******************************************************************
 	#include "TypeCommon.h"
-	#include "APP_CFG/ConfigFiles/APPSPM_ConfigPublic.h"
+	#include "APP_CFG/ConfigSpecific/APPSPM_ConfigSpecific.h"
 	// ********************************************************************
 	// *                      Defines
 	// ********************************************************************
@@ -76,24 +76,38 @@
    */
    t_eReturnCode APPSPM_SetState(t_eCyclicModState f_State_e);
    /**
-   *
-   *	@brief Get the Parameter value
-   *
-   *	@param[in]  f_itemId_e : the item parameter id, value from @ref t_eAPPSPM_ItemPrm
-   *	@param[out] f_prmValue_pu : destination for the parameter value.
-   *
-   *   @retval RC_OK                             @ref RC_OK
-   */
-	t_eReturnCode APPSPM_GetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType * f_prmValue_pu);
-    /** 
-    *	@brief Set the Parameter value
-    *
-    *	@param[in]  f_itemId_e : the item parameter id, value from @ref t_eAPPSPM_ItemPrm
-    *	@param[in]  f_prmVal_u : new parameter value.
-    *
-    *   @retval RC_OK                             @ref RC_OK
+    * @brief Copy one parameter from the APP_SPM cache to a caller-owned buffer.
+    * @note This generic API is used by generated typed wrappers. Application code
+    *       should normally use the parameter-specific APIs from APPSPM_ConfigSpecific.h.
+    * @param[in] f_itemId_e : Parameter identifier.
+    * @param[out] f_prmValue_pv : Destination buffer.
+    * @param[in] f_Size_u16 : Destination size; must exactly match the configured parameter size.
+    * @retval RC_OK The parameter was copied.
+    * @retval RC_ERROR_PTR_NULL The destination pointer is null.
+    * @retval RC_ERROR_PARAM_INVALID The identifier or size is invalid.
+    * @retval RC_WARNING_BUSY APP_SPM restoration is not complete.
+    * @retval RC_WARNING_PENDING The parameter is not currently valid.
     */
-	t_eReturnCode APPSPM_SetParam(t_eAPPSPM_ItemPrm f_itemId_e, t_uAPPSPM_PrmValType f_prmVal_u);
+    t_eReturnCode APPSPM_GetParam(  t_eAPPSPM_ItemPrm f_itemId_e,
+                                    void * f_prmValue_pv,
+                                    t_uint16 f_Size_u16);
+
+    /**
+     * @brief Validate and copy one parameter into the APP_SPM cache.
+     * @note This generic API is used by generated typed wrappers. Application code
+     *       should normally use the parameter-specific APIs from APPSPM_ConfigSpecific.h.
+     * @param[in] f_itemId_e : Parameter identifier.
+     * @param[in] f_prmValue_pv : Source buffer containing the canonical parameter value.
+     * @param[in] f_Size_u16 : Source size; must exactly match the configured parameter size.
+     * @retval RC_OK The parameter was accepted and cached.
+     * @retval RC_ERROR_PTR_NULL The source pointer is null.
+     * @retval RC_ERROR_PARAM_INVALID The identifier or size is invalid.
+     * @retval RC_ERROR_LIMIT_REACHED A scalar value is outside generated limits.
+     * @retval RC_WARNING_BUSY APP_SPM restoration is not complete.
+     */
+    t_eReturnCode APPSPM_SetParam(  t_eAPPSPM_ItemPrm f_itemId_e,
+                                    const void * f_prmValue_pv,
+                                    t_uint16 f_Size_u16);
     /**
      *
      *	@brief Get the Parameter Information

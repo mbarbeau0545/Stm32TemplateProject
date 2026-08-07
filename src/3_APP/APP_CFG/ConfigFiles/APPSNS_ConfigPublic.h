@@ -28,36 +28,32 @@
     // *                      Types
     // ********************************************************************
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief Enum for Sensors Interface list.
-    */
+    /// @brief Enum for Sensors Interface list.
+
     typedef enum
     {
     
         APPSNS_SNSITF_NB,
     } t_eAPPSNS_SnsInterface;
 
-    /**
-    * @brief Enum for Sensors drivers list.
-    */
+    /// @brief Enum for Sensors drivers list.
+
     typedef enum
     {
     
         APPSNS_DRV_NB,
     } t_eAPPSNS_SnsDriverList;
 
-    /**
-    * @brief Enumeration of all sensors device list.
-    */
+    /// @brief Enumeration of all sensors device list.
+
     typedef enum
     {
     
         APPSNS_SNSDVC_NB,
     } t_eAPPSNS_SnsDeviceList;
 
-    /**
-    * @brief Enum for sensor conversion list.
-    */
+    /// @brief Enum for sensor conversion list.
+
     typedef enum
     {
         APPSNS_MEASTYPE_RAW = 0,                /**< Raw value is not changed */

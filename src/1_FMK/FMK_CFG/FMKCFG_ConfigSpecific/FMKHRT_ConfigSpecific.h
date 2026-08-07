@@ -34,9 +34,8 @@
     // ********************************************************************
     //-----------------------------ENUM TYPES-----------------------------//
     /* CAUTION : Automatic generated code section for Enum: Start */
-    /**
-    * @brief High Resolution Timer Instance Number.
-    */
+    /// @brief High Resolution Timer Instance Number.
+
     typedef enum
     {
         FMKHRT_HIGH_RES_TIMER_1 = 0,                  /**< Timer Resolution  0 */
@@ -44,9 +43,8 @@
         FMKHRT_HIGH_RES_TIMER_NB,
     } t_eFMKHRT_HighResIstc;
 
-    /**
-    * @brief High Resolution Slave Timer Number.
-    */
+    /// @brief High Resolution Slave Timer Number.
+
     typedef enum
     {
         FMKHRT_HRTIM_SLAVE_1 = 0,                  /**< Timer Slave A */
@@ -58,9 +56,8 @@
         FMKHRT_HRTIM_SLAVE_NB,
     } t_eFMKHRT_HighResSlvTim;
 
-    /**
-    * @brief High Resolution Timer Channel.
-    */
+    /// @brief High Resolution Timer Channel.
+
     typedef enum
     {
         FMKHRT_HRTIM_CHANNEL_1 = 0,                  /**< Channel 1 */
